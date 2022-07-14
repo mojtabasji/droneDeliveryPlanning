@@ -1,0 +1,139 @@
+{
+    "line1":{
+        "stops":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+            "line2":{ "from":1, "to": 27 },
+            "line3":{"from":22,"to":66},
+            "line10":{ "from":1, "to": 215 },
+            "line4":{ "from":5, "to": 85 },
+            "line7":{ "from":9, "to": 166 },
+            "line9":{"from":16, "to":199}
+        },
+        "store":{   },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+    },
+
+    "line2":{
+        "stops":[27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+            "line1":{"from":27, "to":1},
+            "line3":{"from":52, "to":53},
+            "line8":{"from":52, "to":180},
+            "line10":{"from":27, "to":215},
+            "line4":{"from":35, "to":91},
+            "line7":{"from":38, "to":173},
+            "line9":{"from":48 ,"to":192}
+        },
+        "store":{},
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+    },
+
+    "line3":{
+        "stops":[53, 54, 55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+            "line1":{"from":66, "to":22},
+            "line2":{"from":53, "to":52},
+            "line8":{"from":53, "to":180},
+            "line5":{"from":69, "to":108}
+        },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+    },
+
+    "line4":{
+        "stops":[76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98],
+        "Intersection":{
+            "line8":{"from":98,"to":175}
+        },
+        "Intersection__dontUSe":{
+            "line1":{"from":85, "to":5},
+            "line2":{"from":91, "to":35},
+            "line7":{"from":76, "to":147},
+            "line8":{"from":98,"to":175}
+        },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+    },
+    
+    "line5":{
+        "stops":[100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+        },
+        "store":{
+            "line7":{"from":100,"to":158},
+            "line9":{"from":106,"to":204},
+            "line3":{"from":108,"to":69}},
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+    },
+
+
+    "line7":{
+        "stops":[141,142,143,144,145, 146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+            "line1":{"from":166,"to":9},
+            "line2":{"from":173,"to":38},
+            "line4":{"from":147, "to":76},
+            "line5":{"from":158,"to":100}
+        },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+
+    },
+
+
+    "line8":{
+        "stops":[175,176,177,178,179,180],
+        "Intersection":{
+            "line4":{"from":175,"to":98}
+        },
+        "Intersection_dontUSe":{
+            "line4":{"from":175,"to":98},
+            "line3":{"from":180,"to":53},
+            "line2":{"from":180,"to":52}
+        },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+
+    },
+
+
+    "line9":{
+        "stops":[181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+            "line2":{"from":192,"to":48},
+            "line1":{"from":199,"to":16},
+            "line5":{"from":204,"to":106}
+        },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+
+    },
+
+    "line10":
+    {
+        "stops":[215,216,217,218,219,220,221,222,223,224,225,226,227,228,229],
+        "Intersection":{
+        },
+        "Intersection_dontUSe":{
+            "line1":{"from":215,"to":1},
+            "line2":{"from":215, "to":27}
+        },
+        "busyRate_0": 0.2 ,
+        "busyRate_1": 0.2 
+    }
+}

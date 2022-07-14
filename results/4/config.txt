@@ -1,0 +1,7 @@
+UAVCount = 60
+DepotCount = 4
+LineCounts = 6 -> [3,4,7,8,9,10]
+BusMaxCap = 3
+MaxFlyDist = 1200 step ->  12 km 
+TAllocationApproach = "Function"
+approach = 'deep' -> 'TimingDecide'

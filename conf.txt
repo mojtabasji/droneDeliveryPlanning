@@ -1,0 +1,149 @@
+grid-x 100
+grid-y 100
+
+n-station 60
+
+s1 pos(25,5)
+s2 pos(25,15)
+s3 pos(25,25)
+s4 pos(25,35)
+s5 pos(25,45)
+s6 pos(25,55)
+s7 pos(25,65)
+s8 pos(25,75)
+s9 pos(25,85)
+s10 pos(25,95)
+
+s11 pos(55,5)
+s12 pos(55,15)
+s13 pos(55,25)
+s14 pos(55,35)
+s15 pos(55,45)
+s16 pos(55,55)
+s17 pos(55,65)
+s18 pos(55,75)
+s19 pos(55,85)
+s20 pos(55,95)
+
+s21 pos(75,5)
+s22 pos(75,15)
+s23 pos(75,25)
+s24 pos(75,35)
+s25 pos(75,45)
+s26 pos(75,55)
+s27 pos(75,65)
+s28 pos(75,75)
+s29 pos(75,85)
+s30 pos(75,95)
+
+s31 pos(5,25)
+s32 pos(15,25)
+s33 pos(25,25)
+s34 pos(35,25)
+s35 pos(45,25)
+s36 pos(55,25)
+s37 pos(65,25)
+s38 pos(75,25)
+s39 pos(85,25)
+s40 pos(95,25)
+
+s41 pos(5,55)
+s42 pos(15,55)
+s43 pos(25,55)
+s44 pos(35,55)
+s45 pos(45,55)
+s46 pos(55,55)
+s47 pos(65,55)
+s48 pos(75,55)
+s49 pos(85,55)
+s50 pos(95,55)
+
+s51 pos(5, 75)
+s52 pos(15, 75)
+s53 pos(25, 75)
+s54 pos(35, 75)
+s55 pos(45, 75)
+s56 pos(55, 75)
+s57 pos(65, 75)
+s58 pos(75, 75)
+s59 pos(85, 75)
+s60 pos(95, 75)
+
+n-line 6
+
+line 1 (s1,s2,s3,s4,s5,s6,s7,s8,s9,s10)
+line 2 (s11,s12,s13,s14,s15,s16,s17,s18,s19,s20)
+line 3 (s21,s22,s23,s24,s25,s26,s27,s28,s29,s30)
+line 4 (s31,s32,s33,s34,s35,s36,s37,s38,s39,s40)
+line 5 (s41,s42,s43,s44,s45,s46,s47,s48,s49,s50)
+line 6 (s51,s52,s53,s54,s55,s56,s57,s58,s59,s60)
+
+depot 3
+
+d1 pos(35,10)
+d1 pos(85,35)
+d1 pos(15,65)
+
+n-uav 20
+
+u1 pos(pos(d1))
+u2 pos(pos(d1))
+u3 pos(pos(d1))
+u4 pos(pos(d1))
+u5 pos(pos(d1))
+u6 pos(pos(d1))
+u7 pos(pos(d1))
+
+u8 pos(pos(d2))
+u9 pos(pos(d2))
+u10 pos(pos(d2))
+u11 pos(pos(d2))
+u12 pos(pos(d2))
+u13 pos(pos(d2))
+u14 pos(pos(d2))
+
+u15 pos(pos(d3))
+u16 pos(pos(d3))
+u17 pos(pos(d3))
+u18 pos(pos(d3))
+u19 pos(pos(d3))
+u20 pos(pos(d3))
+
+n-bus 30
+
+b1 l1 pos(25,5 ) dir(0)
+b2 l1 pos(25,45) dir(0)
+b3 l1 pos(25,85) dir(0)
+b4 l1 pos(25,75) dir(1)
+b5 l1 pos(25,35) dir(1)
+
+b6 l2 pos(55,5 ) dir(0)
+b7 l2 pos(55,45) dir(0)
+b8 l2 pos(55,85) dir(0)
+b9 l2 pos(55,75) dir(1)
+b10 l2 pos(55,35) dir(1)
+
+b11 l3 pos(75,5 ) dir(0)
+b12 l3 pos(75,45) dir(0)
+b13 l3 pos(75,85) dir(0)
+b14 l3 pos(75,75) dir(1)
+b15 l3 pos(75,35) dir(1)
+
+b16 l4 pos(5 ,25) dir(0)
+b17 l4 pos(45,25) dir(0)
+b18 l4 pos(85,25) dir(0)
+b19 l4 pos(75,25) dir(1)
+b20 l4 pos(35,25) dir(1)
+
+b21 l5 pos(5 ,55) dir(0)
+b22 l5 pos(45,55) dir(0)
+b23 l5 pos(85,55) dir(0)
+b24 l5 pos(75,55) dir(1)
+b25 l5 pos(35,55) dir(1)
+
+b26 l6 pos(5 ,5) dir(0)
+b27 l6 pos(45,75) dir(0)
+b28 l6 pos(85,75) dir(0)
+b29 l6 pos(75,75) dir(1)
+b30 l6 pos(35,75) dir(1)
+

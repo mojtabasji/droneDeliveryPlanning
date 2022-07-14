@@ -1,0 +1,4 @@
+cmd command to create:
+1. Swig -c++ -python project.i
+2.change names in setup.py
+3. python setup.py build_ext
