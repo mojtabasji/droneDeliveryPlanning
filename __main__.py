@@ -73,7 +73,7 @@ def point2Loc(pnt):
 
 config = json.load(open('config.json'))
 # Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
-approach = 'TimingDecide'
+approach = 'deepDecide'
 showImage = False
 UAVs = []
 #reachTimeStoreXl = []
@@ -87,7 +87,7 @@ ReqSubSet = []
 ReqSubSet_len = 25
 Depots = []
 unreachablePoints = []
-requestConf_id = 1
+requestConf_id = 2
 
 images = []
 colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -812,6 +812,7 @@ if __name__ == "__main__":
     storeMore.setKeyVal('running Time', time.time() - start_time)
     storeData.SaveToFile(UAVCount)
     storeMore.Save2file(UAVCount)
+    rc.saveModel(UAVCount)
     traci.close()
 
     # images[0].save('./images/_imagedraw.gif',

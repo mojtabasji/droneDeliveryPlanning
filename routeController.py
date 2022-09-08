@@ -30,6 +30,10 @@ class brain:
         self.normalizerValues = [3000, 3000, 3000, UAVCount, 15, 15, UAVCount, 1, 1 - (1/UAVCount), UAVCount]
 
 
+    def saveModel(self, nameAdd):
+        self.model.save(f'my_model_{str(nameAdd)}.h5')
+
+
     def __build_model(self):
         mdl = Sequential()
         mdl.add(Dense(300, input_dim= (10), activation='relu'))

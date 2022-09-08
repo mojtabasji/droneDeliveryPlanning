@@ -1,13 +1,13 @@
 {
     "MaxFlyDist":1200,
-    "BusMaxCap":3,
+    "BusMaxCap":4,
     "group_uperbound" : 6,
     "BeforeStopCheckCount":4,
     "Envdim" : {
         "x" : 3000,
         "y" : 3000
     },
-    "UAVCount":40,
+    "UAVCount":80,
     "Depots":{
         "1":{
             "x": 1334,
