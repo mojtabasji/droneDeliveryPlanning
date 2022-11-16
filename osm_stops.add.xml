@@ -1,0 +1,1176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-06-12 18:46:03 by Eclipse SUMO netedit Version 1.10.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="C:\Users\HPC\Desktop\payannameh\osm.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="C:\Users\HPC\Desktop\payannameh\osm.net.xml"/>
+        <output.street-names value="true"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.5"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+
+    <netedit>
+        <additional-files value="C:\Users\HPC\Desktop\payannameh\osm_stops.add.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <busStop id="-2169691367" lane="-531784904#1_0" startPos="0.00" endPos="100.00" name="فرهنگسرا" friendlyPos="1">
+        <access lane="-773130135#4_0" pos="8.23" length="200.62" friendlyPos="1"/>
+        <access lane="773130135#4_0" pos="105.67" length="195.82" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-2169732956" lane="-360562330_0" startPos="0.00" endPos="100.00" name="شهرک اکباتان" friendlyPos="1">
+        <access lane="-339973084_0" pos="97.55" length="145.75" friendlyPos="1"/>
+        <access lane="339958481#10_0" pos="265.02" length="66.05" friendlyPos="1"/>
+        <access lane="339973090#1_0" pos="77.27" length="76.46" friendlyPos="1"/>
+        <access lane="460137917#0_0" pos="152.28" length="49.06" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-2169732980" lane="-531786471#0_0" startPos="427.19" endPos="627.19" name="نیرو هوایی" friendlyPos="1">
+        <access lane="426957152#10_0" pos="284.75" length="42.77" friendlyPos="1"/>
+        <access lane="740635035#0-AddedOnRampEdge_0" pos="35.53" length="3.46" friendlyPos="1"/>
+        <access lane="740636735#3_0" pos="66.43" length="59.29" friendlyPos="1"/>
+        <access lane="885240739#4_0" pos="30.40" length="50.71" friendlyPos="1"/>
+        <access lane="921069303#3_0" pos="200.86" length="20.48" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3080821096" lane="-439856575#5_0" startPos="1159.49" endPos="1359.49" name="فدک" friendlyPos="1">
+        <access lane="193304012#3_0" pos="99.88" length="12.37" friendlyPos="1"/>
+        <access lane="193314545_0" pos="61.96" length="19.64" friendlyPos="1"/>
+        <access lane="690940930#15_0" pos="58.82" length="20.37" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3548939496" lane="-332271287#0_0" startPos="794.24" endPos="994.24" name="پانزده خرداد" friendlyPos="1">
+        <access lane="332279292#35_0" pos="22.43" length="6.03" friendlyPos="1"/>
+        <access lane="335719636_0" pos="17.95" length="5.72" friendlyPos="1"/>
+        <access lane="336269375#0_0" pos="7.35" length="17.94" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3641204693" lane="-358622226#0_0" startPos="0.00" endPos="100.00" name="جوادیه" friendlyPos="1">
+        <access lane="-359400274_0" pos="144.62" length="12.25" friendlyPos="1"/>
+        <access lane="-609479111#1_0" pos="54.13" length="150.00" friendlyPos="1"/>
+        <access lane="422016596_0" pos="265.92" length="5.09" friendlyPos="1"/>
+        <access lane="609479111#1_0" pos="97.07" length="145.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3649760925" lane="-445967481#5_0" startPos="0.00" endPos="100.00" name="آزادگان" friendlyPos="1">
+        <access lane="476362435#0_0" pos="1.24" length="26.37" friendlyPos="1"/>
+        <access lane="476362435#1_0" pos="2.12" length="19.28" friendlyPos="1"/>
+        <access lane="585945429#3_0" pos="243.96" length="12.95" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3649760928" lane="-445967481#2_0" startPos="28.12" endPos="132.33" name="شهرک شریعتی" friendlyPos="1">
+        <access lane="-523623396_0" pos="105.19" length="37.66" friendlyPos="1"/>
+        <access lane="449494359#0_0" pos="3.34" length="33.80" friendlyPos="1"/>
+        <access lane="449494364_0" pos="9.33" length="26.24" friendlyPos="1"/>
+        <access lane="523623400#2_0" pos="4.19" length="5.49" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778821747" lane="-278822219#5_0" startPos="359.19" endPos="559.19" name="شهید قدوسی" friendlyPos="1">
+        <access lane="454606871#1_0" pos="15.31" length="24.44" friendlyPos="1"/>
+        <access lane="682307877#2_0" pos="172.42" length="2.99" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778822187" lane="-561284303#1_0" startPos="7090.74" endPos="7290.74" name="هروی" friendlyPos="1">
+        <access lane="-155716321_0" pos="31.58" length="65.95" friendlyPos="1"/>
+        <access lane="207902889#0_0" pos="95.08" length="33.13" friendlyPos="1"/>
+        <access lane="448993771_0" pos="77.68" length="116.07" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861785" lane="-278822219#5_0" startPos="1088.48" endPos="1288.48" name="سهروردی" friendlyPos="1">
+        <access lane="-164595075_0" pos="65.36" length="63.51" friendlyPos="1"/>
+        <access lane="164595075_0" pos="182.96" length="68.31" friendlyPos="1"/>
+        <access lane="36361868_0" pos="17.52" length="109.41" friendlyPos="1"/>
+        <access lane="682415095#9_0" pos="64.47" length="5.02" friendlyPos="1"/>
+        <access lane="819140281#1_0" pos="137.44" length="15.79" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861786" lane="-561284303#1_0" startPos="11480.67" endPos="11680.67" name="شهید صیاد شیرازی" friendlyPos="1">
+        <access lane="-894829958_0" pos="5.83" length="74.84" friendlyPos="1"/>
+        <access lane="151931173#0_0" pos="96.68" length="19.53" friendlyPos="1"/>
+        <access lane="207931273_0" pos="234.45" length="55.03" friendlyPos="1"/>
+        <access lane="396826968#0_0" pos="6.30" length="28.66" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861787" lane="-561284303#1_0" startPos="10525.91" endPos="10725.91" name="خواجه عبدالله انصاری" friendlyPos="1">
+        <access lane="164595076-AddedOffRampEdge_0" pos="47.94" length="45.21" friendlyPos="1"/>
+        <access lane="28272739_0" pos="113.76" length="21.07" friendlyPos="1"/>
+        <access lane="429869376#1_0" pos="78.15" length="63.08" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861789" lane="-561284303#1_0" startPos="6128.75" endPos="6328.75" name="حسین آباد" friendlyPos="1">
+        <access lane="-151853143#0_0" pos="47.44" length="61.49" friendlyPos="1"/>
+        <access lane="-39016881#0_0" pos="227.15" length="61.53" friendlyPos="1"/>
+        <access lane="470422222_0" pos="58.94" length="28.12" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861790" lane="-561284303#1_0" startPos="4678.61" endPos="4878.61" name="نوبنیاد" friendlyPos="1">
+        <access lane="155706921_0" pos="45.89" length="37.43" friendlyPos="1"/>
+        <access lane="155706969_0" pos="8.51" length="29.26" friendlyPos="1"/>
+        <access lane="446124573_0" pos="0.20" length="29.88" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861791" lane="-561284303#1_0" startPos="3067.42" endPos="3267.42" name="اقدسیه" friendlyPos="1">
+        <access lane="330345122#3_0" pos="45.22" length="12.79" friendlyPos="1"/>
+        <access lane="783610687#0-AddedOffRampEdge_0" pos="5.86" length="19.43" friendlyPos="1"/>
+        <access lane="783610687#0_0" pos="116.90" length="25.78" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861792" lane="-561284303#1_0" startPos="823.79" endPos="1023.79" name="شهید محلاتی" friendlyPos="1">
+        <access lane="643701855_0" pos="5.98" length="31.07" friendlyPos="1"/>
+        <access lane="763381345_0" pos="18.72" length="43.01" friendlyPos="1"/>
+        <access lane="879180984#0_0" pos="27.28" length="37.31" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3778861797" lane="-561284303#2_0" startPos="0.00" endPos="100.00" name="قائم" friendlyPos="1">
+        <access lane="158528893_0" pos="344.58" length="22.85" friendlyPos="1"/>
+        <access lane="436140356_0" pos="18.63" length="19.40" friendlyPos="1"/>
+        <access lane="4591290#5_0" pos="0.38" length="40.02" friendlyPos="1"/>
+        <access lane="4591290#6_0" pos="4.71" length="28.36" friendlyPos="1"/>
+        <access lane="506568105_0" pos="23.94" length="46.92" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3784645915" lane="-375075389#0_0" startPos="3218.08" endPos="3418.08" name="شهید محلاتی" friendlyPos="1">
+        <access lane="310587645_0" pos="6.00" length="46.57" friendlyPos="1"/>
+        <access lane="310587648_0" pos="4.23" length="45.00" friendlyPos="1"/>
+        <access lane="593502985#6_0" pos="91.80" length="14.78" friendlyPos="1"/>
+        <access lane="60960805#2_0" pos="8.16" length="50.09" friendlyPos="1"/>
+        <access lane="712521733#4_0" pos="90.75" length="45.80" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3784645922" lane="-375075389#0_0" startPos="1419.93" endPos="1619.93" name="دولاب" friendlyPos="1">
+        <access lane="-199146929#1_0" pos="9.08" length="49.30" friendlyPos="1"/>
+        <access lane="-36786682#0_0" pos="51.63" length="15.87" friendlyPos="1"/>
+        <access lane="36786679#0_0" pos="6.17" length="16.27" friendlyPos="1"/>
+        <access lane="36786682#0_0" pos="6.33" length="20.67" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3784648870" lane="-375075389#0_0" startPos="4003.53" endPos="4103.53" name="بسیج" friendlyPos="1">
+        <access lane="466010602#1_0" pos="6.50" length="17.90" friendlyPos="1"/>
+        <access lane="466012030_0" pos="83.49" length="23.35" friendlyPos="1"/>
+        <access lane="903279903#0_0" pos="8.02" length="0.41" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3784648871" lane="-375075389#0_0" startPos="2355.86" endPos="2555.86" name="اهنگ" friendlyPos="1">
+        <access lane="206838892#1_0" pos="26.77" length="32.49" friendlyPos="1"/>
+        <access lane="459229127_0" pos="7.55" length="26.84" friendlyPos="1"/>
+        <access lane="499220673#3_0" pos="49.40" length="12.30" friendlyPos="1"/>
+        <access lane="712521733#10_0" pos="66.04" length="11.60" friendlyPos="1"/>
+        <access lane="834693815_0" pos="10.49" length="24.77" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3815454692" lane="-378127816#0_0" startPos="6105.50" endPos="6205.50" name="دولت آباد" friendlyPos="1">
+        <access lane="-653035781#3_0" pos="20.43" length="64.70" friendlyPos="1"/>
+        <access lane="653035779#3_0" pos="47.44" length="82.37" friendlyPos="1"/>
+        <access lane="653035781#2_0" pos="92.79" length="65.71" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3815454729" lane="-378127816#1_0" startPos="1532.15" endPos="1732.15" name="امیر کبیر" friendlyPos="1">
+        <access lane="-196622663#0_0" pos="44.17" length="31.12" friendlyPos="1"/>
+        <access lane="4344286#2_0" pos="25.01" length="21.19" friendlyPos="1"/>
+        <access lane="469390690#0_0" pos="28.01" length="16.24" friendlyPos="1"/>
+        <access lane="475518412#10_0" pos="9.79" length="11.44" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3815456848" lane="-916915022#0_0" startPos="2589.51" endPos="2789.51" name="شهید ستاری" friendlyPos="1">
+        <access lane="66689848#0_0" pos="29.26" length="14.43" friendlyPos="1"/>
+        <access lane="722336305_0" pos="83.09" length="5.89" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3853324444" lane="-378127816#0_0" startPos="3894.11" endPos="4094.11" name="کیانشهر" friendlyPos="1">
+        <access lane="-279684603#3_0" pos="5.92" length="10.48" friendlyPos="1"/>
+        <access lane="-36799818#3_0" pos="26.63" length="25.74" friendlyPos="1"/>
+        <access lane="279684603#3_0" pos="21.78" length="5.68" friendlyPos="1"/>
+        <access lane="36799818#2_0" pos="199.09" length="22.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-3930789262" lane="-461961970#6_0" startPos="430.91" endPos="530.91" name="بیمه" friendlyPos="1">
+        <access lane="178827367_0" pos="17.24" length="10.98" friendlyPos="1"/>
+        <access lane="392052715#3_0" pos="13.65" length="17.85" friendlyPos="1"/>
+        <access lane="497655094#5_0" pos="108.30" length="20.17" friendlyPos="1"/>
+        <access lane="497655094#6_0" pos="8.72" length="14.73" friendlyPos="1"/>
+        <access lane="885442210_0" pos="3.99" length="22.35" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4079699883" lane="-586649509#1_0" startPos="24.54" endPos="224.54" name="تهران (صادقیه)" friendlyPos="1">
+        <access lane="-152829460#0_0" pos="15.18" length="18.89" friendlyPos="1"/>
+        <access lane="-152829460#1_0" pos="65.12" length="35.85" friendlyPos="1"/>
+        <access lane="152829460#0_0" pos="48.46" length="23.69" friendlyPos="1"/>
+        <access lane="700799833_0" pos="0.20" length="29.61" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4453205974" lane="-561284303#1_0" startPos="8567.46" endPos="8767.46" name="شهید زین الدین" friendlyPos="1">
+        <access lane="151940778_0" pos="23.18" length="36.48" friendlyPos="1"/>
+        <access lane="151940779_0" pos="23.22" length="22.28" friendlyPos="1"/>
+        <access lane="687277051#6_0" pos="29.79" length="41.35" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4453604919" lane="-445967481#4_0" startPos="1632.05" endPos="1832.05" name="عبدل آباد" friendlyPos="1">
+        <access lane="-449825599_0" pos="14.64" length="78.65" friendlyPos="1"/>
+        <access lane="253086939#0_0" pos="31.90" length="67.10" friendlyPos="1"/>
+        <access lane="605531869_0" pos="112.23" length="78.39" friendlyPos="1"/>
+        <access lane="605537192#1_0" pos="30.14" length="19.76" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4453614390" lane="-445967481#4_0" startPos="423.10" endPos="623.10" name="نعمت آباد" friendlyPos="1">
+        <access lane="605549961#7_0" pos="18.74" length="39.34" friendlyPos="1"/>
+        <access lane="883923536_0" pos="35.05" length="3.00" friendlyPos="1"/>
+        <access lane="883934073#1_0" pos="101.57" length="30.94" friendlyPos="1"/>
+        <access lane="883934077_0" pos="21.50" length="38.05" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4453643066" lane="-182547031_0" startPos="298.08" endPos="398.08" name="صادقیه" friendlyPos="1">
+        <access lane="-152829460#0_0" pos="12.66" length="56.09" friendlyPos="1"/>
+        <access lane="-152829460#1_0" pos="65.12" length="62.12" friendlyPos="1"/>
+        <access lane="152829460#0_0" pos="50.98" length="60.89" friendlyPos="1"/>
+        <access lane="700799833_0" pos="0.20" length="56.15" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4553519985" lane="-911325099_0" startPos="50.82" endPos="250.82" name="شهید کلاهدوز" friendlyPos="1">
+        <access lane="-911325065_0" pos="4.80" length="31.39" friendlyPos="1"/>
+        <access lane="-911325066#1_0" pos="51.12" length="45.00" friendlyPos="1"/>
+        <access lane="911325065_0" pos="29.58" length="36.19" friendlyPos="1"/>
+        <access lane="911325066#1_0" pos="40.25" length="49.80" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4674995987" lane="-439856575#5_0" startPos="95.11" endPos="295.11" name="جانبازان" friendlyPos="1">
+        <access lane="193316970#1_0" pos="93.20" length="27.00" friendlyPos="1"/>
+        <access lane="275638119#7_0" pos="8.29" length="12.56" friendlyPos="1"/>
+        <access lane="424763376#0_0" pos="34.08" length="4.68" friendlyPos="1"/>
+        <access lane="648795996_0" pos="8.58" length="25.67" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-4807479645" lane="-614283134_0" startPos="24.45" endPos="39.45" name="پایانه کوهسار" friendlyPos="1" lines="281"/>
+    <busStop id="-5161529740" lane="-360562335_0" startPos="0.00" endPos="100.00" name="ارم سبز" friendlyPos="1">
+        <access lane="429345565_0" pos="166.84" length="28.43" friendlyPos="1"/>
+        <access lane="456927783_0" pos="0.20" length="106.49" friendlyPos="1"/>
+        <access lane="456933733_0" pos="5.43" length="109.74" friendlyPos="1"/>
+        <access lane="456933735_0" pos="17.91" length="98.61" friendlyPos="1"/>
+        <access lane="456933736_0" pos="5.91" length="97.43" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5168368226" lane="-39017206#2_0" startPos="0.00" endPos="7.70" name="ایستگاه چهارصد دستگاه" friendlyPos="1" lines="301"/>
+    <busStop id="-5188238057" lane="-720467066#1_0" startPos="0.00" endPos="169.27" name="شهید بهشتی" friendlyPos="1">
+        <access lane="461899397#3_0" pos="1.62" length="18.08" friendlyPos="1"/>
+        <access lane="474193699_0" pos="148.72" length="4.59" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5188238058" lane="-278822219#5_0" startPos="1962.16" endPos="2074.00" name="شهید بهشتی" friendlyPos="1">
+        <access lane="-677820656#0_0" pos="64.56" length="5.38" friendlyPos="1"/>
+        <access lane="454557470#1_0" pos="158.86" length="52.81" friendlyPos="1"/>
+        <access lane="677820656#0_0" pos="31.49" length="10.18" friendlyPos="1"/>
+        <access lane="819140281#11_0" pos="157.78" length="54.52" friendlyPos="1"/>
+        <access lane="819140281#12_0" pos="9.88" length="57.54" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5190423567" lane="-720467066#1_0" startPos="1650.38" endPos="1850.38" name="شهدای هفت تیر" friendlyPos="1">
+        <access lane="524694607#2_0" pos="15.17" length="21.79" friendlyPos="1"/>
+        <access lane="671098025#0_0" pos="12.93" length="20.85" friendlyPos="1"/>
+        <access lane="671723743_0" pos="25.45" length="11.82" friendlyPos="1"/>
+        <access lane="844145876#13_0" pos="9.67" length="30.66" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5190555599" lane="-445967481#0_0" startPos="505.44" endPos="705.44" name="زمزم" friendlyPos="1">
+        <access lane="409708228#0_0" pos="150.31" length="97.19" friendlyPos="1"/>
+        <access lane="445962919_0" pos="38.96" length="113.17" friendlyPos="1"/>
+        <access lane="445967482_0" pos="52.25" length="13.06" friendlyPos="1"/>
+        <access lane="817331897_0" pos="54.16" length="60.86" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5194022128" lane="-24542633#4_0" startPos="170.55" endPos="370.55" name="تپه سفید" friendlyPos="1">
+        <access lane="522108253#0_0" pos="48.20" length="56.90" friendlyPos="1"/>
+        <access lane="526483919_0" pos="272.66" length="61.02" friendlyPos="1"/>
+        <access lane="536075428#1_0" pos="74.12" length="53.82" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5604726852" lane="-586649530_0" startPos="130.62" endPos="330.62" name="ارم سبز" friendlyPos="1">
+        <access lane="456927783_0" pos="0.20" length="60.65" friendlyPos="1"/>
+        <access lane="456933735_0" pos="17.91" length="61.15" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5604726870" lane="-586649533_0" startPos="70.16" endPos="270.16" name="ارم سبز" friendlyPos="1">
+        <access lane="429345565_0" pos="163.57" length="53.49" friendlyPos="1"/>
+        <access lane="456927783_0" pos="0.20" length="81.63" friendlyPos="1"/>
+        <access lane="456933733_0" pos="5.43" length="84.27" friendlyPos="1"/>
+        <access lane="456933735_0" pos="17.91" length="78.21" friendlyPos="1"/>
+        <access lane="456933736_0" pos="0.16" length="78.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5604726884" lane="-586649546_0" startPos="113.32" endPos="313.32" name="ورزشگاه آزادی" friendlyPos="1">
+        <access lane="-189317610#0_0" pos="13.62" length="96.71" friendlyPos="1"/>
+        <access lane="-189317610#1_0" pos="108.08" length="104.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5604726890" lane="-586649547_0" startPos="132.89" endPos="332.89" name="ورزشگاه آزادی" friendlyPos="1">
+        <access lane="-189317610#0_0" pos="13.26" length="78.89" friendlyPos="1"/>
+        <access lane="-189317610#1_0" pos="108.08" length="82.80" friendlyPos="1"/>
+        <access lane="189317610#0_0" pos="0.36" length="74.09" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-5930756414" lane="-378127816#0_0" startPos="2528.10" endPos="2728.10" name="بعثت" friendlyPos="1">
+        <access lane="-463860320#0_0" pos="24.07" length="53.94" friendlyPos="1"/>
+        <access lane="-463860320#1_0" pos="85.16" length="74.88" friendlyPos="1"/>
+        <access lane="222851822_0" pos="66.43" length="83.49" friendlyPos="1"/>
+        <access lane="463860320#0_0" pos="86.02" length="58.74" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-6066000806" lane="-548613041#0_0" startPos="49.27" endPos="249.27" name="تپه سفید" friendlyPos="1">
+        <access lane="522108253#0_0" pos="47.62" length="71.78" friendlyPos="1"/>
+        <access lane="526483919_0" pos="272.66" length="46.16" friendlyPos="1"/>
+        <access lane="536075428#1_0" pos="74.12" length="39.07" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660624203" lane="-720467066#1_0" startPos="589.29" endPos="789.29" name="شهید مفتح" friendlyPos="1">
+        <access lane="461899397#12_0" pos="65.99" length="9.73" friendlyPos="1"/>
+        <access lane="682383137#24_0" pos="1.44" length="30.37" friendlyPos="1"/>
+        <access lane="682383137#25_0" pos="2.76" length="22.12" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660627594" lane="-378127816#1_0" startPos="683.86" endPos="883.86" name="میدان شهدا" friendlyPos="1">
+        <access lane="717625374_0" pos="5.19" length="62.56" friendlyPos="1"/>
+        <access lane="827014820#4_0" pos="49.25" length="10.41" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660628303" lane="-448212350#3_0" startPos="432.07" endPos="632.07" name="شهید مدنی" friendlyPos="1">
+        <access lane="-439856603#10_0" pos="69.50" length="15.47" friendlyPos="1"/>
+        <access lane="439856603#9_0" pos="22.57" length="8.40" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660628364" lane="-439856575#4_0" startPos="710.77" endPos="910.77" name="سبلان" friendlyPos="1">
+        <access lane="-955960534_0" pos="11.19" length="22.44" friendlyPos="1"/>
+        <access lane="594289414#2_0" pos="0.20" length="26.59" friendlyPos="1"/>
+        <access lane="594289414#3_0" pos="12.06" length="22.77" friendlyPos="1"/>
+        <access lane="594297064_0" pos="17.08" length="11.36" friendlyPos="1"/>
+        <access lane="955960534_0" pos="2.50" length="17.64" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660628921" lane="-531784904#1_0" startPos="1560.78" endPos="1760.78" name="تهرانپارس" friendlyPos="1">
+        <access lane="449717082#3_0" pos="71.62" length="21.09" friendlyPos="1"/>
+        <access lane="482804230#10_0" pos="187.73" length="20.91" friendlyPos="1"/>
+        <access lane="484554190#9_0" pos="206.71" length="12.73" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660637545" lane="-206883215_0" startPos="1110.55" endPos="1302.54" name="شوش" friendlyPos="1">
+        <access lane="-476339622_0" pos="145.83" length="226.03" friendlyPos="1"/>
+        <access lane="222850253_0" pos="120.25" length="42.80" friendlyPos="1"/>
+        <access lane="222850265_0" pos="15.67" length="208.71" friendlyPos="1"/>
+        <access lane="330910799_0" pos="148.12" length="215.78" friendlyPos="1"/>
+        <access lane="4344235#15_0" pos="152.41" length="223.49" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660640664" lane="-664336703#2_0" startPos="0.00" endPos="100.82" name="خیام" friendlyPos="1">
+        <access lane="332279292#18_0" pos="4.49" length="2.91" friendlyPos="1"/>
+        <access lane="336274075#1_0" pos="0.23" length="11.83" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-660640714" lane="-206883215_0" startPos="0.00" endPos="135.89" name="میدان محمدیه" friendlyPos="1">
+        <access lane="335719635#14_0" pos="137.12" length="71.80" friendlyPos="1"/>
+        <access lane="712612528#9_0" pos="59.40" length="62.87" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-7354135338" lane="-534885337#15_0" startPos="16.36" endPos="27.46" name="سه راه نشاط" friendlyPos="1" lines="225"/>
+    <busStop id="-7354135339" lane="-534885337#3_0" startPos="19.19" endPos="34.19" name="دانشگاه" friendlyPos="1" lines="225"/>
+    <busStop id="-7354135340" lane="-534885337#0_0" startPos="37.53" endPos="45.03" name="کلانتری" friendlyPos="1" lines="225"/>
+    <busStop id="-7366656704" lane="-447188701#2_0" startPos="179.10" endPos="194.10" name="مهمانپذیر" friendlyPos="1" lines="301"/>
+    <busStop id="-7439665885" lane="-889217541#0_0" startPos="77.02" endPos="84.52" name="ایستگاه بانک تجارت" friendlyPos="1" lines="301"/>
+    <busStop id="-8290610103" lane="-176499895#0_0" startPos="82.05" endPos="89.55" name="ایستگاه مسجد" friendlyPos="1" lines="281"/>
+    <busStop id="-8290610104" lane="-176499895#4_0" startPos="83.06" endPos="98.06" name="ایستگاه بهاران" friendlyPos="1" lines="281"/>
+    <busStop id="-8324091514" lane="-539299238#2_0" startPos="25.27" endPos="40.27" name="ایستگاه شهید سوادکوهی" friendlyPos="1" lines="301"/>
+    <busStop id="-8324091515" lane="-276971317_0" startPos="22.17" endPos="37.17" name="ایستگاه م فرخی یزدی" friendlyPos="1" lines="301"/>
+    <busStop id="-8408416806" lane="-36315513#0_0" startPos="0.00" endPos="189.22" name="تهران" friendlyPos="1">
+        <access lane="206857439_0" pos="43.87" length="87.44" friendlyPos="1"/>
+        <access lane="684898485#0_0" pos="64.34" length="214.36" friendlyPos="1"/>
+        <access lane="684898485#1_0" pos="1.48" length="214.27" friendlyPos="1"/>
+        <access lane="826941437#0_0" pos="36.86" length="218.11" friendlyPos="1"/>
+        <access lane="826941437#1_0" pos="21.15" length="178.81" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-8408416808" lane="-963740940#0_0" startPos="44.05" endPos="244.05" name="تهران" friendlyPos="1">
+        <access lane="206857439_0" pos="56.24" length="87.81" friendlyPos="1"/>
+        <access lane="684898485#0_0" pos="64.34" length="195.81" friendlyPos="1"/>
+        <access lane="684898485#1_0" pos="1.27" length="195.72" friendlyPos="1"/>
+        <access lane="826941437#0_0" pos="36.86" length="199.56" friendlyPos="1"/>
+        <access lane="826941437#1_0" pos="21.15" length="160.25" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-9149513247" lane="-378127816#0_0" startPos="1745.63" endPos="1945.63" name="شهید رضایی" friendlyPos="1">
+        <access lane="-613392822#0_0" pos="77.00" length="34.91" friendlyPos="1"/>
+        <access lane="463201550#3_0" pos="35.36" length="8.24" friendlyPos="1"/>
+        <access lane="613392824#23_0" pos="16.08" length="29.62" friendlyPos="1"/>
+    </busStop>
+    <busStop id="100_0" lane="4354825#5_0" startPos="19.70" endPos="29.70"/>
+    <busStop id="100_1" lane="4354825#2_0" startPos="19.05" endPos="29.05" friendlyPos="1"/>
+    <busStop id="101_0" lane="28341570#1_0" startPos="249.57" endPos="259.57"/>
+    <busStop id="101_1" lane="4816112#4_0" startPos="10.38" endPos="20.38"/>
+    <busStop id="102_0" lane="162316663#1_0" startPos="89.33" endPos="99.33"/>
+    <busStop id="102_1" lane="162316972#1_0" startPos="68.13" endPos="78.13"/>
+    <busStop id="103_0" lane="164595010_0" startPos="200.05" endPos="210.05" friendlyPos="1"/>
+    <busStop id="103_1" lane="162316970_0" startPos="10.05" endPos="20.05"/>
+    <busStop id="104_0" lane="151931018#3_0" startPos="42.69" endPos="52.69"/>
+    <busStop id="104_1" lane="686516034#4_0" startPos="37.45" endPos="47.45"/>
+    <busStop id="105_0" lane="151931018#6_0" startPos="110.17" endPos="120.17" friendlyPos="1"/>
+    <busStop id="105_1" lane="686516034#1_0" startPos="11.05" endPos="21.05"/>
+    <busStop id="106_0" lane="890577570#5_0" startPos="4.75" endPos="14.75"/>
+    <busStop id="106_1" lane="902253530#2_0" startPos="148.42" endPos="158.42" friendlyPos="1"/>
+    <busStop id="107_0" lane="688517974#0_0" startPos="396.58" endPos="406.58"/>
+    <busStop id="107_1" lane="902681569#4_0" startPos="292.29" endPos="302.29"/>
+    <busStop id="108_0" lane="895975294#3_0" startPos="15.02" endPos="25.02" friendlyPos="1"/>
+    <busStop id="108_1" lane="902681569#0_0" startPos="14.41" endPos="24.41" friendlyPos="1"/>
+    <busStop id="109_0" lane="890577571#2_0" startPos="9.10" endPos="19.10"/>
+    <busStop id="109_1" lane="58377373#5_0" startPos="38.89" endPos="48.89"/>
+    <busStop id="10_0" lane="38682895#0_0" startPos="54.03" endPos="64.03"/>
+    <busStop id="10_1" lane="210304099#11_0" startPos="9.04" endPos="19.04"/>
+    <busStop id="11_0" lane="38682895#2_0" startPos="124.11" endPos="134.11"/>
+    <busStop id="11_1" lane="210304099#3_0" startPos="36.92" endPos="46.92"/>
+    <busStop id="12_0" lane="210304103_0" startPos="161.45" endPos="171.45"/>
+    <busStop id="12_1" lane="210304102_0" startPos="455.66" endPos="470.66" name="شریعتی - سامانه ۱ تندرو" friendlyPos="1"/>
+    <busStop id="13_0" lane="280006880#3_0" startPos="12.65" endPos="22.65"/>
+    <busStop id="13_1" lane="632174936#0_0" startPos="13.96" endPos="23.96"/>
+    <busStop id="141_0" lane="209018585#1_0" startPos="9.57" endPos="19.57"/>
+    <busStop id="141_1" lane="824679356#14_0" startPos="77.20" endPos="87.20" friendlyPos="1"/>
+    <busStop id="142_0" lane="209018585#4_0" startPos="18.47" endPos="28.47"/>
+    <busStop id="142_1" lane="824679356#9_0" startPos="18.32" endPos="33.32" name="کاظمی" friendlyPos="1" lines="7"/>
+    <busStop id="143_0" lane="209018585#7_0" startPos="29.60" endPos="39.60"/>
+    <busStop id="143_1" lane="824679356#6_0" startPos="0.00" endPos="15.00" name="باغ فردوس، جنوب به شمال - سامانه ۷ تندرو" friendlyPos="1" lines="7"/>
+    <busStop id="144_0" lane="916707031#2_0" startPos="127.07" endPos="137.07"/>
+    <busStop id="144_1" lane="824679356#1_0" startPos="126.40" endPos="141.40" name="پسیان، جنوب به شمال - سامانه ۷ تندرو" friendlyPos="1" lines="7"/>
+    <busStop id="145_0" lane="146_0_0" startPos="7.93" endPos="17.93"/>
+    <busStop id="145_1" lane="469770775#8_0" startPos="38.78" endPos="53.78" name="همایونی، جنوب به شمال - سامانه ۷ تندرو" friendlyPos="1" lines="7"/>
+    <busStop id="146_0" lane="146_0_0" startPos="439.70" endPos="449.70"/>
+    <busStop id="146_1" lane="469770775#6_0" startPos="21.90" endPos="36.90" name="محمودیه، جنوب به شمال - سامانه ۷ تندرو" friendlyPos="1" lines="7"/>
+    <busStop id="147_0" lane="gneE7_0" startPos="7.70" endPos="17.70"/>
+    <busStop id="147_1" lane="475246993#37_0" startPos="8.63" endPos="18.63"/>
+    <busStop id="148_0" lane="gneE9_0" startPos="146.32" endPos="156.32"/>
+    <busStop id="148_1" lane="475246993#28_0" startPos="6.43" endPos="16.43"/>
+    <busStop id="149_0" lane="gneE9_0" startPos="512.01" endPos="522.01"/>
+    <busStop id="149_1" lane="475246993#23_0" startPos="6.95" endPos="16.95"/>
+    <busStop id="14_0" lane="632174939#12_0" startPos="14.22" endPos="24.22"/>
+    <busStop id="14_1" lane="4295243#4_0" startPos="4.21" endPos="14.21"/>
+    <busStop id="150_0" lane="gneE9_0" startPos="1244.80" endPos="1254.80"/>
+    <busStop id="150_1" lane="475246993#10_0" startPos="40.30" endPos="50.30"/>
+    <busStop id="151_0" lane="gneE10_0" startPos="47.60" endPos="57.60"/>
+    <busStop id="151_1" lane="475246993#3_0" startPos="69.49" endPos="79.49"/>
+    <busStop id="152_0" lane="gneE12_0" startPos="6.71" endPos="16.71"/>
+    <busStop id="152_1" lane="618586781#7_0" startPos="65.86" endPos="75.86"/>
+    <busStop id="153_0" lane="gneE13_0" startPos="112.38" endPos="122.38"/>
+    <busStop id="153_1" lane="618586784_0" startPos="6.02" endPos="16.02"/>
+    <busStop id="154_0" lane="gneE15_0" startPos="148.58" endPos="158.58"/>
+    <busStop id="154_1" lane="175818344_0" startPos="13.88" endPos="23.88"/>
+    <busStop id="155_0" lane="gneE20_0" startPos="302.48" endPos="312.48"/>
+    <busStop id="155_1" lane="689001692#42_0" startPos="0.97" endPos="10.97"/>
+    <busStop id="156_0" lane="gneE23_0" startPos="139.86" endPos="149.86"/>
+    <busStop id="156_1" lane="689001692#33_0" startPos="0.45" endPos="10.45"/>
+    <busStop id="157_0" lane="gneE24_0" startPos="109.89" endPos="119.89"/>
+    <busStop id="157_1" lane="689001692#24_0" startPos="3.89" endPos="13.89"/>
+    <busStop id="158_0" lane="gneE27_0" startPos="2.76" endPos="12.76"/>
+    <busStop id="158_1" lane="689001692#13_0" startPos="383.54" endPos="393.54"/>
+    <busStop id="159_0" lane="gneE29_0" startPos="155.21" endPos="165.21"/>
+    <busStop id="159_1" lane="689001692#5_0" startPos="43.06" endPos="53.06"/>
+    <busStop id="15_0" lane="58610126#5_0" startPos="71.42" endPos="81.42"/>
+    <busStop id="15_1" lane="222758837#4_0" startPos="5.64" endPos="15.64"/>
+    <busStop id="160_0" lane="gneE29_0" startPos="460.82" endPos="470.82"/>
+    <busStop id="160_1" lane="689001692#2_0" startPos="6.75" endPos="16.75"/>
+    <busStop id="161_0" lane="gneE33_0" startPos="250.11" endPos="260.11"/>
+    <busStop id="161_1" lane="4295223#0_0" startPos="6.25" endPos="16.25"/>
+    <busStop id="162_0" lane="gneE36_0" startPos="316.19" endPos="326.19"/>
+    <busStop id="162_1" lane="460348949#4_0" startPos="14.94" endPos="24.94"/>
+    <busStop id="163_0" lane="gneE37_0" startPos="260.87" endPos="270.87"/>
+    <busStop id="163_1" lane="4294986#5_0" startPos="28.74" endPos="43.74" name="ایستگاه اتویوس ولیعصر جنوب به شمال بعد از میدان - سامانه ۷ تندرو" friendlyPos="1"/>
+    <busStop id="164_0" lane="gneE39_0" startPos="13.34" endPos="23.34"/>
+    <busStop id="164_1" lane="870411520#9_0" startPos="0.56" endPos="10.56"/>
+    <busStop id="165_0" lane="gneE40_0" startPos="455.69" endPos="465.69"/>
+    <busStop id="165_1" lane="870411520#0_0" startPos="20.17" endPos="30.17"/>
+    <busStop id="166_0" lane="gneE42_0" startPos="50.46" endPos="60.46"/>
+    <busStop id="166_1" lane="456458233#0_0" startPos="18.00" endPos="28.00"/>
+    <busStop id="167_0" lane="gneE44_0" startPos="6.53" endPos="16.53"/>
+    <busStop id="167_1" lane="878836283#1_0" startPos="2.70" endPos="12.70"/>
+    <busStop id="168_0" lane="gneE45_0" startPos="17.25" endPos="27.25"/>
+    <busStop id="168_1" lane="692365954#9_0" startPos="31.88" endPos="41.88"/>
+    <busStop id="169_0" lane="gneE45_0" startPos="543.71" endPos="553.71"/>
+    <busStop id="169_1" lane="692365954#0_0" startPos="3.37" endPos="13.37"/>
+    <busStop id="16_0" lane="58610126#11_0" startPos="55.88" endPos="65.88"/>
+    <busStop id="16_1" lane="222758837#1-AddedOnRampEdge_0" startPos="53.79" endPos="63.79"/>
+    <busStop id="170_0" lane="gneE49_0" startPos="7.40" endPos="17.40"/>
+    <busStop id="170_1" lane="673890298#58_0" startPos="13.01" endPos="23.01"/>
+    <busStop id="171_0" lane="gneE49_0" startPos="609.38" endPos="619.38"/>
+    <busStop id="171_1" lane="673890298#42_0" startPos="6.76" endPos="16.76"/>
+    <busStop id="172_0" lane="gneE50_0" startPos="74.63" endPos="84.63"/>
+    <busStop id="172_1" lane="673890298#32_0" startPos="4.94" endPos="14.94"/>
+    <busStop id="173_0" lane="gneE51_0" startPos="32.54" endPos="42.54"/>
+    <busStop id="173_1" lane="673890298#15_0" startPos="129.78" endPos="139.78"/>
+    <busStop id="174_0" lane="gneE51_0" startPos="843.39" endPos="853.39"/>
+    <busStop id="174_1" lane="673890298#0_0" startPos="10.25" endPos="20.25"/>
+    <busStop id="175_0" lane="-784055703#1_0" startPos="74.72" endPos="84.72"/>
+    <busStop id="175_1" lane="784055703#1_0" startPos="150.46" endPos="160.46"/>
+    <busStop id="176_0" lane="706356318#2_0" startPos="9.81" endPos="19.81"/>
+    <busStop id="176_1" lane="475670361#2_0" startPos="19.67" endPos="29.67"/>
+    <busStop id="177_0" lane="475670366#1_0" startPos="94.99" endPos="104.99"/>
+    <busStop id="177_1" lane="436988337#4_0" startPos="97.03" endPos="107.03"/>
+    <busStop id="178_0" lane="475670366#2_0" startPos="232.22" endPos="242.22"/>
+    <busStop id="178_1" lane="436988337#3_0" startPos="227.99" endPos="237.99"/>
+    <busStop id="179_0" lane="436988335#0_0" startPos="34.65" endPos="44.65"/>
+    <busStop id="179_1" lane="100768946#1-AddedOffRampEdge_0" startPos="33.95" endPos="43.95"/>
+    <busStop id="17_0" lane="222758838#3_0" startPos="4.89" endPos="14.89" friendlyPos="1"/>
+    <busStop id="17_1" lane="878613724#35_0" startPos="54.87" endPos="64.87"/>
+    <busStop id="180_0" lane="465013866#1_0" startPos="62.27" endPos="72.27"/>
+    <busStop id="180_1" lane="609193378_0" startPos="70.39" endPos="85.39" name="خط ۳ سامانه اتوبوسهای تندروی تهران (پایانه خاوران - پایانه علم و صنعت)" friendlyPos="1"/>
+    <busStop id="181_0" lane="151792440#3_0" startPos="23.45" endPos="33.45"/>
+    <busStop id="181_1" lane="151792440#2_0" startPos="32.51" endPos="42.51"/>
+    <busStop id="182_0" lane="764361178-AddedOnRampEdge_0" startPos="15.34" endPos="25.34"/>
+    <busStop id="182_1" lane="764361179#3_0" startPos="32.41" endPos="42.41"/>
+    <busStop id="183_0" lane="896457689#0_0" startPos="32.76" endPos="42.76"/>
+    <busStop id="183_1" lane="708001426#3_0" startPos="40.54" endPos="50.54"/>
+    <busStop id="184_0" lane="896457689#1_0" startPos="10.75" endPos="20.75"/>
+    <busStop id="184_1" lane="708001427#0_0" startPos="10.79" endPos="20.79"/>
+    <busStop id="185_0" lane="708001428#7_0" startPos="66.79" endPos="76.79"/>
+    <busStop id="185_1" lane="937978176#3_0" startPos="22.84" endPos="32.84"/>
+    <busStop id="186_0" lane="937978179#3-AddedOffRampEdge_0" startPos="13.54" endPos="23.54"/>
+    <busStop id="186_1" lane="775465699#0_0" startPos="20.20" endPos="30.20"/>
+    <busStop id="187_0" lane="398234428_0" startPos="70.70" endPos="80.70"/>
+    <busStop id="187_1" lane="398234445_0" startPos="75.72" endPos="85.72"/>
+    <busStop id="188_0" lane="656818105_0" startPos="106.73" endPos="116.73"/>
+    <busStop id="188_1" lane="686017072_0" startPos="4758.02" endPos="4768.02"/>
+    <busStop id="189_0" lane="656818105_0" startPos="1403.58" endPos="1413.58"/>
+    <busStop id="189_1" lane="686017072_0" startPos="3435.36" endPos="3445.36"/>
+    <busStop id="18_0" lane="222758838#11_0" startPos="125.00" endPos="135.00"/>
+    <busStop id="18_1" lane="878613724#27_0" startPos="15.83" endPos="25.83" friendlyPos="1"/>
+    <busStop id="190_0" lane="656818105_0" startPos="2287.24" endPos="2297.24"/>
+    <busStop id="190_1" lane="686017072_0" startPos="2538.70" endPos="2548.70"/>
+    <busStop id="191_0" lane="656818105_0" startPos="2954.55" endPos="2964.55"/>
+    <busStop id="191_1" lane="686017072_0" startPos="1858.88" endPos="1868.88"/>
+    <busStop id="192_0" lane="656818105_0" startPos="3810.75" endPos="3820.75"/>
+    <busStop id="192_1" lane="686017072_0" startPos="980.25" endPos="990.25"/>
+    <busStop id="193_0" lane="656818105_0" startPos="4533.56" endPos="4543.56"/>
+    <busStop id="193_1" lane="686017072_0" startPos="241.51" endPos="251.51"/>
+    <busStop id="194_0" lane="656818105_0" startPos="5184.43" endPos="5194.43"/>
+    <busStop id="194_1" lane="686262063#1_0" startPos="40.22" endPos="50.22"/>
+    <busStop id="195_0" lane="656818105_0" startPos="5728.63" endPos="5738.63"/>
+    <busStop id="195_1" lane="398236143_0" startPos="533.23" endPos="543.23"/>
+    <busStop id="196_0" lane="656818105_0" startPos="6864.06" endPos="6874.06"/>
+    <busStop id="196_1" lane="650999506_0" startPos="4380.35" endPos="4390.35"/>
+    <busStop id="197_0" lane="690940927#1_0" startPos="412.21" endPos="422.21"/>
+    <busStop id="197_1" lane="650999506_0" startPos="3891.40" endPos="3901.40"/>
+    <busStop id="198_0" lane="690940927#1_0" startPos="1018.84" endPos="1028.84"/>
+    <busStop id="198_1" lane="650999506_0" startPos="3286.41" endPos="3296.41"/>
+    <busStop id="199_0" lane="690940927#1_0" startPos="1793.77" endPos="1803.77"/>
+    <busStop id="199_1" lane="650999506_0" startPos="2509.72" endPos="2519.72"/>
+    <busStop id="19_0" lane="222758838#19-AddedOnRampEdge_0" startPos="7.84" endPos="17.84"/>
+    <busStop id="19_1" lane="878613724#21_0" startPos="14.86" endPos="24.86"/>
+    <busStop id="1_0" lane="175770864#2_0" startPos="138.57" endPos="148.57"/>
+    <busStop id="1_1" lane="175770864#1_0" startPos="16.51" endPos="26.51"/>
+    <busStop id="200_0" lane="690940927#1_0" startPos="2505.43" endPos="2515.43"/>
+    <busStop id="200_1" lane="650999506_0" startPos="1800.65" endPos="1810.65"/>
+    <busStop id="201_0" lane="690940927#1_0" startPos="2982.89" endPos="2992.89"/>
+    <busStop id="201_1" lane="650999506_0" startPos="1312.92" endPos="1322.92"/>
+    <busStop id="202_0" lane="690940927#1_0" startPos="3628.34" endPos="3638.34"/>
+    <busStop id="202_1" lane="650999506_0" startPos="669.10" endPos="679.10"/>
+    <busStop id="203_0" lane="690940927#1_0" startPos="4179.46" endPos="4189.46"/>
+    <busStop id="203_1" lane="650999506_0" startPos="118.60" endPos="128.60"/>
+    <busStop id="204_0" lane="691075841#0_0" startPos="72.18" endPos="82.18"/>
+    <busStop id="204_1" lane="691075838#1_0" startPos="4209.55" endPos="4219.55"/>
+    <busStop id="205_0" lane="691075841#0_0" startPos="493.50" endPos="503.50"/>
+    <busStop id="205_1" lane="691075838#1_0" startPos="3784.58" endPos="3794.58"/>
+    <busStop id="206_0" lane="691075841#0_0" startPos="3222.97" endPos="3232.97"/>
+    <busStop id="206_1" lane="691075838#1_0" startPos="1052.96" endPos="1062.96"/>
+    <busStop id="207_0" lane="691075841#1_0" startPos="22.16" endPos="32.16"/>
+    <busStop id="207_1" lane="691075838#0_0" startPos="1598.64" endPos="1608.64"/>
+    <busStop id="208_0" lane="691075841#1_0" startPos="1438.39" endPos="1448.39"/>
+    <busStop id="208_1" lane="691075838#0_0" startPos="174.24" endPos="184.24"/>
+    <busStop id="209_0" lane="702539249_0" startPos="63.05" endPos="73.05"/>
+    <busStop id="209_1" lane="784403586#1_0" startPos="14.02" endPos="24.02"/>
+    <busStop id="20_0" lane="222758838#22_0" startPos="188.40" endPos="198.40" friendlyPos="1"/>
+    <busStop id="20_1" lane="878613724#15_0" startPos="5.52" endPos="15.52"/>
+    <busStop id="210_0" lane="485627554_0" startPos="46.76" endPos="56.76"/>
+    <busStop id="210_1" lane="688534336#7-AddedOffRampEdge_0" startPos="44.30" endPos="54.30"/>
+    <busStop id="211_0" lane="722469802#1_0" startPos="150.43" endPos="160.43"/>
+    <busStop id="211_1" lane="688534336#6-AddedOnRampEdge_0" startPos="35.72" endPos="45.72"/>
+    <busStop id="212_0" lane="722469802#3_0" startPos="283.12" endPos="293.12"/>
+    <busStop id="212_1" lane="688534336#3_0" startPos="372.31" endPos="382.31"/>
+    <busStop id="213_0" lane="722469802#3_0" startPos="723.77" endPos="733.77"/>
+    <busStop id="213_1" lane="688534336#2-AddedOffRampEdge_0" startPos="37.58" endPos="47.58"/>
+    <busStop id="214_0" lane="722469802#5-AddedOnRampEdge_0" startPos="60.51" endPos="70.51"/>
+    <busStop id="214_1" lane="688534336#0_0" startPos="397.80" endPos="407.80"/>
+    <busStop id="215_0" lane="701156914#2_0" startPos="22.64" endPos="32.64"/>
+    <busStop id="215_1" lane="379568221#1_0" startPos="79.91" endPos="89.91"/>
+    <busStop id="2169691367" lane="531784904#1_0" startPos="2837.91" endPos="2653.95" name="فرهنگسرا" friendlyPos="1" lines="2">
+        <access lane="-773130135#4_0" pos="8.23" length="200.62" friendlyPos="1"/>
+        <access lane="773130135#4_0" pos="105.67" length="195.82" friendlyPos="1"/>
+    </busStop>
+    <busStop id="2169732956" lane="461961970#7_0" startPos="223.89" endPos="423.89" name="شهرک اکباتان" friendlyPos="1" lines="4">
+        <access lane="-339973084_0" pos="97.55" length="145.75" friendlyPos="1"/>
+        <access lane="339958481#10_0" pos="265.02" length="66.05" friendlyPos="1"/>
+        <access lane="339973090#1_0" pos="77.27" length="76.46" friendlyPos="1"/>
+        <access lane="460137917#0_0" pos="152.28" length="49.06" friendlyPos="1"/>
+    </busStop>
+    <busStop id="2169732980" lane="51766788_0" startPos="1037.02" endPos="1093.07" name="نیرو هوایی" friendlyPos="1" lines="4">
+        <access lane="426957152#10_0" pos="284.75" length="42.77" friendlyPos="1"/>
+        <access lane="740635035#0-AddedOnRampEdge_0" pos="35.53" length="3.46" friendlyPos="1"/>
+        <access lane="740636735#3_0" pos="66.43" length="59.29" friendlyPos="1"/>
+        <access lane="885240739#4_0" pos="30.40" length="50.71" friendlyPos="1"/>
+        <access lane="921069303#3_0" pos="200.86" length="20.48" friendlyPos="1"/>
+    </busStop>
+    <busStop id="216_0" lane="379568219_0" startPos="240.87" endPos="250.87"/>
+    <busStop id="216_1" lane="379568218_0" startPos="81.45" endPos="91.45"/>
+    <busStop id="217_0" lane="700870323#1_0" startPos="58.46" endPos="68.46" friendlyPos="1"/>
+    <busStop id="217_1" lane="379568212#3_0" startPos="1192.88" endPos="1202.88"/>
+    <busStop id="218_0" lane="700870323#2_0" startPos="434.25" endPos="444.25"/>
+    <busStop id="218_1" lane="379568212#3_0" startPos="736.38" endPos="746.38"/>
+    <busStop id="219_0" lane="700870323#2_0" startPos="860.10" endPos="870.10"/>
+    <busStop id="219_1" lane="379568212#3_0" startPos="308.15" endPos="318.15"/>
+    <busStop id="21_0" lane="222758838#26_0" startPos="24.90" endPos="34.90" friendlyPos="1"/>
+    <busStop id="21_1" lane="878613724#9_0" startPos="18.38" endPos="28.38"/>
+    <busStop id="220_0" lane="700870323#5_0" startPos="269.79" endPos="279.79"/>
+    <busStop id="220_1" lane="379568212#0_0" startPos="602.53" endPos="612.53"/>
+    <busStop id="221_0" lane="700838130#0_0" startPos="236.84" endPos="246.84"/>
+    <busStop id="221_1" lane="700838131_0" startPos="1360.09" endPos="1370.09"/>
+    <busStop id="222_0" lane="700838130#1_0" startPos="34.62" endPos="44.62"/>
+    <busStop id="222_1" lane="700838131_0" startPos="527.40" endPos="537.40"/>
+    <busStop id="223_0" lane="700838130#1_0" startPos="513.36" endPos="523.36"/>
+    <busStop id="223_1" lane="700838131_0" startPos="47.82" endPos="57.82"/>
+    <busStop id="224_0" lane="784234958#1_0" startPos="884.79" endPos="894.79"/>
+    <busStop id="224_1" lane="488449890_0" startPos="281.79" endPos="291.79"/>
+    <busStop id="225_0" lane="488449892_0" startPos="115.47" endPos="125.47"/>
+    <busStop id="225_1" lane="488449891_0" startPos="650.90" endPos="660.90"/>
+    <busStop id="226_0" lane="488449892_0" startPos="762.89" endPos="772.89"/>
+    <busStop id="226_1" lane="488449891_0" startPos="4.41" endPos="14.41"/>
+    <busStop id="227_0" lane="379568190_0" startPos="84.16" endPos="94.16"/>
+    <busStop id="227_1" lane="379568191_0" startPos="857.94" endPos="867.94"/>
+    <busStop id="228_0" lane="379568190_0" startPos="853.39" endPos="863.39"/>
+    <busStop id="228_1" lane="379568191_0" startPos="91.67" endPos="101.67"/>
+    <busStop id="229_0" lane="379568186_0" startPos="224.65" endPos="234.65"/>
+    <busStop id="229_1" lane="382341201_0" startPos="53.35" endPos="63.35"/>
+    <busStop id="22_0" lane="878613731#0_0" startPos="16.72" endPos="26.72" friendlyPos="1"/>
+    <busStop id="22_1" lane="940240191#16_0" startPos="127.40" endPos="137.40" friendlyPos="1"/>
+    <busStop id="23_0" lane="878613731#4_0" startPos="12.60" endPos="22.60"/>
+    <busStop id="23_1" lane="940240191#9_0" startPos="31.80" endPos="41.80" friendlyPos="1"/>
+    <busStop id="2485571576" lane="954800137_0" startPos="8.45" endPos="13.25" name="ایستگاه جرجانی" friendlyPos="1"/>
+    <busStop id="24_0" lane="878613731#14_0" startPos="11.60" endPos="21.60"/>
+    <busStop id="24_1" lane="940240191#0_0" startPos="79.41" endPos="89.41"/>
+    <busStop id="25_0" lane="878613731#21_0" startPos="65.52" endPos="75.52"/>
+    <busStop id="25_1" lane="940240190#6_0" startPos="108.01" endPos="118.01"/>
+    <busStop id="26460137" lane="461863693#0_0" startPos="0.00" endPos="100.00" name="تهران" friendlyPos="1" lines="-">
+        <access lane="206857439_0" pos="112.43" length="91.25" friendlyPos="1"/>
+        <access lane="684898485#0_0" pos="64.34" length="111.66" friendlyPos="1"/>
+        <access lane="684898485#1_0" pos="1.53" length="111.36" friendlyPos="1"/>
+        <access lane="826941437#0_0" pos="36.86" length="115.28" friendlyPos="1"/>
+        <access lane="826941437#1_0" pos="21.15" length="75.95" friendlyPos="1"/>
+    </busStop>
+    <busStop id="26_0" lane="878613731#24_0" startPos="596.90" endPos="606.90"/>
+    <busStop id="26_1" lane="971616617#9_0" startPos="4.59" endPos="14.59"/>
+    <busStop id="27_0" lane="175770856#2_0" startPos="132.14" endPos="142.14"/>
+    <busStop id="27_1" lane="175770856#1_0" startPos="22.02" endPos="32.02"/>
+    <busStop id="28_0" lane="175770927#0_0" startPos="54.20" endPos="64.20"/>
+    <busStop id="28_1" lane="706136006#0_0" startPos="11.42" endPos="21.42"/>
+    <busStop id="29_0" lane="991668612#1_0" startPos="69.85" endPos="79.85"/>
+    <busStop id="29_1" lane="706136013#0_0" startPos="3.66" endPos="13.66"/>
+    <busStop id="2_0" lane="455109345#8_0" startPos="238.16" endPos="248.16"/>
+    <busStop id="2_1" lane="25776902#0_0" startPos="475.11" endPos="485.11"/>
+    <busStop id="3080806383" lane="657393097_0" startPos="0.00" endPos="7.50" name="ایستگاه کرمان" friendlyPos="1"/>
+    <busStop id="3080821096" lane="439856575#5_0" startPos="456.37" endPos="656.37" name="فدک" friendlyPos="1" lines="2">
+        <access lane="193304012#3_0" pos="99.88" length="12.37" friendlyPos="1"/>
+        <access lane="193314545_0" pos="61.96" length="19.64" friendlyPos="1"/>
+        <access lane="690940930#15_0" pos="58.82" length="20.37" friendlyPos="1"/>
+    </busStop>
+    <busStop id="30_0" lane="gneE53_0" startPos="72.04" endPos="82.04"/>
+    <busStop id="30_1" lane="700313869#4_0" startPos="17.87" endPos="27.87" friendlyPos="1"/>
+    <busStop id="3178384476" lane="657394291_0" startPos="0.00" endPos="12.50" name="فرجام- سامانه ۹ تندرو" friendlyPos="1"/>
+    <busStop id="31_0" lane="gneE53_0" startPos="452.98" endPos="462.98"/>
+    <busStop id="31_1" lane="712481359#23_0" startPos="19.81" endPos="29.81" friendlyPos="1"/>
+    <busStop id="32_0" lane="200308393#3_0" startPos="7.36" endPos="17.36"/>
+    <busStop id="32_1" lane="712481359#15_0" startPos="23.73" endPos="33.73"/>
+    <busStop id="33_0" lane="200308393#11_0" startPos="179.57" endPos="189.57"/>
+    <busStop id="33_1" lane="712481359#6_0" startPos="17.39" endPos="27.39"/>
+    <busStop id="34_0" lane="193015778#8_0" startPos="18.82" endPos="28.82"/>
+    <busStop id="34_1" lane="706138386#1_0" startPos="21.36" endPos="31.36" friendlyPos="1"/>
+    <busStop id="3548939496" lane="332271287#0_0" startPos="394.14" endPos="594.14" name="پانزده خرداد" friendlyPos="1" lines="1">
+        <access lane="332279292#35_0" pos="22.43" length="6.03" friendlyPos="1"/>
+        <access lane="335719636_0" pos="17.95" length="5.72" friendlyPos="1"/>
+        <access lane="336269375#0_0" pos="7.35" length="17.94" friendlyPos="1"/>
+    </busStop>
+    <busStop id="35_0" lane="706138387#1_0" startPos="20.63" endPos="30.63"/>
+    <busStop id="35_1" lane="gneE58_0" startPos="1686.28" endPos="1696.28"/>
+    <busStop id="3641204693" lane="358622226#0_0" startPos="362.44" endPos="462.36" name="جوادیه" friendlyPos="1" lines="3">
+        <access lane="-359400274_0" pos="144.62" length="12.25" friendlyPos="1"/>
+        <access lane="-609479111#1_0" pos="54.13" length="150.00" friendlyPos="1"/>
+        <access lane="422016596_0" pos="265.92" length="5.09" friendlyPos="1"/>
+        <access lane="609479111#1_0" pos="97.07" length="145.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3649760925" lane="445967481#5_0" startPos="743.68" endPos="843.56" name="آزادگان" friendlyPos="1" lines="3">
+        <access lane="476362435#0_0" pos="1.24" length="26.37" friendlyPos="1"/>
+        <access lane="476362435#1_0" pos="2.12" length="19.28" friendlyPos="1"/>
+        <access lane="585945429#3_0" pos="243.96" length="12.95" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3649760928" lane="445967481#2_0" startPos="0.00" endPos="147.90" name="شهرک شریعتی" friendlyPos="1" lines="3">
+        <access lane="-523623396_0" pos="105.19" length="37.66" friendlyPos="1"/>
+        <access lane="449494359#0_0" pos="3.34" length="33.80" friendlyPos="1"/>
+        <access lane="449494364_0" pos="9.33" length="26.24" friendlyPos="1"/>
+        <access lane="523623400#2_0" pos="4.19" length="5.49" friendlyPos="1"/>
+    </busStop>
+    <busStop id="36_0" lane="351919876#9_0" startPos="52.52" endPos="62.52"/>
+    <busStop id="36_1" lane="gneE58_0" startPos="717.57" endPos="727.57"/>
+    <busStop id="3778821747" lane="278822219#5_0" startPos="1518.27" endPos="1718.27" name="شهید قدوسی" friendlyPos="1" lines="3">
+        <access lane="454606871#1_0" pos="15.31" length="24.44" friendlyPos="1"/>
+        <access lane="682307877#2_0" pos="172.42" length="2.99" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778822187" lane="561284303#0_0" startPos="5639.29" endPos="5839.29" name="هروی" friendlyPos="1" lines="3">
+        <access lane="-155716321_0" pos="31.58" length="65.95" friendlyPos="1"/>
+        <access lane="207902889#0_0" pos="95.08" length="33.13" friendlyPos="1"/>
+        <access lane="448993771_0" pos="77.68" length="116.07" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861785" lane="278822219#5_0" startPos="788.97" endPos="988.97" name="سهروردی" friendlyPos="1" lines="3">
+        <access lane="-164595075_0" pos="65.36" length="63.51" friendlyPos="1"/>
+        <access lane="164595075_0" pos="182.96" length="68.31" friendlyPos="1"/>
+        <access lane="36361868_0" pos="17.52" length="109.41" friendlyPos="1"/>
+        <access lane="682415095#9_0" pos="64.47" length="5.02" friendlyPos="1"/>
+        <access lane="819140281#1_0" pos="137.44" length="15.79" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861786" lane="561284303#0_0" startPos="1249.36" endPos="1449.36" name="شهید صیاد شیرازی" friendlyPos="1" lines="3">
+        <access lane="-894829958_0" pos="5.83" length="74.84" friendlyPos="1"/>
+        <access lane="151931173#0_0" pos="96.68" length="19.53" friendlyPos="1"/>
+        <access lane="207931273_0" pos="234.45" length="55.03" friendlyPos="1"/>
+        <access lane="396826968#0_0" pos="6.30" length="28.66" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861787" lane="561284303#0_0" startPos="2204.12" endPos="2404.12" name="خواجه عبدالله انصاری" friendlyPos="1" lines="3">
+        <access lane="164595076-AddedOffRampEdge_0" pos="47.94" length="45.21" friendlyPos="1"/>
+        <access lane="28272739_0" pos="113.76" length="21.07" friendlyPos="1"/>
+        <access lane="429869376#1_0" pos="78.15" length="63.08" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861789" lane="561284303#0_0" startPos="6601.28" endPos="6801.28" name="حسین آباد" friendlyPos="1" lines="3">
+        <access lane="-151853143#0_0" pos="47.44" length="61.49" friendlyPos="1"/>
+        <access lane="-39016881#0_0" pos="227.15" length="61.53" friendlyPos="1"/>
+        <access lane="470422222_0" pos="58.94" length="28.12" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861790" lane="561284303#0_0" startPos="8051.42" endPos="7428.75" name="نوبنیاد" friendlyPos="1" lines="3">
+        <access lane="155706921_0" pos="45.89" length="37.43" friendlyPos="1"/>
+        <access lane="155706969_0" pos="8.51" length="29.26" friendlyPos="1"/>
+        <access lane="446124573_0" pos="0.20" length="29.88" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861791" lane="561284303#0_0" startPos="8468.68" endPos="8668.68" name="اقدسیه" friendlyPos="1" lines="3">
+        <access lane="330345122#3_0" pos="45.22" length="12.79" friendlyPos="1"/>
+        <access lane="783610687#0-AddedOffRampEdge_0" pos="5.86" length="19.43" friendlyPos="1"/>
+        <access lane="783610687#0_0" pos="116.90" length="25.78" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861792" lane="561284303#0_0" startPos="7778.75" endPos="7978.75" name="شهید محلاتی" friendlyPos="1" lines="3">
+        <access lane="643701855_0" pos="5.98" length="31.07" friendlyPos="1"/>
+        <access lane="763381345_0" pos="18.72" length="43.01" friendlyPos="1"/>
+        <access lane="879180984#0_0" pos="27.28" length="37.31" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3778861797" lane="561284303#2_0" startPos="363.00" endPos="461.68" name="قائم" friendlyPos="1" lines="3">
+        <access lane="158528893_0" pos="344.58" length="22.85" friendlyPos="1"/>
+        <access lane="436140356_0" pos="18.63" length="19.40" friendlyPos="1"/>
+        <access lane="4591290#5_0" pos="0.38" length="40.02" friendlyPos="1"/>
+        <access lane="4591290#6_0" pos="4.71" length="28.36" friendlyPos="1"/>
+        <access lane="506568105_0" pos="23.94" length="46.92" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3784645915" lane="375075389#0_0" startPos="685.45" endPos="885.45" name="شهید محلاتی" friendlyPos="1">
+        <access lane="310587645_0" pos="6.00" length="46.57" friendlyPos="1"/>
+        <access lane="310587648_0" pos="4.23" length="45.00" friendlyPos="1"/>
+        <access lane="593502985#6_0" pos="91.80" length="14.78" friendlyPos="1"/>
+        <access lane="60960805#2_0" pos="8.16" length="50.09" friendlyPos="1"/>
+        <access lane="712521733#4_0" pos="90.75" length="45.80" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3784645922" lane="375075389#0_0" startPos="2483.60" endPos="2683.60" name="دولاب" friendlyPos="1" lines="7">
+        <access lane="-199146929#1_0" pos="9.08" length="49.30" friendlyPos="1"/>
+        <access lane="-36786682#0_0" pos="51.63" length="15.87" friendlyPos="1"/>
+        <access lane="36786679#0_0" pos="6.17" length="16.27" friendlyPos="1"/>
+        <access lane="36786682#0_0" pos="6.33" length="20.67" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3784648870" lane="375075389#0_0" startPos="0.00" endPos="100.00" name="بسیج" friendlyPos="1" lines="7">
+        <access lane="466010602#1_0" pos="6.50" length="17.90" friendlyPos="1"/>
+        <access lane="466012030_0" pos="83.49" length="23.35" friendlyPos="1"/>
+        <access lane="903279903#0_0" pos="8.02" length="0.41" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3784648871" lane="375075389#0_0" startPos="1547.66" endPos="1747.66" name="اهنگ" friendlyPos="1" lines="7">
+        <access lane="206838892#1_0" pos="26.77" length="32.49" friendlyPos="1"/>
+        <access lane="459229127_0" pos="7.55" length="26.84" friendlyPos="1"/>
+        <access lane="499220673#3_0" pos="49.40" length="12.30" friendlyPos="1"/>
+        <access lane="712521733#10_0" pos="66.04" length="11.60" friendlyPos="1"/>
+        <access lane="834693815_0" pos="10.49" length="24.77" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3784838469" lane="4295239#6_0" startPos="6.88" endPos="21.88" name="حجاب" friendlyPos="1"/>
+    <busStop id="37_0" lane="gneE61_0" startPos="28.99" endPos="38.99"/>
+    <busStop id="37_1" lane="4319051#36_0" startPos="3.62" endPos="13.62"/>
+    <busStop id="3815454692" lane="378127816#0_0" startPos="0.00" endPos="100.00" name="دولت آباد" friendlyPos="1" lines="6">
+        <access lane="-653035781#3_0" pos="20.43" length="64.70" friendlyPos="1"/>
+        <access lane="653035779#3_0" pos="47.44" length="82.37" friendlyPos="1"/>
+        <access lane="653035781#2_0" pos="92.79" length="65.71" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3815454729" lane="378127816#1_0" startPos="1451.00" endPos="1651.00" name="امیر کبیر" friendlyPos="1" lines="6">
+        <access lane="-196622663#0_0" pos="44.17" length="31.12" friendlyPos="1"/>
+        <access lane="4344286#2_0" pos="25.01" length="21.19" friendlyPos="1"/>
+        <access lane="469390690#0_0" pos="28.01" length="16.24" friendlyPos="1"/>
+        <access lane="475518412#10_0" pos="9.79" length="11.44" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3815456848" lane="461839263#3_0" startPos="283.97" endPos="383.89" name="شهید ستاری" friendlyPos="1" lines="6">
+        <access lane="66689848#0_0" pos="29.26" length="14.43" friendlyPos="1"/>
+        <access lane="722336305_0" pos="83.09" length="5.89" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3819203995" lane="689254304#3_0" startPos="13.03" endPos="28.03" name="پاس فرهنگیان" friendlyPos="1">
+        <access lane="-59047007_0" pos="51.51" length="72.92" friendlyPos="1"/>
+        <access lane="58531750_0" pos="60.91" length="41.15" friendlyPos="1"/>
+        <access lane="58531752_0" pos="53.63" length="91.89" friendlyPos="1"/>
+        <access lane="59047011_0" pos="208.38" length="77.72" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3848696818" lane="563619055_0" startPos="11.44" endPos="18.94" name="الوند" friendlyPos="1"/>
+    <busStop id="3848696819" lane="563619455_0" startPos="21.67" endPos="29.03" name="اشرفی اصفهانی" friendlyPos="1"/>
+    <busStop id="3848696820" lane="563621723_0" startPos="12.74" endPos="20.24" name="طالقانی" friendlyPos="1"/>
+    <busStop id="3848696821" lane="563622736_0" startPos="19.46" endPos="26.96" name="مجتمع قضایی" friendlyPos="1"/>
+    <busStop id="3848696823" lane="700825608_0" startPos="16.50" endPos="24.00" name="پونک" friendlyPos="1"/>
+    <busStop id="3848696826" lane="303518853_0" startPos="0.00" endPos="7.50" name="تیراژه" friendlyPos="1"/>
+    <busStop id="3848696827" lane="563618356_0" startPos="21.98" endPos="29.48" name="باغ فیض" friendlyPos="1"/>
+    <busStop id="3848696828" lane="563638719_0" startPos="12.01" endPos="19.51" name="مرزداران" friendlyPos="1"/>
+    <busStop id="3848696831" lane="561501012_0" startPos="22.92" endPos="30.39" name="صادقیه" friendlyPos="1"/>
+    <busStop id="3853324444" lane="378127816#0_0" startPos="2111.39" endPos="2311.39" name="کیانشهر" friendlyPos="1" lines="6">
+        <access lane="-279684603#3_0" pos="5.92" length="10.48" friendlyPos="1"/>
+        <access lane="-36799818#3_0" pos="26.63" length="25.74" friendlyPos="1"/>
+        <access lane="279684603#3_0" pos="21.78" length="5.68" friendlyPos="1"/>
+        <access lane="36799818#2_0" pos="199.09" length="22.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3870421664" lane="881541698#1_0" startPos="144.91" endPos="169.91" name="شانزدهم" friendlyPos="1"/>
+    <busStop id="3870421676" lane="881541695_0" startPos="22.17" endPos="47.17" name="مخابرات" friendlyPos="1"/>
+    <busStop id="3879523784" lane="826232919#2_0" startPos="28.68" endPos="43.68" name="مدرسه" friendlyPos="1"/>
+    <busStop id="38_0" lane="gneE61_0" startPos="339.67" endPos="349.67"/>
+    <busStop id="38_1" lane="4319051#25_0" startPos="1.37" endPos="11.37"/>
+    <busStop id="3930789262" lane="461961970#6_0" startPos="0.00" endPos="100.00" name="بیمه" friendlyPos="1" lines="4">
+        <access lane="178827367_0" pos="17.24" length="10.98" friendlyPos="1"/>
+        <access lane="392052715#3_0" pos="13.65" length="17.85" friendlyPos="1"/>
+        <access lane="497655094#5_0" pos="108.30" length="20.17" friendlyPos="1"/>
+        <access lane="497655094#6_0" pos="8.72" length="14.73" friendlyPos="1"/>
+        <access lane="885442210_0" pos="3.99" length="22.35" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3930792260" lane="389891675_0" startPos="1364.62" endPos="1540.88" name="فرودگاه مهرآباد ترمینال‌های ۴ و ۶" friendlyPos="1" lines="4">
+        <access lane="208970301_0" pos="81.70" length="7.35" friendlyPos="1"/>
+        <access lane="208970303_0" pos="86.91" length="11.87" friendlyPos="1"/>
+        <access lane="932666680_0" pos="75.93" length="56.98" friendlyPos="1"/>
+        <access lane="932666681_0" pos="81.50" length="35.58" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3930792665" lane="389891675_0" startPos="664.01" endPos="864.01" name="فرودگاه مهرآباد ترمینال‌های ۱ و ۲" friendlyPos="1" lines="4">
+        <access lane="176443306#1_0" pos="17.88" length="16.72" friendlyPos="1"/>
+        <access lane="460784649#0_0" pos="58.35" length="7.78" friendlyPos="1"/>
+        <access lane="890935085_0" pos="0.29" length="14.86" friendlyPos="1"/>
+    </busStop>
+    <busStop id="3994783441" lane="657394294_0" startPos="0.00" endPos="7.50" name="مجیدیه - سامانه ۹ تندرو" friendlyPos="1"/>
+    <busStop id="39_0" lane="gneE61_0" startPos="964.45" endPos="974.45"/>
+    <busStop id="39_1" lane="4319051#6_0" startPos="3.49" endPos="13.49"/>
+    <busStop id="3_0" lane="884218503#1_0" startPos="12.20" endPos="22.20"/>
+    <busStop id="3_1" lane="884216805#1-AddedOffRampEdge_0" startPos="36.53" endPos="46.53"/>
+    <busStop id="4035094028" lane="826232905#4_0" startPos="238.28" endPos="253.28" name="زرافشان" friendlyPos="1"/>
+    <busStop id="4047389343" lane="774964229#1_0" startPos="43.51" endPos="58.51" name="آتش نشانی" friendlyPos="1">
+        <access lane="-36746793#0_0" pos="59.72" length="74.79" friendlyPos="1"/>
+        <access lane="326987483#1_0" pos="77.97" length="44.00" friendlyPos="1"/>
+        <access lane="458344145#15_0" pos="42.01" length="56.04" friendlyPos="1"/>
+    </busStop>
+    <busStop id="4058390945" lane="871805101#5_0" startPos="82.24" endPos="97.24" name="چهارراه سرو" friendlyPos="1" lines="289"/>
+    <busStop id="4058390948" lane="871805101#2_0" startPos="13.83" endPos="33.22" name="میدان شهرداری" friendlyPos="1" lines="289"/>
+    <busStop id="4079699883" lane="586649509#1_0" startPos="92.56" endPos="292.56" name="تهران (صادقیه)" friendlyPos="1" lines="5">
+        <access lane="-152829460#0_0" pos="15.18" length="18.89" friendlyPos="1"/>
+        <access lane="-152829460#1_0" pos="65.12" length="35.85" friendlyPos="1"/>
+        <access lane="152829460#0_0" pos="48.46" length="23.69" friendlyPos="1"/>
+        <access lane="700799833_0" pos="0.20" length="29.61" friendlyPos="1"/>
+    </busStop>
+    <busStop id="40_0" lane="gneE64_0" startPos="18.88" endPos="28.88"/>
+    <busStop id="40_1" lane="335244248#21_0" startPos="35.22" endPos="45.22"/>
+    <busStop id="4135531324" lane="444716224_0" startPos="0.00" endPos="10.51" name="استاد معین- سامانه ۱ تندرو" friendlyPos="1"/>
+    <busStop id="4167271089" lane="770017940_0" startPos="24.42" endPos="31.92" name="ایستگاه بسیج" friendlyPos="1"/>
+    <busStop id="4199062491" lane="420009459_0" startPos="7.64" endPos="20.14" name="خاک‌شناسی" friendlyPos="1"/>
+    <busStop id="41_0" lane="gneE64_0" startPos="478.95" endPos="488.95"/>
+    <busStop id="41_1" lane="335244248#12_0" startPos="107.19" endPos="117.19"/>
+    <busStop id="4225590146" lane="449835902#1_0" startPos="145.56" endPos="160.56" friendlyPos="1"/>
+    <busStop id="423627892" lane="963880492_0" startPos="48.77" endPos="55.81" friendlyPos="1"/>
+    <busStop id="4296872309" lane="445699491_0" startPos="16.97" endPos="24.47" name="ایستگاه ائمه اطهار" friendlyPos="1"/>
+    <busStop id="42_0" lane="gneE64_0" startPos="1153.85" endPos="1163.85"/>
+    <busStop id="42_1" lane="631885269#17_0" startPos="55.40" endPos="65.40"/>
+    <busStop id="43_0" lane="gneE64_0" startPos="1729.06" endPos="1739.06"/>
+    <busStop id="43_1" lane="631885269#1_0" startPos="7.77" endPos="17.77"/>
+    <busStop id="4448090343" lane="447744100_0" startPos="40.21" endPos="47.71" name="پونک" friendlyPos="1"/>
+    <busStop id="4448101764" lane="447745363_0" startPos="11.18" endPos="18.68" name="مخبری" friendlyPos="1"/>
+    <busStop id="4453205974" lane="561284303#0_0" startPos="4162.57" endPos="4362.57" name="شهید زین الدین" friendlyPos="1" lines="3">
+        <access lane="151940778_0" pos="23.18" length="36.48" friendlyPos="1"/>
+        <access lane="151940779_0" pos="23.22" length="22.28" friendlyPos="1"/>
+        <access lane="687277051#6_0" pos="29.79" length="41.35" friendlyPos="1"/>
+    </busStop>
+    <busStop id="4453604919" lane="445967481#4_0" startPos="703.28" endPos="903.28" name="عبدل آباد" friendlyPos="1" lines="3">
+        <access lane="-449825599_0" pos="14.64" length="78.65" friendlyPos="1"/>
+        <access lane="253086939#0_0" pos="31.90" length="67.10" friendlyPos="1"/>
+        <access lane="605531869_0" pos="112.23" length="78.39" friendlyPos="1"/>
+        <access lane="605537192#1_0" pos="30.14" length="19.76" friendlyPos="1"/>
+    </busStop>
+    <busStop id="4453614390" lane="445967481#4_0" startPos="1912.23" endPos="2112.23" name="نعمت آباد" friendlyPos="1" lines="3">
+        <access lane="605549961#7_0" pos="18.74" length="39.34" friendlyPos="1"/>
+        <access lane="883923536_0" pos="35.05" length="3.00" friendlyPos="1"/>
+        <access lane="883934073#1_0" pos="101.57" length="30.94" friendlyPos="1"/>
+        <access lane="883934077_0" pos="21.50" length="38.05" friendlyPos="1"/>
+    </busStop>
+    <busStop id="4453643065" lane="175819514_0" startPos="300.89" endPos="398.05" name="صادقیه" friendlyPos="1">
+        <access lane="-152829460#0_0" pos="11.31" length="53.42" friendlyPos="1"/>
+        <access lane="-152829460#1_0" pos="65.12" length="58.84" friendlyPos="1"/>
+        <access lane="152829460#0_0" pos="52.32" length="58.22" friendlyPos="1"/>
+        <access lane="700799833_0" pos="0.20" length="52.91" friendlyPos="1"/>
+    </busStop>
+    <busStop id="4453643066" lane="182547031_0" startPos="0.00" endPos="100.00" name="صادقیه" friendlyPos="1" lines="2">
+        <access lane="-152829460#0_0" pos="12.66" length="56.09" friendlyPos="1"/>
+        <access lane="-152829460#1_0" pos="65.12" length="62.12" friendlyPos="1"/>
+        <access lane="152829460#0_0" pos="50.98" length="60.89" friendlyPos="1"/>
+        <access lane="700799833_0" pos="0.20" length="56.15" friendlyPos="1"/>
+    </busStop>
+    <busStop id="4467024493" lane="843752727#0_0" startPos="75.55" endPos="90.55" name="پایانه همت" friendlyPos="1"/>
+    <busStop id="44_0" lane="gneE66_0" startPos="478.01" endPos="488.01"/>
+    <busStop id="44_1" lane="198945819#17_0" startPos="3.50" endPos="13.50"/>
+    <busStop id="4553519985" lane="535608348#1_0" startPos="93.99" endPos="293.99" name="شهید کلاهدوز" friendlyPos="1" lines="4">
+        <access lane="-911325065_0" pos="4.80" length="31.39" friendlyPos="1"/>
+        <access lane="-911325066#1_0" pos="51.12" length="45.00" friendlyPos="1"/>
+        <access lane="911325065_0" pos="29.58" length="36.19" friendlyPos="1"/>
+        <access lane="911325066#1_0" pos="40.25" length="49.80" friendlyPos="1"/>
+    </busStop>
+    <busStop id="45_0" lane="53472482#0_0" startPos="5.90" endPos="15.90"/>
+    <busStop id="45_1" lane="gneE71_0" startPos="365.18" endPos="375.18"/>
+    <busStop id="4674995987" lane="439856575#5_0" startPos="1520.75" endPos="1720.75" name="جانبازان" friendlyPos="1" lines="2">
+        <access lane="193316970#1_0" pos="93.20" length="27.00" friendlyPos="1"/>
+        <access lane="275638119#7_0" pos="8.29" length="12.56" friendlyPos="1"/>
+        <access lane="424763376#0_0" pos="34.08" length="4.68" friendlyPos="1"/>
+        <access lane="648795996_0" pos="8.58" length="25.67" friendlyPos="1"/>
+    </busStop>
+    <busStop id="46_0" lane="53472482#4_0" startPos="3.03" endPos="13.03"/>
+    <busStop id="46_1" lane="gneE70_0" startPos="122.89" endPos="132.89"/>
+    <busStop id="4735080796" lane="160101958#1_0" startPos="94.08" endPos="109.08" friendlyPos="1"/>
+    <busStop id="4735080797" lane="4354768#3_0" startPos="85.55" endPos="100.55" name="کیان" friendlyPos="1"/>
+    <busStop id="4772953632" lane="657035779_0" startPos="0.00" endPos="7.50" name="ایستگاه پیروزی" friendlyPos="1"/>
+    <busStop id="4772957831" lane="656775356_0" startPos="47.57" endPos="55.07" name="ایستگاه ابراهیمی" friendlyPos="1"/>
+    <busStop id="4772958841" lane="656826575_0" startPos="0.00" endPos="7.50" name="ایستگاه رضایی" friendlyPos="1"/>
+    <busStop id="47_0" lane="879770538_0" startPos="9.66" endPos="19.66"/>
+    <busStop id="47_1" lane="437724230#7_0" startPos="191.70" endPos="201.70"/>
+    <busStop id="48_0" lane="764339960_0" startPos="85.89" endPos="95.89"/>
+    <busStop id="48_1" lane="53472480#2-AddedOffRampEdge_0" startPos="72.33" endPos="82.33"/>
+    <busStop id="4944392205" lane="269268916#9_0" startPos="0.66" endPos="15.66" name="پله" friendlyPos="1" lines="300"/>
+    <busStop id="49_0" lane="688206691#8_0" startPos="2.89" endPos="12.89"/>
+    <busStop id="49_1" lane="53472480#2_0" startPos="5.31" endPos="15.31"/>
+    <busStop id="4_0" lane="532698944#1_0" startPos="24.04" endPos="34.04"/>
+    <busStop id="4_1" lane="991974233#4_0" startPos="54.15" endPos="64.15"/>
+    <busStop id="5045448391" lane="561521677#1_0" startPos="0.00" endPos="7.70" name="جناح" friendlyPos="1"/>
+    <busStop id="5045460591" lane="607707094_0" startPos="8.56" endPos="16.06" name="شهرداری منطقه هجده" friendlyPos="1"/>
+    <busStop id="5045460592" lane="752847603_0" startPos="28.70" endPos="36.20" name="درمانگاه مشیری" friendlyPos="1"/>
+    <busStop id="5045460594" lane="883923536_0" startPos="29.69" endPos="37.19" name="مترو نعمت آباد" friendlyPos="1"/>
+    <busStop id="5045460596" lane="992243861_0" startPos="15.55" endPos="30.55" name="مترو آزادگان" friendlyPos="1"/>
+    <busStop id="5046785640" lane="895507881_0" startPos="10.89" endPos="25.89" name="ایستگاه شاهد" friendlyPos="1" lines="301"/>
+    <busStop id="5046803675" lane="611989234_0" startPos="36.66" endPos="44.16" name="ایستگاه دیلمان" friendlyPos="1"/>
+    <busStop id="5046803679" lane="657040667_0" startPos="0.00" endPos="7.50" name="ایستگاه صفا" friendlyPos="1"/>
+    <busStop id="5046803685" lane="611989240_0" startPos="131.18" endPos="156.18" name="معدن شمال به جنوب- سامانه ۹ تندرو" friendlyPos="1"/>
+    <busStop id="5046803687" lane="656797436_0" startPos="0.00" endPos="7.50" name="ایستگاه صاحب الزمان" friendlyPos="1"/>
+    <busStop id="50_0" lane="674216842#0_0" startPos="32.39" endPos="42.39"/>
+    <busStop id="50_1" lane="53472475#6_0" startPos="174.47" endPos="184.47"/>
+    <busStop id="5149131125" lane="826217898#2_0" startPos="0.00" endPos="7.70" friendlyPos="1"/>
+    <busStop id="5149570521" lane="877528817_0" startPos="36.92" endPos="51.92" name="فرحزاد" friendlyPos="1" lines="289">
+        <access lane="383635021_0" pos="105.93" length="42.37" friendlyPos="1"/>
+        <access lane="543234260_0" pos="46.99" length="15.21" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5161529740" lane="360562335_0" startPos="1318.56" endPos="1408.64" name="ارم سبز" friendlyPos="1" lines="4">
+        <access lane="429345565_0" pos="166.84" length="28.43" friendlyPos="1"/>
+        <access lane="456927783_0" pos="0.20" length="106.49" friendlyPos="1"/>
+        <access lane="456933733_0" pos="5.43" length="109.74" friendlyPos="1"/>
+        <access lane="456933735_0" pos="17.91" length="98.61" friendlyPos="1"/>
+        <access lane="456933736_0" pos="5.91" length="97.43" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5178536722" lane="607624615_0" startPos="64.47" endPos="79.47" name="ایستگاه هجرت" friendlyPos="1"/>
+    <busStop id="5188238057" lane="720467066#1_0" startPos="1762.02" endPos="1893.42" name="شهید بهشتی" friendlyPos="1" lines="1">
+        <access lane="461899397#3_0" pos="1.62" length="18.08" friendlyPos="1"/>
+        <access lane="474193699_0" pos="148.72" length="4.59" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5188238058" lane="278822219#5_0" startPos="0.00" endPos="115.29" name="شهید بهشتی" friendlyPos="1" lines="3">
+        <access lane="-677820656#0_0" pos="64.56" length="5.38" friendlyPos="1"/>
+        <access lane="454557470#1_0" pos="158.86" length="52.81" friendlyPos="1"/>
+        <access lane="677820656#0_0" pos="31.49" length="10.18" friendlyPos="1"/>
+        <access lane="819140281#11_0" pos="157.78" length="54.52" friendlyPos="1"/>
+        <access lane="819140281#12_0" pos="9.88" length="57.54" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5190423567" lane="720467066#1_0" startPos="80.91" endPos="280.91" name="شهدای هفت تیر" friendlyPos="1" lines="1">
+        <access lane="524694607#2_0" pos="15.17" length="21.79" friendlyPos="1"/>
+        <access lane="671098025#0_0" pos="12.93" length="20.85" friendlyPos="1"/>
+        <access lane="671723743_0" pos="25.45" length="11.82" friendlyPos="1"/>
+        <access lane="844145876#13_0" pos="9.67" length="30.66" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5190555599" lane="360429884_0" startPos="1500.71" endPos="1505.94" name="زمزم" friendlyPos="1" lines="3">
+        <access lane="409708228#0_0" pos="150.31" length="97.19" friendlyPos="1"/>
+        <access lane="445962919_0" pos="38.96" length="113.17" friendlyPos="1"/>
+        <access lane="445967482_0" pos="52.25" length="13.06" friendlyPos="1"/>
+        <access lane="817331897_0" pos="54.16" length="60.86" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5194022128" lane="24542633#4_0" startPos="400.01" endPos="600.01" name="تپه سفید" friendlyPos="1">
+        <access lane="522108253#0_0" pos="48.20" length="56.90" friendlyPos="1"/>
+        <access lane="526483919_0" pos="272.66" length="61.02" friendlyPos="1"/>
+        <access lane="536075428#1_0" pos="74.12" length="53.82" friendlyPos="1"/>
+    </busStop>
+    <busStop id="51_0" lane="674216842#5_0" startPos="48.38" endPos="58.38"/>
+    <busStop id="51_1" lane="53472475#4_0" startPos="207.26" endPos="217.26"/>
+    <busStop id="5217817624" lane="506037512#2_0" startPos="77.24" endPos="92.24" name="دانشگاه مطهری" friendlyPos="1" lines="202"/>
+    <busStop id="5217823423" lane="506037512#3_0" startPos="3.70" endPos="18.70" name="شهرک الماسی" friendlyPos="1" lines="202"/>
+    <busStop id="5217832722" lane="506037512#10_0" startPos="22.37" endPos="37.37" name="الکترونیک" friendlyPos="1" lines="202"/>
+    <busStop id="5217832723" lane="506037512#7_0" startPos="75.06" endPos="90.06" name="دانشگاه چمران" friendlyPos="1" lines="202"/>
+    <busStop id="5217832724" lane="506037512#6_0" startPos="15.48" endPos="30.48" name="شهرک کمالی" friendlyPos="1" lines="202"/>
+    <busStop id="5217832725" lane="506037512#2_0" startPos="46.26" endPos="61.26" name="پازوکی" friendlyPos="1" lines="202"/>
+    <busStop id="5217838321" lane="506037512#4_0" startPos="90.29" endPos="105.29" name="مجتمع مسکونی" friendlyPos="1" lines="202"/>
+    <busStop id="5217839221" lane="506037512#2_0" startPos="342.21" endPos="357.21" name="ایستگاه بانک انصار" friendlyPos="1" lines="202"/>
+    <busStop id="52_0" lane="60839633#1-AddedOnRampEdge_0" startPos="58.86" endPos="68.86"/>
+    <busStop id="52_1" lane="53472475#0-AddedOnRampEdge_1" startPos="16.95" endPos="26.95"/>
+    <busStop id="53_0" lane="609193378_0" startPos="46.01" endPos="56.01"/>
+    <busStop id="53_1" lane="465013866#1_0" startPos="46.60" endPos="56.60"/>
+    <busStop id="5440728604" lane="545300110#0_0" startPos="25.04" endPos="40.04" name="میدان آزادی" friendlyPos="1"/>
+    <busStop id="54_0" lane="523284841#2_0" startPos="136.11" endPos="146.11"/>
+    <busStop id="54_1" lane="356776751#1_0" startPos="233.93" endPos="243.93"/>
+    <busStop id="5520793687" lane="875461656#0_0" startPos="56.88" endPos="71.88" name="فاز ۳" friendlyPos="1"/>
+    <busStop id="5520793689" lane="339125012_0" startPos="219.19" endPos="234.19" name="فاز ۳" friendlyPos="1"/>
+    <busStop id="5575783923" lane="479537138#0_0" startPos="23.54" endPos="38.54" name="پایانه متروی امام خمینی" friendlyPos="1" lines="304"/>
+    <busStop id="55_0" lane="523284841#3_0" startPos="32.83" endPos="42.83"/>
+    <busStop id="55_1" lane="902681578#7_0" startPos="876.65" endPos="886.65"/>
+    <busStop id="5604726852" lane="586649530_0" startPos="120.98" endPos="320.98" name="ارم سبز" friendlyPos="1">
+        <access lane="456927783_0" pos="0.20" length="60.65" friendlyPos="1"/>
+        <access lane="456933735_0" pos="17.91" length="61.15" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5604726870" lane="586649533_0" startPos="176.47" endPos="376.47" name="ارم سبز" friendlyPos="1">
+        <access lane="429345565_0" pos="163.57" length="53.49" friendlyPos="1"/>
+        <access lane="456927783_0" pos="0.20" length="81.63" friendlyPos="1"/>
+        <access lane="456933733_0" pos="5.43" length="84.27" friendlyPos="1"/>
+        <access lane="456933735_0" pos="17.91" length="78.21" friendlyPos="1"/>
+        <access lane="456933736_0" pos="0.16" length="78.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5604726884" lane="586649546_0" startPos="170.55" endPos="370.55" name="ورزشگاه آزادی" friendlyPos="1">
+        <access lane="-189317610#0_0" pos="13.62" length="96.71" friendlyPos="1"/>
+        <access lane="-189317610#1_0" pos="108.08" length="104.20" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5604726890" lane="586649547_0" startPos="171.02" endPos="371.02" name="ورزشگاه آزادی" friendlyPos="1">
+        <access lane="-189317610#0_0" pos="13.26" length="78.89" friendlyPos="1"/>
+        <access lane="-189317610#1_0" pos="108.08" length="82.80" friendlyPos="1"/>
+        <access lane="189317610#0_0" pos="0.36" length="74.09" friendlyPos="1"/>
+    </busStop>
+    <busStop id="5632894022" lane="590956740_0" startPos="7.48" endPos="19.98" name="آزادگان اسلام" friendlyPos="1"/>
+    <busStop id="56_0" lane="523284841#4_0" startPos="312.95" endPos="322.95"/>
+    <busStop id="56_1" lane="902681578#7_0" startPos="336.00" endPos="346.00"/>
+    <busStop id="5783278065" lane="610676836_0" startPos="18.12" endPos="25.67" name="جناح" friendlyPos="1"/>
+    <busStop id="5793686834" lane="611989233#0_0" startPos="54.95" endPos="69.95" name="معدن شرقی" friendlyPos="1"/>
+    <busStop id="57_0" lane="523284841#4_0" startPos="720.56" endPos="730.56"/>
+    <busStop id="57_1" lane="902681578#5_0" startPos="232.62" endPos="242.62"/>
+    <busStop id="58_0" lane="523284841#5_0" startPos="14.59" endPos="24.59"/>
+    <busStop id="58_1" lane="902681578#5-AddedOnRampEdge_0" startPos="26.48" endPos="36.48"/>
+    <busStop id="5930756414" lane="378127816#0_0" startPos="3477.39" endPos="3677.39" name="بعثت" friendlyPos="1" lines="6">
+        <access lane="-463860320#0_0" pos="24.07" length="53.94" friendlyPos="1"/>
+        <access lane="-463860320#1_0" pos="85.16" length="74.88" friendlyPos="1"/>
+        <access lane="222851822_0" pos="66.43" length="83.49" friendlyPos="1"/>
+        <access lane="463860320#0_0" pos="86.02" length="58.74" friendlyPos="1"/>
+    </busStop>
+    <busStop id="59_0" lane="462985791#0_0" startPos="81.30" endPos="91.30"/>
+    <busStop id="59_1" lane="685659872#5_0" startPos="93.48" endPos="103.48"/>
+    <busStop id="5_0" lane="493730876#0_0" startPos="245.96" endPos="255.96" friendlyPos="1"/>
+    <busStop id="5_1" lane="712478977#6_0" startPos="87.36" endPos="97.36" friendlyPos="1"/>
+    <busStop id="6066000806" lane="548613041#0_0" startPos="320.39" endPos="520.39" name="تپه سفید" friendlyPos="1">
+        <access lane="522108253#0_0" pos="47.62" length="71.78" friendlyPos="1"/>
+        <access lane="526483919_0" pos="272.66" length="46.16" friendlyPos="1"/>
+        <access lane="536075428#1_0" pos="74.12" length="39.07" friendlyPos="1"/>
+    </busStop>
+    <busStop id="60_0" lane="462985791#2_0" startPos="311.84" endPos="321.84"/>
+    <busStop id="60_1" lane="685659872#3_0" startPos="362.47" endPos="372.47"/>
+    <busStop id="6137198724" lane="826217876#1_0" startPos="0.00" endPos="7.70" name="ایستگاه دانشگاه" friendlyPos="1"/>
+    <busStop id="6168717141" lane="658252604#2_0" startPos="20.78" endPos="35.78" name="ایستگاه اتوبوس دانشگاه علوم تحقیقات" friendlyPos="1"/>
+    <busStop id="6172361383" lane="303596003_0" startPos="23.27" endPos="30.77" name="مخابرات" friendlyPos="1"/>
+    <busStop id="61_0" lane="462985791#5-AddedOnRampEdge_0" startPos="60.91" endPos="70.91"/>
+    <busStop id="61_1" lane="685659872#2_0" startPos="275.31" endPos="285.31"/>
+    <busStop id="62_0" lane="462985791#6_0" startPos="66.91" endPos="76.91"/>
+    <busStop id="62_1" lane="685659872#1_0" startPos="33.64" endPos="43.64"/>
+    <busStop id="63_0" lane="706764933#1_0" startPos="235.67" endPos="245.67"/>
+    <busStop id="63_1" lane="991764270#7_0" startPos="6.47" endPos="16.47"/>
+    <busStop id="64_0" lane="991764269#3_0" startPos="49.26" endPos="59.26"/>
+    <busStop id="64_1" lane="991764266#2_0" startPos="76.89" endPos="86.89"/>
+    <busStop id="65_0" lane="991764265#0_0" startPos="14.68" endPos="24.68"/>
+    <busStop id="65_1" lane="706764934_0" startPos="189.77" endPos="199.77"/>
+    <busStop id="660624203" lane="720467066#1_0" startPos="1142.00" endPos="1342.00" name="شهید مفتح" friendlyPos="1" lines="1">
+        <access lane="461899397#12_0" pos="65.99" length="9.73" friendlyPos="1"/>
+        <access lane="682383137#24_0" pos="1.44" length="30.37" friendlyPos="1"/>
+        <access lane="682383137#25_0" pos="2.76" length="22.12" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660627594" lane="378127816#1_0" startPos="2299.28" endPos="2499.28" name="میدان شهدا" friendlyPos="1" lines="6">
+        <access lane="717625374_0" pos="5.19" length="62.56" friendlyPos="1"/>
+        <access lane="827014820#4_0" pos="49.25" length="10.41" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660628303" lane="448212350#3_0" startPos="85.11" endPos="285.11" name="شهید مدنی" friendlyPos="1" lines="2">
+        <access lane="-439856603#10_0" pos="69.50" length="15.47" friendlyPos="1"/>
+        <access lane="439856603#9_0" pos="22.57" length="8.40" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660628364" lane="439856575#4_0" startPos="166.76" endPos="366.76" name="سبلان" friendlyPos="1" lines="2">
+        <access lane="-955960534_0" pos="11.19" length="22.44" friendlyPos="1"/>
+        <access lane="594289414#2_0" pos="0.20" length="26.59" friendlyPos="1"/>
+        <access lane="594289414#3_0" pos="12.06" length="22.77" friendlyPos="1"/>
+        <access lane="594297064_0" pos="17.08" length="11.36" friendlyPos="1"/>
+        <access lane="955960534_0" pos="2.50" length="17.64" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660628921" lane="531784904#1_0" startPos="1177.13" endPos="1377.13" name="تهرانپارس" friendlyPos="1" lines="2">
+        <access lane="449717082#3_0" pos="71.62" length="21.09" friendlyPos="1"/>
+        <access lane="482804230#10_0" pos="187.73" length="20.91" friendlyPos="1"/>
+        <access lane="484554190#9_0" pos="206.71" length="12.73" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660637545" lane="206883215_0" startPos="0.00" endPos="192.12" name="شوش" friendlyPos="1" lines="1">
+        <access lane="-476339622_0" pos="145.83" length="226.03" friendlyPos="1"/>
+        <access lane="222850253_0" pos="120.25" length="42.80" friendlyPos="1"/>
+        <access lane="222850265_0" pos="15.67" length="208.71" friendlyPos="1"/>
+        <access lane="330910799_0" pos="148.12" length="215.78" friendlyPos="1"/>
+        <access lane="4344235#15_0" pos="152.41" length="223.49" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660640664" lane="664336703#2_0" startPos="0.00" endPos="112.54" name="خیام" friendlyPos="1" lines="1">
+        <access lane="332279292#18_0" pos="4.49" length="2.91" friendlyPos="1"/>
+        <access lane="336274075#1_0" pos="0.23" length="11.83" friendlyPos="1"/>
+    </busStop>
+    <busStop id="660640714" lane="206883215_0" startPos="1166.78" endPos="1304.58" name="میدان محمدیه" friendlyPos="1" lines="1">
+        <access lane="335719635#14_0" pos="137.12" length="71.80" friendlyPos="1"/>
+        <access lane="712612528#9_0" pos="59.40" length="62.87" friendlyPos="1"/>
+    </busStop>
+    <busStop id="66_0" lane="4344231#1_0" startPos="55.72" endPos="65.72" friendlyPos="1"/>
+    <busStop id="66_1" lane="954608895#10_0" startPos="58.26" endPos="68.26" friendlyPos="1"/>
+    <busStop id="67_0" lane="878613726#9_0" startPos="33.38" endPos="43.38" friendlyPos="1"/>
+    <busStop id="67_1" lane="954608895#0_0" startPos="22.64" endPos="32.64"/>
+    <busStop id="68_0" lane="632478251#6_0" startPos="18.43" endPos="28.43"/>
+    <busStop id="68_1" lane="32949665#0_0" startPos="40.86" endPos="50.86"/>
+    <busStop id="69_0" lane="706645956#1_0" startPos="8.72" endPos="18.72"/>
+    <busStop id="69_1" lane="58377373#19_0" startPos="78.25" endPos="88.25"/>
+    <busStop id="6_0" lane="876037154#1_0" startPos="56.29" endPos="66.29"/>
+    <busStop id="6_1" lane="4392663#9_0" startPos="52.57" endPos="62.57"/>
+    <busStop id="7076218388" lane="854129567_0" startPos="38.51" endPos="63.51" name="پایانه ولیعصر" friendlyPos="1"/>
+    <busStop id="70_0" lane="706424708#4_0" startPos="31.78" endPos="41.78"/>
+    <busStop id="70_1" lane="58377373#8_0" startPos="22.86" endPos="32.86"/>
+    <busStop id="7127567095" lane="826232905#1_0" startPos="252.76" endPos="267.76" name="میلاد نور ۱۷۵۵" friendlyPos="1"/>
+    <busStop id="7226744205" lane="193436770#4_0" startPos="20.66" endPos="35.66" name="پایانه علم وصنعت" friendlyPos="1"/>
+    <busStop id="7272703785" lane="539381537#6_0" startPos="0.00" endPos="14.44" name="ایستگاه گلستان" friendlyPos="1" lines="301"/>
+    <busStop id="7354135335" lane="651911557#16_0" startPos="6.32" endPos="21.32" name="چهار راه دلبخواه" friendlyPos="1" lines="225"/>
+    <busStop id="7354135336" lane="651911557#9_0" startPos="45.52" endPos="60.52" name="دیباجی" friendlyPos="1" lines="225"/>
+    <busStop id="7354135337" lane="477137326#1_0" startPos="57.67" endPos="72.67" name="قنات" friendlyPos="1" lines="225"/>
+    <busStop id="7362548341" lane="269268916#3_0" startPos="34.02" endPos="49.02" name="دارآباد" friendlyPos="1" lines="300"/>
+    <busStop id="7439665787" lane="539381537#1_0" startPos="14.63" endPos="29.63" name="ایستگاه مرکز پروتز کوثر" friendlyPos="1" lines="301"/>
+    <busStop id="76_0" lane="884898983_0" startPos="6.89" endPos="10.35" name="l4_afsharDestination_0" friendlyPos="1" lines="106"/>
+    <busStop id="76_1" lane="385708832_0" startPos="9.36" endPos="19.36" name="l4_afsharDestination_1"/>
+    <busStop id="77_0" lane="785113615#1_0" startPos="39.69" endPos="49.69" name="l4_tabnak_0"/>
+    <busStop id="77_1" lane="690076050#9_0" startPos="265.22" endPos="276.22" name="l4_tabnak_1"/>
+    <busStop id="78_0" lane="835570966#4_0" startPos="109.90" endPos="119.90" name="l4_namayeshgah_0"/>
+    <busStop id="78_1" lane="690076050#7_2" startPos="4.62" endPos="14.62" name="l4_namayeshgah_1"/>
+    <busStop id="79_0" lane="783765882#2_0" startPos="475.48" endPos="486.48" name="l4_atisaz_0"/>
+    <busStop id="79_1" lane="690076050#3_0" startPos="32.20" endPos="42.20" name="l4_atisaz_1"/>
+    <busStop id="7_0" lane="380240519#2_0" startPos="25.30" endPos="35.30"/>
+    <busStop id="7_1" lane="892680233#0_0" startPos="147.69" endPos="157.69"/>
+    <busStop id="80_0" lane="903399189#3_0" startPos="88.68" endPos="98.68" name="l4_polmodiriyat_0"/>
+    <busStop id="80_1" lane="701600573#16_0" startPos="1386.83" endPos="1396.83" name="l4_polmodiriyat_1"/>
+    <busStop id="81_0" lane="701600571#1_0" startPos="0.00" endPos="10.00" name="l4_molaSadra_0"/>
+    <busStop id="81_1" lane="701600573#15_0" startPos="154.13" endPos="164.13" name="l4_molaSadra_1"/>
+    <busStop id="82_0" lane="701600571#6_0" startPos="71.35" endPos="81.35" name="l4_koyNasr_0"/>
+    <busStop id="82_1" lane="701600573#5_0" startPos="0.00" endPos="10.00" name="l4_koyNasr_1"/>
+    <busStop id="83_0" lane="398260891#5_0" startPos="0.00" endPos="10.00" name="l4_bagherKhan_0"/>
+    <busStop id="83_1" lane="273580534#3_0" startPos="2.33" endPos="12.33" name="l4_bagherKhan_1"/>
+    <busStop id="84_0" lane="784055690#1_0" startPos="220.19" endPos="230.19" name="l4_tohid_0"/>
+    <busStop id="84_1" lane="485668457#10_0" startPos="4.28" endPos="14.28" name="l4_tohid_1"/>
+    <busStop id="85_0" lane="422443839#4_0" startPos="76.46" endPos="86.46" name="l4_azadi_0"/>
+    <busStop id="85_1" lane="422443843#6_0" startPos="93.99" endPos="103.99" name="l4_azadi_1"/>
+    <busStop id="86_0" lane="460466999#4_0" startPos="5.20" endPos="15.20" name="l4_uromiyeh_0"/>
+    <busStop id="86_1" lane="422443843#1_0" startPos="4.94" endPos="14.94" name="l4_uromiyeh_1"/>
+    <busStop id="87_0" lane="764337436#4_0" startPos="6.96" endPos="16.96" name="l4_azarbaeijan_0"/>
+    <busStop id="87_1" lane="533996653#4_0" startPos="37.51" endPos="47.51" name="l4_azarbaeijan_1"/>
+    <busStop id="88_0" lane="533996648#5_0" startPos="99.52" endPos="109.52" name="l4_emamKhomeini_0"/>
+    <busStop id="88_1" lane="430063054#12_0" startPos="13.18" endPos="23.18" name="l4_emamKhomini_1" friendlyPos="1"/>
+    <busStop id="89_0" lane="533996648#9_0" startPos="311.53" endPos="321.53" name="l4_komeil_0"/>
+    <busStop id="89_1" lane="430063054#9_0" startPos="5.72" endPos="15.72" name="l4_komeil_1"/>
+    <busStop id="8_0" lane="892680235#2_0" startPos="140.79" endPos="150.79"/>
+    <busStop id="8_1" lane="504760639#1_0" startPos="22.50" endPos="32.50"/>
+    <busStop id="90_0" lane="533996648#14_0" startPos="107.90" endPos="122.90" name="l4_safdari_0" friendlyPos="1"/>
+    <busStop id="90_1" lane="430063054#4_0" startPos="0.55" endPos="10.55" name="l4_safdari_1"/>
+    <busStop id="91_0" lane="723949359#3_1" startPos="24.19" endPos="34.19" name="l4_helalAhmar_0"/>
+    <busStop id="91_1" lane="533973621#1_0" startPos="12.62" endPos="22.62" name="l4_helalAhmar_1"/>
+    <busStop id="92_0" lane="358643798#1-AddedOnRampEdge_0" startPos="19.63" endPos="29.63" name="l4_robatKarim_0"/>
+    <busStop id="92_1" lane="151277623#3_0" startPos="61.35" endPos="71.35" name="l4_robatKarim_1"/>
+    <busStop id="93_0" lane="151277626#1_0" startPos="130.89" endPos="140.89" name="l4_polJavadiyeh_0"/>
+    <busStop id="93_1" lane="764335279#0_0" startPos="421.65" endPos="431.65" name="l4_polJavadiyeh_1"/>
+    <busStop id="94_0" lane="151277626#5_0" startPos="0.00" endPos="10.00" name="l4_ghaliShuei_0"/>
+    <busStop id="94_1" lane="764335279#0-AddedOnRampEdge_0" startPos="77.45" endPos="87.45" name="l4_ghaliShuei_1"/>
+    <busStop id="95_0" lane="784055697_0" startPos="0.00" endPos="7.50" name="l4_meydanBahman_0" lines="104">
+        <access lane="151277632_0" pos="15.57" length="34.25" friendlyPos="1"/>
+        <access lane="36315517#1_0" pos="28.26" length="19.72" friendlyPos="1"/>
+        <access lane="461585062_0" pos="56.16" length="41.98" friendlyPos="1"/>
+        <access lane="461585063_0" pos="7.95" length="48.15" friendlyPos="1"/>
+        <access lane="711329772_0" pos="17.34" length="47.84" friendlyPos="1"/>
+    </busStop>
+    <busStop id="95_1" lane="36315517#1_0" startPos="8.57" endPos="18.57" name="l4_meydanBahman_1"/>
+    <busStop id="96_0" lane="784055696_0" startPos="241.02" endPos="256.02" name="l4_emami_0" lines="104"/>
+    <busStop id="96_1" lane="-784055699_0" startPos="1711.57" endPos="1721.57" name="l4_emami_1"/>
+    <busStop id="97_0" lane="784055696_0" startPos="1167.08" endPos="1182.08" name="l4_rajaei_0" friendlyPos="1" lines="104"/>
+    <busStop id="97_1" lane="-784055699_0" startPos="780.06" endPos="790.06" name="l4_rajaei_1"/>
+    <busStop id="98_0" lane="784055703#1_0" startPos="69.59" endPos="79.59" name="l4_southDestination_0"/>
+    <busStop id="98_1" lane="-784055703#1_0" startPos="103.88" endPos="113.88" name="l4_southDestination_1"/>
+    <busStop id="9_0" lane="892680235#9_0" startPos="58.48" endPos="68.48"/>
+    <busStop id="9_1" lane="210304100#3_0" startPos="11.96" endPos="21.96"/>
+    <busStop id="busStop_175770927#0_0_412" lane="175770927#0_0" startPos="54.20" endPos="64.20"/>
+    <busStop id="busStop_691075841#0_0_47" lane="691075841#0_0" startPos="72.18" endPos="82.18"/>
+</additional>

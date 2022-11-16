@@ -1,0 +1,7 @@
+UAVCount =80
+DepotCount = 4
+LineCounts = 9 -> [1,2,3,4,5,7,8,9,10]
+BusMaxCap = 4
+MaxFlyDist = 1200 step ->  12 km 
+approach = 'Deep RL'
+req_conf = 2

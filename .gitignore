@@ -1,0 +1,4 @@
+operations_*
+images/*
+__pycache__/*
+osm.net.xml
