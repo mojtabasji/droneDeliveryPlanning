@@ -286,9 +286,9 @@ def taskManager(): #TODO Add loadSubSet function and check
             elif approach == 'greedlyDecide':
                 memid, Sstop = rc.greedlyDecide(stoplist, netState, Lines)
             elif approach == 'TimingDecide':
-                memid, Sstop = rc.TimingDecide(stoplist, netState, Lines)
+                memid, Sstop, waitingTime  = rc.TimingDecide(stoplist, netState, Lines)
             elif approach == 'deepDecide':
-                memid, Sstop, er = rc.decide(stoplist, netState, Lines)
+                memid, Sstop, waitingTime, er = rc.decide(stoplist, netState, Lines)
             elif approach == 'algorithm':
                 memid, Sstop = rc.algorithm(stoplist, netState, Lines)
             storeData.setRouteLine(counter, rf.findStopLine(int(Sstop)))
@@ -298,6 +298,13 @@ def taskManager(): #TODO Add loadSubSet function and check
             route = list(map(str, route))
             UAVPath[counter] = route2path(route,  destini)
             UAVHistory[counter] = memid
+            try:
+                UAVs[counter].delay = waitingTime - UAVs[counter].loc.distance(UAVPath[counter][0]['loc'])
+                if UAVs[counter].delay < 0:
+                    UAVs[counter].delay = 0
+            except:
+                pass    
+            
 
 
 def lineBusyRateUpdate():
@@ -545,7 +552,9 @@ def go_forward():
 
         for tmp in range(UAVCount):
 
-            if destenation[tmp]["actionType"] == "finish":
+            if UAVs[tmp].delay:
+                storeData.incrementStep(tmp)
+            elif destenation[tmp]["actionType"] == "finish":
                 UAVs[tmp].status = 0
                 print(printCounter, ": hey, I'm ", tmp, " in destination. (",
                       UAVs[tmp].loc.x, ", ", UAVs[tmp].loc.y, ") ..|:)", ' with ', UAVs[tmp].stepet, ' whole step and ', UAVs[tmp].flied, " fly step")
