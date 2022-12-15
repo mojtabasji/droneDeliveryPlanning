@@ -1,31 +1,33 @@
-from cmath import isnan
-from itertools import count
+import copy
+import json
+import optparse
 import os
-from re import S
-import keyboard
+import random
 import sys
 import time
-import json
-import random
-import copy
-import optparse
-from DataStore import StoreData
-from StoreMoreData import StoreMore
+from cmath import isnan
+from datetime import datetime
+from itertools import count
+from re import S
+
 import cv2
+import keyboard
+import numpy as np
+import traci
 import xlsxwriter
 import xlwt
-import numpy as np
-from sumolib import checkBinary
-import traci
 from PIL import Image, ImageDraw, ImageFont
-from point import point
+from sumolib import checkBinary
 from traci.main import switch
-from Elements import UAV, BusStop, Bus, Depot, CostTable
-from uav_tjp import uav_tjp
-import routeFinding as rf
-import routeController as RC
+
 import findNearStops as fns
-from datetime import datetime
+import routeController as RC
+import routeFinding as rf
+from DataStore import StoreData
+from Elements import UAV, Bus, BusStop, CostTable, Depot
+from point import point
+from StoreMoreData import StoreMore
+from uav_tjp import uav_tjp
 
 
 class MyCTable:
@@ -73,7 +75,7 @@ def point2Loc(pnt):
 
 config = json.load(open('config.json'))
 # Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
-approach = 'TimingDecide'
+approach = 'deepDecide'
 showImage = False
 UAVs = []
 #reachTimeStoreXl = []
@@ -87,7 +89,7 @@ ReqSubSet = []
 ReqSubSet_len = 25
 Depots = []
 unreachablePoints = []
-requestConf_id = 1
+requestConf_id = 2
 
 images = []
 colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -807,11 +809,9 @@ if __name__ == "__main__":
     go_forward()
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    '''pic = open('picpath.json','w')
-    pic.write(json.dumps(images))'''
     storeMore.setKeyVal('running Time', time.time() - start_time)
-    storeData.SaveToFile(UAVCount)
-    storeMore.Save2file(UAVCount)
+    storeData.SaveToFile(UAVCount, "_"+ str(rc.exploration_decay))
+    storeMore.Save2file(UAVCount, "_"+ str(rc.exploration_decay))
     rc.saveModel(UAVCount)
     traci.close()
 

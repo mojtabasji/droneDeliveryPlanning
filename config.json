@@ -1,14 +1,14 @@
 {
     "MaxFlyDist":1200,
-    "BusMaxCap":4,
+    "BusMaxCap":3,
     "group_uperbound" : 6,
     "BeforeStopCheckCount":4,
     "Envdim" : {
         "x" : 3000,
         "y" : 3000
     },
-    "UAVCount":40,
-    "Depots":{
+    "UAVCount":60,
+    "Depots_3":{
         "1":{
             "x": 2270,
             "y": 1684
@@ -22,7 +22,7 @@
             "y": 1600
         }
     },
-    "Depots_Comment_4":{
+    "Depots":{
         "1":{
             "x": 1334,
             "y": 1076
@@ -40,7 +40,7 @@
             "y":1300
         }
     },
-    "UAVs" : {
+    "UAVs_comment_3" : {
         "1" : {
             "depot":1,
             "x":1351, "y" :1531
@@ -362,7 +362,7 @@
             "x":1360, "y":1540
         }
     },
-    "UAVs_comment_4" : {
+    "UAVs" : {
         "1" : {
             "depot":1,
             "x":1351, "y" :1531
