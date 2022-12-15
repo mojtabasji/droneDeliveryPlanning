@@ -48,6 +48,7 @@ class brain:
         num = self.Ucount
         soufli = 500
         mins = []
+        time2wait = []
         choiced = ''
         StopsDistances = 50 
         for stp in stopsList:
@@ -100,17 +101,19 @@ class brain:
         num = self.Ucount
         soufli = 500
         mins = []
+        time2wait = []
         choiced = ''
         StopsDistances = 50 
         for stp in stopsList:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + (reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
+            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
+            sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + time2wait[-1]
             mins.append(sumTime)
         
         choiced = stopsList[np.argmin(mins)]
-        return 1, choiced
+        return 1, choiced, time2wait[np.argmin(mins)]
 
     def fairnessDecide(self, stopsList, state, Lines):
         num = self.Ucount
@@ -161,7 +164,7 @@ class brain:
 
     def decide(self, stopsList, state, Lines): # out -> str( stopID) Like "78"
         if np.random.rand() <= self.exploration_rate:
-            nothing, choiced = self.TimingDecide(stopsList, state, Lines)
+            nothing, choiced, waitingTime = self.TimingDecide(stopsList, state, Lines)
             '''
             LinRate = 1
             chprob = 0
@@ -181,6 +184,7 @@ class brain:
             bestInpnodes ,stopInDirection = self.__inpCreate(choiced, state, Lines)
         else:
             choiced = ''
+            choicedStopInDirection = ''
             maxRew = 900000
             bestInpnodes = np.zeros(10)
             print(" ***********       **********          Deep Q-Network decideing ******** ******")
@@ -195,10 +199,14 @@ class brain:
                 if pval[0][0] < maxRew: #* (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                     maxRew = pval
                     choiced = stp
+                    choicedStopInDirection = stopInDirection
                     bestInpnodes = inpnodes
+            
+            waitingTime = reachFreeSpaceLoc( choicedStopInDirection, state) * 50 # 50 is the distance between two stops
+            
         memid = int( np.random.rand() * 9000 + 1000)
         self.temporalMemory.append({'id': memid, 'value': bestInpnodes})
-        return memid, choiced , self.exploration_rate
+        return memid, choiced, waitingTime, self.exploration_rate
 
 
     def __inpCreate(self, stp, state, Lines):
@@ -270,7 +278,7 @@ class brain:
 
 
 
-def reachFreeSpaceLoc(stopInDirection, net):
+def reachFreeSpaceLoc(stopInDirection, net): # return the location (bus is in which bs) of the stop that the bus can reach the free space
     freeSpace = net['BStop'][stopInDirection]['freeSpace']
     wanters = net['BStop'][stopInDirection]['coming'] + net['BStop'][stopInDirection]['goingToBefore'] + 1
     latest = freeSpace - wanters
