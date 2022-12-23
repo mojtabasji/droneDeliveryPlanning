@@ -52,7 +52,7 @@ class StoreData:
     def setRouteLine(self,UId, Line):
         self.__routeLine[UId] = Line
 
-    def SaveToFile(self, nameAddation):
+    def SaveToFile(self, nameAddation, add_more=""):
         pageNumber = 1
         workbook = xlwt.Workbook()
         sheet = workbook.add_sheet("page"+str(pageNumber))
@@ -105,4 +105,4 @@ class StoreData:
                 rowId = 0
             rowId +=1
 
-        workbook.save('operations_'+ str(nameAddation) +'.xls')
+        workbook.save('operations_'+ str(nameAddation)+ add_more +'.xls')

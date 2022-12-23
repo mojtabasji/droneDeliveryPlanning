@@ -1,4 +1,4 @@
-UAVCount =40
+UAVCount =80
 DepotCount = 3
 LineCounts = 9 -> [1,2,3,4,5,7,8,9,10]
 BusMaxCap = 4

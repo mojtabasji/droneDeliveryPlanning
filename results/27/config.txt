@@ -1,7 +1,7 @@
 UAVCount =40
-DepotCount = 3
+DepotCount = 4
 LineCounts = 9 -> [1,2,3,4,5,7,8,9,10]
 BusMaxCap = 4
 MaxFlyDist = 1200 step ->  12 km 
-approach = 'TimingDecide'
+approach = 'timeEs'
 req_conf = 1

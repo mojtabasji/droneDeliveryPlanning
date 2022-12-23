@@ -1,33 +1,31 @@
-import copy
-import json
-import optparse
+from cmath import isnan
+from itertools import count
 import os
-import random
+from re import S
+import keyboard
 import sys
 import time
-from cmath import isnan
-from datetime import datetime
-from itertools import count
-from re import S
-
+import json
+import random
+import copy
+import optparse
+from DataStore import StoreData
+from StoreMoreData import StoreMore
 import cv2
-import keyboard
-import numpy as np
-import traci
 import xlsxwriter
 import xlwt
-from PIL import Image, ImageDraw, ImageFont
+import numpy as np
 from sumolib import checkBinary
-from traci.main import switch
-
-import findNearStops as fns
-import routeController as RC
-import routeFinding as rf
-from DataStore import StoreData
-from Elements import UAV, Bus, BusStop, CostTable, Depot
+import traci
+from PIL import Image, ImageDraw, ImageFont
 from point import point
-from StoreMoreData import StoreMore
+from traci.main import switch
+from Elements import UAV, BusStop, Bus, Depot, CostTable
 from uav_tjp import uav_tjp
+import routeFinding as rf
+import routeController as RC
+import findNearStops as fns
+from datetime import datetime
 
 
 class MyCTable:
@@ -288,9 +286,9 @@ def taskManager(): #TODO Add loadSubSet function and check
             elif approach == 'greedlyDecide':
                 memid, Sstop = rc.greedlyDecide(stoplist, netState, Lines)
             elif approach == 'TimingDecide':
-                memid, Sstop = rc.TimingDecide(stoplist, netState, Lines)
+                memid, Sstop, waitingTime  = rc.TimingDecide(stoplist, netState, Lines)
             elif approach == 'deepDecide':
-                memid, Sstop, er = rc.decide(stoplist, netState, Lines)
+                memid, Sstop, waitingTime, er = rc.decide(stoplist, netState, Lines)
             elif approach == 'algorithm':
                 memid, Sstop = rc.algorithm(stoplist, netState, Lines)
             storeData.setRouteLine(counter, rf.findStopLine(int(Sstop)))
@@ -300,6 +298,16 @@ def taskManager(): #TODO Add loadSubSet function and check
             route = list(map(str, route))
             UAVPath[counter] = route2path(route,  destini)
             UAVHistory[counter] = memid
+            try:
+                UAVs[counter].delay = waitingTime - UAVs[counter].loc.distance(UAVPath[counter][0]['loc'])
+                if UAVs[counter].delay < 0:
+                    UAVs[counter].delay = 0
+                if UAVs[counter].delay > 3000:
+                    UAVs[counter].delay = 3000
+            except:
+                print("cant set wait time")
+                pass    
+            
 
 
 def lineBusyRateUpdate():
@@ -547,7 +555,9 @@ def go_forward():
 
         for tmp in range(UAVCount):
 
-            if destenation[tmp]["actionType"] == "finish":
+            if UAVs[tmp].delay:
+                storeData.incrementStep(tmp)
+            elif destenation[tmp]["actionType"] == "finish":
                 UAVs[tmp].status = 0
                 print(printCounter, ": hey, I'm ", tmp, " in destination. (",
                       UAVs[tmp].loc.x, ", ", UAVs[tmp].loc.y, ") ..|:)", ' with ', UAVs[tmp].stepet, ' whole step and ', UAVs[tmp].flied, " fly step")
@@ -701,7 +711,7 @@ def go_forward():
 
         for tmp in range(UAVCount):
             UAVs[tmp].stepet += 1
-            if destenation[tmp]["actionType"] == "fly":
+            if (not UAVs[tmp].delay) and destenation[tmp]["actionType"] == "fly":
                 UAVs[tmp].flied += 1
                 fliers.append(tmp)
         #print(i,": flier Count: ........    ",len(fliers))

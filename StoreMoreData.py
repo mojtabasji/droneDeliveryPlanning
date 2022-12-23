@@ -28,7 +28,7 @@ class StoreMore:
         self.existPathCount.append(pathCount)
 
     
-    def Save2file(self, nameAddation):
+    def Save2file(self, nameAddation, add_more=""):
         workbook = xlwt.Workbook()
         sheet = workbook.add_sheet("sheet1")
         header_font = xlwt.Font()
@@ -57,4 +57,4 @@ class StoreMore:
             sheet.write(i+1,3, self.learningRate[i])
             sheet.write(i+1,4, self.existPathCount[i])
         
-        workbook.save('moreData'+ str(nameAddation) +'.xls')
+        workbook.save('moreData'+ str(nameAddation)+ add_more +'.xls')
