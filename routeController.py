@@ -21,6 +21,7 @@ class brain:
         self.exploration_rate = 1.0
         self.exploration_min = 0.03
         self.exploration_decay = 0.990
+        self.inpNodeCount = 9
         if LoadModel:
             self.model = self.__loadModel( UAVCount )
             self.exploration_rate = 0.3
@@ -30,7 +31,6 @@ class brain:
         self.MemoryX = deque(maxlen= UAVCount * 10)
         self.MemoryY = deque(maxlen= UAVCount * 10)
         self.outGama = 2
-        self.inpNodeCount = 9
         self.Ucount = UAVCount
         self.sample_batch_size = UAVCount
         self.normalizerValues = [3000, 3000, 3000, UAVCount, 15, 15, UAVCount, 1, 1 - (1/UAVCount), UAVCount]
