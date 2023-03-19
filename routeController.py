@@ -20,7 +20,7 @@ class brain:
         self.weight_backup = "U_Brine_weight.h5"
         self.exploration_rate = 1.0
         self.exploration_min = 0.03
-        self.exploration_decay = 0.995
+        self.exploration_decay = 0.990
         if LoadModel:
             self.model = self.__loadModel( UAVCount )
             self.exploration_rate = 0.3
@@ -174,23 +174,9 @@ class brain:
 
     def decide(self, stopsList, state, Lines): # out -> str( stopID) Like "78"
         if np.random.rand() <= self.exploration_rate:
-            nothing, choiced, waitingTime = self.TimingDecide(stopsList, state, Lines)
-            '''
-            LinRate = 1
-            chprob = 0
-            for stp in stopsList:
-                Lin = rf.findStopLine(int(stp))
-                t, route = rf.find(int(stp), state['destLoc'])
-                Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-                dstnt = Cost['sourcefly'] + Cost['destfly']
-                tmpchprob = pow(np.random.rand() ,5) * (1 /dstnt)
-                if Lines[Lin]['busyRate' + Cost['direction'] ] < LinRate:
-                    choiced = stp
-                    LinRate = Lines[Lin]['busyRate' + Cost['direction']]
-                    chprob = tmpchprob
-                elif Lines[Lin]['busyRate' + Cost['direction']] == LinRate and tmpchprob > chprob:
-                    choiced = stp
-                    chprob = tmpchprob '''
+            # nothing, choiced, waitingTime = self.TimingDecide(stopsList, state, Lines)
+            choiced = np.random.choice(stopsList)
+            
             bestInpnodes ,stopInDirection = self.__inpCreate(choiced, state, Lines)
         else:
             choiced = ''

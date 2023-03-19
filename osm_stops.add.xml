@@ -528,7 +528,7 @@
     <busStop id="199_1" lane="650999506_0" startPos="2509.72" endPos="2519.72"/>
     <busStop id="19_0" lane="222758838#19-AddedOnRampEdge_0" startPos="7.84" endPos="17.84"/>
     <busStop id="19_1" lane="878613724#21_0" startPos="14.86" endPos="24.86"/>
-    <busStop id="1_0" lane="175770864#2_0" startPos="138.57" endPos="148.57"/>
+    <busStop id="1_0" lane="175770864#2_0" startPos="176.92" endPos="186.92"/>
     <busStop id="1_1" lane="175770864#1_0" startPos="16.51" endPos="26.51"/>
     <busStop id="200_0" lane="690940927#1_0" startPos="2505.43" endPos="2515.43"/>
     <busStop id="200_1" lane="650999506_0" startPos="1800.65" endPos="1810.65"/>
@@ -563,7 +563,7 @@
     <busStop id="214_0" lane="722469802#5-AddedOnRampEdge_0" startPos="60.51" endPos="70.51"/>
     <busStop id="214_1" lane="688534336#0_0" startPos="397.80" endPos="407.80"/>
     <busStop id="215_0" lane="701156914#2_0" startPos="22.64" endPos="32.64"/>
-    <busStop id="215_1" lane="379568221#1_0" startPos="79.91" endPos="89.91"/>
+    <busStop id="215_1" lane="379568221#1_0" startPos="85.08" endPos="95.08"/>
     <busStop id="2169691367" lane="531784904#1_0" startPos="2837.91" endPos="2653.95" name="فرهنگسرا" friendlyPos="1" lines="2">
         <access lane="-773130135#4_0" pos="8.23" length="200.62" friendlyPos="1"/>
         <access lane="773130135#4_0" pos="105.67" length="195.82" friendlyPos="1"/>
@@ -629,7 +629,7 @@
     </busStop>
     <busStop id="26_0" lane="878613731#24_0" startPos="596.90" endPos="606.90"/>
     <busStop id="26_1" lane="971616617#9_0" startPos="4.59" endPos="14.59"/>
-    <busStop id="27_0" lane="175770856#2_0" startPos="132.14" endPos="142.14"/>
+    <busStop id="27_0" lane="175770856#2_0" startPos="164.93" endPos="174.93"/>
     <busStop id="27_1" lane="175770856#1_0" startPos="22.02" endPos="32.02"/>
     <busStop id="28_0" lane="175770927#0_0" startPos="54.20" endPos="64.20"/>
     <busStop id="28_1" lane="706136006#0_0" startPos="11.42" endPos="21.42"/>
