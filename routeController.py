@@ -5,7 +5,8 @@ from re import L
 from time import sleep
 from point import point
 import routeFinding as rf
-from keras.models import Sequential
+from keras import models
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 import numpy as np
@@ -15,12 +16,16 @@ import os
 
 
 class brain:
-    def __init__(self,UAVCount) -> None:
+    def __init__(self,UAVCount, LoadModel = False ) -> None:
         self.weight_backup = "U_Brine_weight.h5"
-        self.model = self.__build_model()
         self.exploration_rate = 1.0
         self.exploration_min = 0.03
         self.exploration_decay = 0.995
+        if LoadModel:
+            self.model = self.__loadModel( UAVCount )
+            self.exploration_rate = 0.3
+        else:
+            self.model = self.__build_model()
         self.temporalMemory =  [] # deque(UAVCount)
         self.MemoryX = deque(maxlen= UAVCount * 10)
         self.MemoryY = deque(maxlen= UAVCount * 10)
@@ -33,7 +38,12 @@ class brain:
     def saveModel(self, nameAdd):
         self.model.save(f'my_model_{str(nameAdd)}.h5')
 
-
+    def __loadModel(self, nameAdd):
+        weight_file = f'my_model_{str(nameAdd)}.h5'
+        print("Loading model from file: ", weight_file)
+        return models.load_model(weight_file)
+        
+    
     def __build_model(self):
         mdl = Sequential()
         mdl.add(Dense(300, input_dim= (10), activation='relu'))
@@ -250,7 +260,7 @@ class brain:
                 self.temporalMemory.remove(i)
                 break
         
-        if len(self.MemoryX) < self.sample_batch_size * 2:
+        if len(self.MemoryX) < self.sample_batch_size * 2 or self.exploration_rate <= self.exploration_min :
             return
         self.doTrain = 4
         batch_indexs = random.sample(range(len(self.MemoryX)), self.sample_batch_size)

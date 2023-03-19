@@ -74,6 +74,7 @@ def point2Loc(pnt):
 config = json.load(open('config.json'))
 # Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
 approach = 'deepDecide'
+loadModel = True
 showImage = False
 UAVs = []
 #reachTimeStoreXl = []
@@ -87,7 +88,7 @@ ReqSubSet = []
 ReqSubSet_len = 25
 Depots = []
 unreachablePoints = []
-requestConf_id = 2
+requestConf_id = 1
 
 images = []
 colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -171,24 +172,29 @@ def choiseTaskFromSubset(UAV_id, flied):
     MytempCostTable = MyCTable()
     finalRes = {}
     fly_count_c2d = 0
+    
+    startPoint = UAVs[UAV_id].loc 
+    stoplist = fns.nearStops(startPoint, int(MaxFlyDist * 0.45))
+    stoplist = fns.reviewNearStops(startPoint, stoplist, Lines, BusStopStatus)
+    hiperPower = 0
+    while not len(stoplist):
+        stoplist = fns.nearStops(startPoint, MaxFlyDist + hiperPower)
+        stoplist = fns.reviewNearStops(startPoint, stoplist, Lines, BusStopStatus)
+        print("Try To find BS to Come Back --> ", MaxFlyDist + hiperPower)
+        hiperPower += 40
+    netState = {'curLoc': startPoint, 'BStop': StopStates(stoplist),
+        'BussList': BussList, 'BusMaxCap':BusMaxCap}
+    
     for dep in range(len(Depots)):
-        
-        startPoint = UAVs[UAV_id].loc 
         endPoint = Depots[dep].loc
+        
+        # 'destLoc': endPoint ,
+        netState['destLoc'] = endPoint
+        
         if startPoint == endPoint:
             tmpCostVal = 0
             fly_count_c2d = 0
         else:
-            stoplist = fns.nearStops(startPoint, int(MaxFlyDist * 0.45))
-            stoplist = fns.reviewNearStops(startPoint, stoplist, Lines, BusStopStatus)
-            hiperPower = 0
-            while not len(stoplist):
-                stoplist = fns.nearStops(startPoint, MaxFlyDist + hiperPower)
-                stoplist = fns.reviewNearStops(startPoint, stoplist, Lines, BusStopStatus)
-                print("Try To find BS to Come Back --> ", MaxFlyDist + hiperPower)
-                hiperPower += 40
-            netState = {'curLoc': startPoint, 'destLoc': endPoint , 'BStop': StopStates(stoplist),
-             'BussList': BussList, 'BusMaxCap':BusMaxCap}
             if approach == 'fairnessDecide':
                 tmpCostVal, fly_count_c2d = rc.Cost_fairness(stoplist, netState, Lines)
             elif approach == 'greedlyDecide':
@@ -478,7 +484,7 @@ def loadConfig():
     BusStopStatus = {iD: BusStop(iD, point(*loc2point(BusStopsLoc[iD]))) for iD in BusStopsLoc}
     UAVTasks = [[] for i in range(UAVCount)]
     UAVHistory = np.zeros(UAVCount)
-    rc = RC.brain(UAVCount)
+    rc = RC.brain(UAVCount, LoadModel= loadModel )
     f = open('requestConf'+str(requestConf_id)+'.json', 'r')
     requests = json.load(f)
     f.close()
@@ -807,11 +813,11 @@ if __name__ == "__main__":
     traci.start([sumoBinary, "-c", "osm.sumocfg",
                 "--tripinfo-output", "tripinfo.xml"])
 
+    loadConfig()  # import config
     for distrubute in range(13000):
         traci.simulation.step()
 
     start_time = time.time()
-    loadConfig()  # import config
     __loadSimulationParams()
     go_forward()
     print("--- %s seconds ---" % (time.time() - start_time))
