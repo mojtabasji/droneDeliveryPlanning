@@ -197,12 +197,9 @@ class brain:
                     choiced = stp
                     choicedStopInDirection = stopInDirection
                     bestInpnodes = inpnodes
-            
-            waitingTime = reachFreeSpaceLoc( choicedStopInDirection, state) * 50 # 50 is the distance between two stops
-            
         memid = int( np.random.rand() * 9000 + 1000)
         self.temporalMemory.append({'id': memid, 'value': bestInpnodes})
-        return memid, choiced, waitingTime, self.exploration_rate
+        return memid, choiced, self.exploration_rate
 
 
     def __inpCreate(self, stp, state, Lines):

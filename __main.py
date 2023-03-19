@@ -292,9 +292,9 @@ def taskManager(): #TODO Add loadSubSet function and check
             elif approach == 'greedlyDecide':
                 memid, Sstop = rc.greedlyDecide(stoplist, netState, Lines)
             elif approach == 'TimingDecide':
-                memid, Sstop, waitingTime  = rc.TimingDecide(stoplist, netState, Lines)
+                memid, Sstop  = rc.TimingDecide(stoplist, netState, Lines)
             elif approach == 'deepDecide':
-                memid, Sstop, waitingTime, er = rc.decide(stoplist, netState, Lines)
+                memid, Sstop, er = rc.decide(stoplist, netState, Lines)
             elif approach == 'algorithm':
                 memid, Sstop = rc.algorithm(stoplist, netState, Lines)
             storeData.setRouteLine(counter, rf.findStopLine(int(Sstop)))
@@ -303,14 +303,7 @@ def taskManager(): #TODO Add loadSubSet function and check
             nothing, route = rf.find(int(Sstop), destini)
             route = list(map(str, route))
             UAVPath[counter] = route2path(route,  destini)
-            UAVHistory[counter] = memid
-            try:
-                UAVs[counter].delay = waitingTime - UAVs[counter].loc.distance(UAVPath[counter][0]['loc'])
-                if UAVs[counter].delay < 0:
-                    UAVs[counter].delay = 0
-            except:
-                pass    
-            
+            UAVHistory[counter] = memid            
 
 
 def lineBusyRateUpdate():
