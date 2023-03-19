@@ -2,7 +2,7 @@ from cmath import isnan
 from itertools import count
 import os
 from re import S
-import keyboard
+# import keyboard
 import sys
 import time
 import json
@@ -636,14 +636,14 @@ def go_forward():
 
         # start create gif ***********
 
-        if keyboard.is_pressed('I'):
-            cv2.destroyAllWindows()
-            showImage = not showImage
-            time.sleep(0.5)
+        # if keyboard.is_pressed('I'):
+        #     cv2.destroyAllWindows()
+        #     showImage = not showImage
+        #     time.sleep(0.5)
 
-        if keyboard.is_pressed('P'):
-            takePic = True
-            time.sleep(0.5)
+        # if keyboard.is_pressed('P'):
+        #     takePic = True
+        #     time.sleep(0.5)
 
         # '''
         if showImage and monitoring < 1:
