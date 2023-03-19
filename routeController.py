@@ -30,6 +30,7 @@ class brain:
         self.MemoryX = deque(maxlen= UAVCount * 10)
         self.MemoryY = deque(maxlen= UAVCount * 10)
         self.outGama = 2
+        self.inpNodeCount = 9
         self.Ucount = UAVCount
         self.sample_batch_size = UAVCount
         self.normalizerValues = [3000, 3000, 3000, UAVCount, 15, 15, UAVCount, 1, 1 - (1/UAVCount), UAVCount]
@@ -46,7 +47,7 @@ class brain:
     
     def __build_model(self):
         mdl = Sequential()
-        mdl.add(Dense(300, input_dim= (9), activation='relu'))
+        mdl.add(Dense(300, input_dim=(self.inpNodeCount), activation='relu'))
         mdl.add(Dense(1000, activation='linear'))
         mdl.add(Dense(1, activation='linear')) #  linear softmax  sigmoid
         mdl.compile(loss='mse', optimizer=Adam(lr=0.002), metrics=['mae', 'mse']) #   optimizer='rmsprop'
@@ -99,7 +100,7 @@ class brain:
             maxRew = 900000
             for stp in stopsList:
                 inpnodes, stopInDirection = self.__inpCreate(stp, state, Lines)
-                pval = self.model.predict(np.reshape(inpnodes,(1,10)))
+                pval = self.model.predict(np.reshape(inpnodes,(1,self.inpNodeCount)))
                 if pval[0][0] < maxRew: #* (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                     maxRew = pval
                     choiced = stp
@@ -182,7 +183,7 @@ class brain:
             choiced = ''
             choicedStopInDirection = ''
             maxRew = 900000
-            bestInpnodes = np.zeros(10)
+            bestInpnodes = np.zeros(self.inpNodeCount)
             print(" ***********       **********          Deep Q-Network decideing ******** ******")
             for stp in stopsList:
                 inpnodes, stopInDirection = self.__inpCreate(stp, state, Lines)
@@ -190,7 +191,7 @@ class brain:
                 #print('shape: ', np.shape(inpnodes))
                 #inpnodes = np.reshape(inpnodes, (1,10))
                 #print('inpnodes :', inpnodes)
-                pval = self.model.predict(np.reshape(inpnodes,(1,10)))
+                pval = self.model.predict(np.reshape(inpnodes,(1,self.inpNodeCount)))
                 print('pval is: ', pval)
                 if pval[0][0] < maxRew: #* (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                     maxRew = pval
@@ -253,7 +254,7 @@ class brain:
         try:
             Xtrain = np.array(Xtrain, dtype= np.float16)
             Ytrain = np.array(Ytrain, dtype= np.float16)
-            Xtrain = np.reshape(Xtrain, (self.sample_batch_size, 10))
+            Xtrain = np.reshape(Xtrain, (self.sample_batch_size, self.inpNodeCount))
             Ytrain = np.reshape(Ytrain, (self.sample_batch_size, 1))
         except:
             print('Xtrain: ',Xtrain)
