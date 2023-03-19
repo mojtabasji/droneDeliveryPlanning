@@ -46,7 +46,7 @@ class brain:
     
     def __build_model(self):
         mdl = Sequential()
-        mdl.add(Dense(300, input_dim= (10), activation='relu'))
+        mdl.add(Dense(300, input_dim= (9), activation='relu'))
         mdl.add(Dense(1000, activation='linear'))
         mdl.add(Dense(1, activation='linear')) #  linear softmax  sigmoid
         mdl.compile(loss='mse', optimizer=Adam(lr=0.002), metrics=['mae', 'mse']) #   optimizer='rmsprop'
@@ -225,7 +225,7 @@ class brain:
         inpnodes.append(Cost['destfly'])
         inpnodes.append(Cost['transport'])
         inpnodes.append(state['BStop'][stopInDirection]['passengers'])
-        inpnodes.append(state['BStop'][stopInDirection]['freeSpace'])
+        # inpnodes.append(state['BStop'][stopInDirection]['freeSpace'])
         inpnodes.append(state['BStop'][stopInDirection]['coming'])
         inpnodes.append(state['BStop'][stopInDirection]['goingToBefore'])
         #inpnodes.append(Lines[Lin]['busyRate' + Cost['direction']])
