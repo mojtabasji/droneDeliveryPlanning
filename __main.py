@@ -258,7 +258,7 @@ def taskManager(): #TODO Add loadSubSet function and check
             stoplist = []
             if len(UAVTasks[counter]) == 0:
                 
-                if (not isnan(finisher)) and finisher :
+                if (not isnan(finisher)) and finisher:
                     return
                 
                 UAVTasks[counter], choisedDepot = choiseTaskFromSubset(counter, UAVs[counter].flied)
@@ -285,7 +285,7 @@ def taskManager(): #TODO Add loadSubSet function and check
 
             netState = {'curLoc': UAVs[counter].loc, 'destLoc': point(
                 *UAVTasks[counter][0]), 'BStop': StopStates(stoplist), 'BussList': BussList, 'BusMaxCap':BusMaxCap}
-            lineBusyRateUpdate()
+            # lineBusyRateUpdate()
             er = 1
             if approach == 'fairnessDecide':
                 memid, Sstop = rc.fairnessDecide(stoplist, netState, Lines)
@@ -477,7 +477,6 @@ def loadConfig():
     BusStopStatus = {iD: BusStop(iD, point(*loc2point(BusStopsLoc[iD]))) for iD in BusStopsLoc}
     UAVTasks = [[] for i in range(UAVCount)]
     UAVHistory = np.zeros(UAVCount)
-    rc = RC.brain(UAVCount, LoadModel= loadModel )
     f = open('requestConf'+str(requestConf_id)+'.json', 'r')
     requests = json.load(f)
     f.close()
@@ -491,6 +490,7 @@ def loadConfig():
     request_id = 0
     images = [[] for i in range(UAVCount)]
     storeData = StoreData(UAVCount, reach2finish, len(Lines))
+    rc = RC.brain(UAVCount, LoadModel=loadModel, lines=Lines)
     storeMore = StoreMore()
 
 
