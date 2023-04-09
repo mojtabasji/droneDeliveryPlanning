@@ -114,6 +114,7 @@ class brain:
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
             max_explore = [self.ann[i].explore_rate for i in efected_lines]
+            max_explore = max_explore / np.sum(max_explore)
             choiced = np.random.choice(stopsList, p=max_explore)
             # choiced = np.random.choice(stopsList)
             bestInpnodes ,stopInDirection = self.__inpCreate(choiced, state, Lines)
