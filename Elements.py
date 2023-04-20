@@ -7,6 +7,7 @@ class UAV:
         self.id = iden
         self.status = 0
         self.flied = 0
+        self.wait_step = 0
         self.stepet = 0
         self.delay = 0
 
@@ -14,6 +15,7 @@ class UAV:
 class Bus:
     def __init__(self, ID, Line, location, lasStp=None) -> None:
         self.id = ID
+        self.passengers = []
         self.line = Line
         self.direction = 0
         self.loc = location
@@ -21,14 +23,30 @@ class Bus:
 
     def setLast(self, bs):
         self.lastStop = bs
+        
+    def get_passengers_count(self):
+        return len(self.passengers)
+
 
 class BusStop:
     def __init__(self, Name, location) -> None:
         self.passengers = []
+        self.coming = []
         self.successRate = 1
         self.calCount = 1
         self.name = Name
         self.loc = location
+        if "_0" in self.name:
+            self.direction = 0
+        else:
+            self.direction = 1
+
+    def get_passengers_count(self):
+        return len(self.passengers)
+    
+    def get_coming_count(self):
+        return len(self.coming)
+
 
 class Depot:
     def __init__(self, ID, location = point(0,0)) -> None:
@@ -59,3 +77,41 @@ class CostTable:
 
     def removeRequest(self, req_id):
         self.__CostTbl.pop(req_id)
+
+
+class Line_class:
+    def __init__(self, id):
+        self.id = id
+        self.stations = {}
+        self.busList = {}
+
+    def addBusStation(self, ID, location):
+        self.stations[ID] = BusStop(ID, location)
+
+    def addBus(self, bus_id, bus_line, bus_loc, bus_lastStop=None):
+        self.busList[bus_id] =  Bus(bus_id, bus_line, bus_loc, bus_lastStop)
+
+    def get_bus_station_count(self):
+        return len(self.stations)
+
+    def get_bus_count(self):
+        return len(self.busList)
+
+    def create_deep_input(self):
+        X_input = []
+        X_input.extend([[self.stations[station].get_passengers_count(), self.stations[station].get_coming_count()] for station in self.stations])
+        X_input.extend([[self.busList[bus].loc.x, self.busList[bus].loc.y] for bus in self.busList])
+        X_input.extend([[self.busList[bus].direction, self.busList[bus].get_passengers_count()] for bus in self.busList])
+        return X_input
+        
+    def have_passenger(self, pass_id):
+        for station in self.stations:
+            if pass_id in self.stations[station].passengers:
+                return f"Station as passenger %{station}"
+            if pass_id in self.stations[station].coming:
+                return f"Station as in_way %{station}"
+        for bus in self.busList:
+            if pass_id in self.busList[bus].passengers:
+                return f"Bus as passenger %{bus}"
+        return False
+        
