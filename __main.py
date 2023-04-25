@@ -756,6 +756,7 @@ def go_forward():
                 fliers.append(tmp)
             if destenation[tmp]["actionType"] == "land":
                 UAVs[tmp].wait_step += 1
+                UAVs[tmp].flied += 1
         # print(i,": flier Count: ........    ",len(fliers))
         # totest = np.array(destenation)
         # print("destinis",[point2Loc(i["loc"]) for i in totest[fliers] ])

@@ -88,6 +88,7 @@ class brain:
                                               inpNodeCount=(int(input_nodes), int(2)))
         self.outGama = 2
         self.Ucount = UAVCount
+        
 
     def Cost_deep(self, stopsList, state, Lines):
         efected_lines = []
@@ -96,7 +97,8 @@ class brain:
             efected_lines.append(line_name)
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
-            choiced = np.random.choice(stopsList)
+            # choiced = np.random.choice(stopsList)
+            choiced = self.greedy(stopsList, state)
         else:
             choiced = ''
             maxRew = 900000
@@ -113,6 +115,24 @@ class brain:
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
         return Cost['sourcefly'] + Cost['transport'] + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
 
+    def greedy(self, stopsList, state):
+        num = self.Ucount
+        soufli = 500
+        mins = []
+        time2wait = []
+        choiced = ''
+        StopsDistances = 50 
+        for stp in stopsList:
+            Lin = rf.findStopLine(int(stp))
+            t, route = rf.find(int(stp), state['destLoc'])
+            Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
+            sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + time2wait[-1]
+            mins.append(sumTime)
+        
+        choiced = stopsList[np.argmin(mins)]
+        return choiced
+
     def decide(self, stopsList, state, Lines):  # out -> str( stopID) Like "78"
         efected_lines = []
         for stp in stopsList:
@@ -120,10 +140,12 @@ class brain:
             efected_lines.append(line_name)
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
-            max_explore = [self.ann[i].explore_rate for i in efected_lines]
-            max_explore = max_explore / np.sum(max_explore)
-            choiced = np.random.choice(stopsList, p=max_explore)
-            # choiced = np.random.choice(stopsList)
+            # max_explore = [self.ann[i].explore_rate for i in efected_lines]
+            # max_explore = max_explore / np.sum(max_explore)
+            # choiced = np.random.choice(stopsList, p=max_explore)
+            
+            choiced = self.greedy(stopsList, state)
+            
             bestInpnodes, stopInDirection = self.__inpCreate(
                 choiced, state, Lines)
         else:
