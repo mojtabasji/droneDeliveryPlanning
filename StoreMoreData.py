@@ -27,7 +27,7 @@ class StoreMore:
     def storedecideParams(self, lr, pathCount, sel_line):
         self.learningRate.append(lr)
         self.existPathCount.append(pathCount)
-        self.selectedLines.append(self.sel_line)
+        self.selectedLines.append(sel_line)
 
     
     def Save2file(self, nameAddation):
