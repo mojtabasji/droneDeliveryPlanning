@@ -7,6 +7,7 @@ class StoreMore:
         self.DepotsUseCount = {}
         self.learningRate = []
         self.existPathCount = []
+        self.selectedLines = []
 
     def setKeyVal(self, key, val):
         self.keyVal[key] = val
@@ -23,9 +24,10 @@ class StoreMore:
         else:
             self.DepotsUseCount[depot_id] = 1
     
-    def storedecideParams(self, lr, pathCount):
+    def storedecideParams(self, lr, pathCount, sel_line):
         self.learningRate.append(lr)
         self.existPathCount.append(pathCount)
+        self.selectedLines.append(self.sel_line)
 
     
     def Save2file(self, nameAddation):

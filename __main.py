@@ -297,14 +297,14 @@ def taskManager():  # TODO Add loadSubSet function and check
                 memid, Sstop, er = rc.decide(stoplist, netState, Lines)
             elif approach == 'algorithm':
                 memid, Sstop = rc.algorithm(stoplist, netState, Lines)
+            selected_line = rf.findStopLine(int(Sstop))
             storeData.setRouteLine(counter, rf.findStopLine(int(Sstop)))
-            storeMore.storedecideParams(er, len(stoplist))
+            storeMore.storedecideParams(er, len(stoplist), selected_line)
             destini = point(*UAVTasks[counter].pop(0))
             nothing, route = rf.find(int(Sstop), destini)
             route = list(map(str, route))
             UAVPath[counter], start_station_with_direction = route2path(route, destini)
             UAVHistory[counter] = memid
-            selected_line = rf.findStopLine(int(Sstop))
             Lines[selected_line].stations[start_station_with_direction].coming.append(counter)
 
 
