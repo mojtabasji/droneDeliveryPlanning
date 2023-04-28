@@ -43,6 +43,7 @@ class StoreMore:
 
         sheet.write(0, 3, 'LR', header_style)
         sheet.write(0, 4, 'PathCnt', header_style)
+        sheet.write(0, 5, 'Selected line', header_style)
 
         rowCounter = 1
         for d in self.DepotsUseCount:
@@ -58,5 +59,6 @@ class StoreMore:
         for i in range(len(self.learningRate)):
             sheet.write(i+1,3, self.learningRate[i])
             sheet.write(i+1,4, self.existPathCount[i])
+            sheet.write(i+1,5, self.selectedLines[i])
         
         workbook.save('moreData'+ str(nameAddation) +'.xls')
