@@ -90,6 +90,7 @@ ReqSubSet_len = 10
 Depots = []
 unreachablePoints = []
 requestConf_id = 1
+back2depotCount = 0
 
 images = []
 colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -532,6 +533,8 @@ def go_forward():
     global showImage
     global finisher
     global Lines
+    global MaxFlyDist
+    global back2depotCount
     monitoring = 0
     takePic = False
     finisher = False
@@ -575,6 +578,9 @@ def go_forward():
         for tmp in range(UAVCount):
             if UAVs[tmp].delay:
                 storeData.incrementStep(tmp)
+            elif destenation[tmp]["actionType"] == "back2depot":
+                UAVs[tmp].status = 0
+
             elif destenation[tmp]["actionType"] == "finish":
                 UAVs[tmp].status = 0
                 print(printCounter, ": hey, I'm ", tmp, " in destination. (",
@@ -757,6 +763,23 @@ def go_forward():
             if destenation[tmp]["actionType"] == "land":
                 UAVs[tmp].wait_step += 1
                 UAVs[tmp].flied += 1
+                if UAVs[tmp].wait_step >= MaxFlyDist/2:
+                    goolBS = destenation[tmp]['loc']
+                    current_line = map_station2line(goolBS)
+                    if tmp in Lines[current_line].stations[goolBS].passengers:
+                        Lines[current_line].stations[goolBS].passengers.remove(tmp)
+
+                    destenation[tmp]["actionType"] = "fly"
+                    min_dist = 3000
+                    for dep in Depots:
+                        if dep.loc.distance(UAVs[tmp].loc) < min_dist:
+                            best_dep = dep
+                            min_dist = dep.loc.distance(UAVs[tmp].loc)
+                    destenation[tmp]["loc"] = best_dep.loc
+                    UAVPath[tmp] = [{'actionType': 'back2depot'}]
+                    print("One more back 2 depot")
+                    back2depotCount += 1
+
         # print(i,": flier Count: ........    ",len(fliers))
         # totest = np.array(destenation)
         # print("destinis",[point2Loc(i["loc"]) for i in totest[fliers] ])
@@ -860,6 +883,8 @@ class DegubTools:
 # Starter
 if __name__ == "__main__":
 
+    print("have vars: ", back2depotCount)
+
     # sumo config
     options = get_options()
 
@@ -881,6 +906,7 @@ if __name__ == "__main__":
     __loadBrain()
     go_forward()
     print("--- %s seconds ---" % (time.time() - start_time))
+    print("Back 2 depot count : ", back2depotCount)
 
     '''pic = open('picpath.json','w')
     pic.write(json.dumps(images))'''
