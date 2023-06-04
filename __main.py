@@ -150,7 +150,7 @@ def dpCost(depot, checkLen=None):
         if approach == 'fairnessDecide':
             tmpCostVal, fly_Coust = rc.Cost_fairness(stoplist, netState, Lines)
         elif approach == 'greedlyDecide':
-            tmpCostVal, fly_Coust = rc.greedy(stoplist, netState, lines=Lines)
+            tmpCostVal, fly_Coust = rc.cost_greedy(stoplist, netState, lines=Lines)
         elif approach == 'TimingDecide':
             tmpCostVal, fly_Coust = rc.Cost_Timing(stoplist, netState, Lines)
         elif approach == 'deepDecide':
@@ -202,7 +202,7 @@ def choiseTaskFromSubset(UAV_id, flied):
             if approach == 'fairnessDecide':
                 tmpCostVal, fly_count_c2d = rc.Cost_fairness(stoplist, netState, Lines)
             elif approach == 'greedlyDecide':
-                tmpCostVal, fly_count_c2d = rc.greedy(stoplist, netState, lines=Lines)
+                tmpCostVal, fly_count_c2d = rc.cost_greedy(stoplist, netState, lines=Lines)
             elif approach == 'TimingDecide':
                 tmpCostVal, fly_count_c2d = rc.Cost_Timing(stoplist, netState, Lines)
             elif approach == 'deepDecide':
@@ -292,7 +292,8 @@ def taskManager():  # TODO Add loadSubSet function and check
             if approach == 'fairnessDecide':
                 memid, Sstop = rc.fairnessDecide(stoplist, netState, Lines)
             elif approach == 'greedlyDecide':
-                memid, Sstop = rc.greedy(stoplist, netState, lines=Lines)
+                Sstop = rc.greedy(stoplist, netState, lines=Lines)
+                memid = 1
             elif approach == 'TimingDecide':
                 memid, Sstop = rc.TimingDecide(stoplist, netState, Lines)
             elif approach == 'deepDecide':

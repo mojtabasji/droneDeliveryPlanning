@@ -115,6 +115,26 @@ class brain:
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
         return Cost['sourcefly'] + Cost['transport'] + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
 
+    def cost_greedy(self, stopsList, state, lines=None):
+        num = self.Ucount
+        soufli = 500
+        mins = []
+        time2wait = []
+        choiced = ''
+        StopsDistances = 50 
+        for stp in stopsList:
+            Lin = rf.findStopLine(int(stp))
+            t, route = rf.find(int(stp), state['destLoc'])
+            Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
+            sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + time2wait[-1]
+            mins.append(sumTime)
+        
+        choiced = stopsList[np.argmin(mins)]
+        t, route = rf.find(int(choiced), state['destLoc'])
+        Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+        return Cost['sourcefly'] + Cost['transport'] + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
+    
     def greedy(self, stopsList, state, lines=None):
         num = self.Ucount
         soufli = 500
