@@ -10,6 +10,7 @@ class UAV:
         self.wait_step = 0
         self.stepet = 0
         self.delay = 0
+        self.flayFail = False
 
 
 class Bus:

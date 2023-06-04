@@ -74,7 +74,7 @@ def point2Loc(pnt):
 
 config = json.load(open('config.json'))
 # Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
-approach = 'deepDecide'
+approach =  'greedlyDecide' # 'deepDecide'
 loadModel = False
 showImage = False
 UAVs = []
@@ -91,6 +91,7 @@ Depots = []
 unreachablePoints = []
 requestConf_id = 1
 back2depotCount = 0
+flyFailerCount = 0
 
 images = []
 colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -149,7 +150,7 @@ def dpCost(depot, checkLen=None):
         if approach == 'fairnessDecide':
             tmpCostVal, fly_Coust = rc.Cost_fairness(stoplist, netState, Lines)
         elif approach == 'greedlyDecide':
-            tmpCostVal, fly_Coust = rc.greedlyDecide(stoplist, netState, Lines)
+            tmpCostVal, fly_Coust = rc.greedy(stoplist, netState, lines=Lines)
         elif approach == 'TimingDecide':
             tmpCostVal, fly_Coust = rc.Cost_Timing(stoplist, netState, Lines)
         elif approach == 'deepDecide':
@@ -201,7 +202,7 @@ def choiseTaskFromSubset(UAV_id, flied):
             if approach == 'fairnessDecide':
                 tmpCostVal, fly_count_c2d = rc.Cost_fairness(stoplist, netState, Lines)
             elif approach == 'greedlyDecide':
-                tmpCostVal, fly_count_c2d = rc.greedlyDecide(stoplist, netState, Lines)
+                tmpCostVal, fly_count_c2d = rc.greedy(stoplist, netState, lines=Lines)
             elif approach == 'TimingDecide':
                 tmpCostVal, fly_count_c2d = rc.Cost_Timing(stoplist, netState, Lines)
             elif approach == 'deepDecide':
@@ -291,7 +292,7 @@ def taskManager():  # TODO Add loadSubSet function and check
             if approach == 'fairnessDecide':
                 memid, Sstop = rc.fairnessDecide(stoplist, netState, Lines)
             elif approach == 'greedlyDecide':
-                memid, Sstop = rc.greedlyDecide(stoplist, netState, Lines)
+                memid, Sstop = rc.greedy(stoplist, netState, lines=Lines)
             elif approach == 'TimingDecide':
                 memid, Sstop = rc.TimingDecide(stoplist, netState, Lines)
             elif approach == 'deepDecide':
@@ -535,6 +536,7 @@ def go_forward():
     global Lines
     global MaxFlyDist
     global back2depotCount
+    global flyFailerCount
     monitoring = 0
     takePic = False
     finisher = False
@@ -574,6 +576,7 @@ def go_forward():
                 UAVs[ctr].stepet = 0
                 UAVs[ctr].wait_step = 0
                 UAVs[ctr].flied = 0
+                UAVs[ctr].flayFail = False
 
         for tmp in range(UAVCount):
             if UAVs[tmp].delay:
@@ -760,6 +763,11 @@ def go_forward():
             if destenation[tmp]["actionType"] == "fly":
                 UAVs[tmp].flied += 1
                 fliers.append(tmp)
+                # add if fly failed
+                if UAVs[tmp].flied > MaxFlyDist and UAVs[tmp].flayFail == False:
+                    UAVs[tmp].flayFail = True
+                    flyFailerCount += 1
+
             if destenation[tmp]["actionType"] == "land":
                 UAVs[tmp].wait_step += 1
                 UAVs[tmp].flied += 1
@@ -883,7 +891,7 @@ class DegubTools:
 # Starter
 if __name__ == "__main__":
 
-    print("have vars: ", back2depotCount)
+    print("have vars: ", back2depotCount, flyFailerCount)
 
     # sumo config
     options = get_options()
@@ -907,6 +915,12 @@ if __name__ == "__main__":
     go_forward()
     print("--- %s seconds ---" % (time.time() - start_time))
     print("Back 2 depot count : ", back2depotCount)
+
+    moreData2json = {"back2depotCount": back2depotCount, "flyFailerCount":flyFailerCount}
+    jsonString = json.dumps(moreData2json)
+    jsonFile = open("moreInJson_"+str(UAVCount)+"_"+str(len(Depots))+".json", "w")
+    jsonFile.write(jsonString)
+    jsonFile.close()
 
     '''pic = open('picpath.json','w')
     pic.write(json.dumps(images))'''

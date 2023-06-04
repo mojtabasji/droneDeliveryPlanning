@@ -115,7 +115,7 @@ class brain:
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
         return Cost['sourcefly'] + Cost['transport'] + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
 
-    def greedy(self, stopsList, state):
+    def greedy(self, stopsList, state, lines=None):
         num = self.Ucount
         soufli = 500
         mins = []
