@@ -74,7 +74,7 @@ def point2Loc(pnt):
 
 config = json.load(open('config.json'))
 # Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
-approach =  'greedlyDecide' # 'deepDecide'
+approach =  'deepDecide' # 'deepDecide'
 loadModel = False
 showImage = False
 UAVs = []

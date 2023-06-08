@@ -35,7 +35,7 @@ class ANN:
         mdl.add(Dense(300, input_shape=self.inpNodeCount, activation='relu'))
         mdl.add(Dense(1000, activation='linear'))
         mdl.add(Flatten())
-        mdl.add(Dense(1, activation='softplus'))  # linear softmax  sigmoid
+        mdl.add(Dense(1, activation='linear'))  # linear softmax  sigmoid  softplus
         mdl.compile(loss='mse', optimizer=Adam(learning_rate=0.002),
                     metrics=['mae', 'mse'])  # optimizer='rmsprop'
         return mdl
@@ -181,9 +181,14 @@ class brain:
                 x_predict = np.reshape(inpnodes, (1, *self.ann[line_name].inpNodeCount))
                 pval = self.ann[line_name].predict(x_predict)
                 print('pval is: ', pval)
+                
+                t, route = rf.find(int(stp), state['destLoc'])
+                Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+                sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + pval[0][0]
+                
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
-                if pval[0][0] < maxRew:
-                    maxRew = pval
+                if sumTime < maxRew:
+                    maxRew = sumTime
                     choiced = stp
                     choicedStopInDirection = stopInDirection
                     bestInpnodes = inpnodes
