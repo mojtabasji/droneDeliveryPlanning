@@ -7,7 +7,7 @@ from point import point
 import routeFinding as rf
 from keras import models
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Dropout, Flatten, Reshape
 from tensorflow.keras.optimizers import Adam
 import numpy as np
 import random
@@ -32,9 +32,11 @@ class ANN:
 
     def __build_model(self):
         mdl = Sequential()
-        mdl.add(Dense(300, input_shape=self.inpNodeCount, activation='relu'))
-        mdl.add(Dense(1000, activation='linear'))
-        mdl.add(Flatten())
+        # mdl.add(Dense(300, input_shape=self.inpNodeCount, activation='relu'))
+        # mdl.add(Flatten())
+        mdl.add(Reshape((self.inpNodeCount[0] * self.inpNodeCount[1],), input_shape=self.inpNodeCount))
+        mdl.add(Dense(300, activation='relu'))
+        mdl.add(Dense(1000, activation='softplus'))
         mdl.add(Dense(1, activation='linear'))  # linear softmax  sigmoid  softplus
         mdl.compile(loss='mse', optimizer=Adam(learning_rate=0.002),
                     metrics=['mae', 'mse'])  # optimizer='rmsprop'
@@ -107,9 +109,14 @@ class brain:
                 line_name = rf.findStopLine(int(stp))
                 X_predict = np.reshape(inpnodes, (1, *self.ann[line_name].inpNodeCount))
                 pval = self.ann[line_name].predict(X_predict)
+                
+                t, route = rf.find(int(stp), state['destLoc'])
+                Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+                sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + pval[0][0]
+                
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
-                if pval[0][0] < maxRew:
-                    maxRew = pval
+                if sumTime < maxRew:
+                    maxRew = sumTime
                     choiced = stp
         t, route = rf.find(int(choiced), state['destLoc'])
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
