@@ -47,6 +47,10 @@ class StoreData:
             self.__storeOptions[Uid] = 1
         elif opt == "Source_fly":
             self.__storeOptions[Uid] = 0
+            
+    def resetStepsData(self, UId):
+        self.__stepCounter[UId] = 0
+        self.__storeOptions[UId] = 0
 
 
     def setRouteLine(self,UId, Line):

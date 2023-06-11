@@ -584,6 +584,8 @@ def go_forward():
                 storeData.incrementStep(tmp)
             elif destenation[tmp]["actionType"] == "back2depot":
                 UAVs[tmp].status = 0
+                UAVTasks[tmp]= []
+                storeData.resetStepsData(tmp)
 
             elif destenation[tmp]["actionType"] == "finish":
                 UAVs[tmp].status = 0
