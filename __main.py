@@ -26,6 +26,7 @@ import routeFinding as rf
 import routeController as RC
 import findNearStops as fns
 from datetime import datetime
+import yaml
 
 
 class MyCTable:
@@ -72,9 +73,16 @@ def point2Loc(pnt):
     return [pnt.x, pnt.y]
 
 
+with open('conf.yaml', 'r') as file:
+    yaml_data = yaml.load(file, Loader=yaml.FullLoader)
+
+
 config = json.load(open('config.json'))
 # Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
-approach =  'deepDecide' # 'deepDecide'
+approach =  'deepDecide' if yaml_data['DECISION_APPROACH'] == 'DEEP' else 'greedlyDecide'
+requestConf_id = yaml_data['COSTUMER_DEST']
+
+
 loadModel = False
 showImage = False
 UAVs = []
@@ -89,7 +97,6 @@ ReqSubSet = []
 ReqSubSet_len = 30
 Depots = []
 unreachablePoints = []
-requestConf_id = 1
 back2depotCount = 0
 flyFailerCount = 0
 
@@ -473,12 +480,13 @@ def loadConfig():
     global Lines_json
 
     Env_dim = int(traci.simulation.getNetBoundary()[1][0] / 10)
-    UAVCount = config['UAVCount']
+    # UAVCount = config['UAVCount']
+    UAVCount = yaml_data['UAVS_COUNT']
     MaxFlyDist = config['MaxFlyDist']
     BusMaxCap = config['BusMaxCap']
     group_uperbound = config["group_uperbound"]
     BusStopsLoc = config["BusStopsLoc"]
-    tmpDepots = config["Depots"]
+    tmpDepots = config["3_Depots"] if yaml_data['DEPOT_DEST'] == 1 else config["4_Depots"]
     Depots = [Depot(iD, point(tmpDepots[iD]['x'], tmpDepots[iD]['y'])) for iD in tmpDepots]
     BusStopStatus = {iD: BusStop(iD, point(*loc2point(BusStopsLoc[iD]))) for iD in BusStopsLoc}
     UAVTasks = [[] for i in range(UAVCount)]
@@ -519,7 +527,7 @@ def map_station2line(station_id):  # station_id = 79
 
 
 def setUavs():
-    UAV_conf = config['UAVs']
+    UAV_conf = config['3_UAVs'] if yaml_data['DEPOT_DEST'] == 1 else config['4_UAVs']
     for i in range(1, UAVCount + 1):
         UAVs.append(
             UAV(Depots[UAV_conf[f"{i}"]['depot'] - 1].loc, i))
