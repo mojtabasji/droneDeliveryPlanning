@@ -88,7 +88,7 @@ showImage = False
 UAVs = []
 # reachTimeStoreXl = []
 episod = 9999999
-reach2finish = 20000
+reach2finish = yaml_data['COSTUMER_COUNT'] * 2
 workingTime = 60000
 finisher = None
 BussList = {}
@@ -266,7 +266,7 @@ def taskManager():  # TODO Add loadSubSet function and check
             Uav_request[counter] = request_id
             request_id += 1
             stoplist = []
-            if len(UAVTasks[counter]) == 0:
+            if len(UAVTasks[counter]) == 0 or UAVTasks[counter][0] == None :
 
                 if (not isnan(finisher)) and finisher:
                     return
@@ -275,6 +275,7 @@ def taskManager():  # TODO Add loadSubSet function and check
                 storeMore.increaseDepotUsed(str(choisedDepot))
                 if point(*UAVTasks[counter][0]) == UAVs[counter].loc:
                     UAVTasks[counter].pop(0)
+                    UAVTasks[counter].append(None)
 
                 '''T_task = requests.pop(0)
                 UAVs[counter].loc = point(*T_task.pop(0))
@@ -483,7 +484,8 @@ def loadConfig():
     # UAVCount = config['UAVCount']
     UAVCount = yaml_data['UAVS_COUNT']
     MaxFlyDist = config['MaxFlyDist']
-    BusMaxCap = config['BusMaxCap']
+    # BusMaxCap = config['BusMaxCap']
+    BusMaxCap = yaml_data['BUS_CAPACITY']
     group_uperbound = config["group_uperbound"]
     BusStopsLoc = config["BusStopsLoc"]
     tmpDepots = config["3_Depots"] if yaml_data['DEPOT_DEST'] == 1 else config["4_Depots"]
@@ -494,6 +496,8 @@ def loadConfig():
     f = open('requestConf' + str(requestConf_id) + '.json', 'r')
     requests = json.load(f)
     f.close()
+    # split some first items from requests 
+    requests = [ requests[i] for i in range(yaml_data['COSTUMER_COUNT'] + UAVCount) ]
     lineFile = open('lineConfig.json')
     Lines_json = json.load(lineFile)
     lineFile.close()
@@ -782,7 +786,8 @@ def go_forward():
             if destenation[tmp]["actionType"] == "land":
                 UAVs[tmp].wait_step += 1
                 UAVs[tmp].flied += 1
-                if UAVs[tmp].wait_step >= MaxFlyDist/2:
+                # if wait too much return to depot 
+                if UAVs[tmp].wait_step >= MaxFlyDist/2 and len(UAVTasks[tmp]) > 0:
                     goolBS = destenation[tmp]['loc']
                     current_line = map_station2line(goolBS)
                     if tmp in Lines[current_line].stations[goolBS].passengers:
@@ -795,6 +800,10 @@ def go_forward():
                             best_dep = dep
                             min_dist = dep.loc.distance(UAVs[tmp].loc)
                     destenation[tmp]["loc"] = best_dep.loc
+                    # return UAV's costumer to request list
+                    costomer_location_point = UAVPath[tmp][-2]["loc"]
+                    requests.append([costomer_location_point.x, costomer_location_point.y])
+                    # reset UAV's path
                     UAVPath[tmp] = [{'actionType': 'back2depot'}]
                     print("One more back 2 depot")
                     back2depotCount += 1
