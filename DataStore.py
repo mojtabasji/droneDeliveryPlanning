@@ -12,20 +12,27 @@ class StoreData:
         self.__UAVReach = [0 for i in range(UAV_count)]
         self.__routeLine = [None for i in range(UAV_count)]
         self.__ConditionCounter = 0
+        self.__pathType = [None for i in range(UAV_count)]
+        self.__costumer_id = [None for i in range(UAV_count)]
+        self.__depot_id = [None for i in range(UAV_count) ]
 
     def storeLineCondition(self, status):
         self.__memory['status'].append(status)
 
-    def storeTiming(self, rowIndex, UId): # (rowNumber, Uid, )
+    def storeTiming(self, rowIndex, UId, timeSlot=None): # (rowNumber, Uid, )
         if rowIndex >= len(self.__memory['timing']):
             for i in range(rowIndex - len(self.__memory['timing']) + 1):
-                self.__memory['timing'].append([None, None, None ,None, None, None, None, None])
+                self.__memory['timing'].append([None, None, None ,None, None, None, None, None, None, None])
         if self.__storeOptions[UId] == 4:
-            self.__memory['timing'][rowIndex][4] = self.__Reachs
+            # self.__memory['timing'][rowIndex][4] = self.__Reachs
+            self.__memory['timing'][rowIndex][4] = self.__depot_id[UId]
             self.__UAVReach[UId] += 1
-            self.__memory['timing'][rowIndex][5] = self.__UAVReach[UId]
+            # self.__memory['timing'][rowIndex][5] = self.__UAVReach[UId]
+            self.__memory['timing'][rowIndex][5] = self.__costumer_id[UId]
             self.__memory['timing'][rowIndex][6] = self.__routeLine[UId]
             self.__memory['timing'][rowIndex][7] = UId
+            self.__memory['timing'][rowIndex][8] = self.__pathType[UId]
+            self.__memory['timing'][rowIndex][9] = timeSlot
         else:
             if self.__memory['timing'][rowIndex][self.__storeOptions[UId]] == None:
                 self.__memory['timing'][rowIndex][self.__storeOptions[UId]] = self.__stepCounter[UId]
@@ -39,6 +46,18 @@ class StoreData:
 
     def increseReachs(self):
         self.__Reachs += 1
+
+    def setPathType(self, UId, pathType):
+        if pathType == 0:
+            self.__pathType[UId] = "2Costumer"
+        elif pathType == 1:
+            self.__pathType[UId] = "2Depot"
+            
+    def setCostumer_id(self, UId, c_id):
+        self.__costumer_id[UId] = c_id
+        
+    def setDepot_id(self, UId, d_id):
+        self.__depot_id[UId] = d_id
 
     def resetStoreOption(self, Uid, opt):
         if opt == "transport":
@@ -55,6 +74,9 @@ class StoreData:
 
     def setRouteLine(self,UId, Line):
         self.__routeLine[UId] = Line
+        
+    def get_steps(self, UId):
+        return self.__stepCounter[UId]
 
     def SaveToFile(self, nameAddation):
         pageNumber = 1
@@ -69,10 +91,14 @@ class StoreData:
         sheet.write(0, 1, 'waiting', header_style)
         sheet.write(0, 2, 'transport', header_style)
         sheet.write(0, 3, 'destFly', header_style)
-        sheet.write(0, 4, 'reach order', header_style)
-        sheet.write(0, 5, 'task Counter', header_style)
+        # sheet.write(0, 4, 'reach order', header_style)
+        sheet.write(0, 4, 'Depot id', header_style)
+        # sheet.write(0, 5, 'task Counter', header_style)
+        sheet.write(0, 5, 'costumer number', header_style)
         sheet.write(0, 6, 'usedLine', header_style)
         sheet.write(0, 7, 'UAV ID', header_style)
+        sheet.write(0, 8, 'path type', header_style)
+        sheet.write(0, 9, 'time slot', header_style)
 
         spaceBitween = 10
         for i in range(int(len(self.__memory['status'][0]) / 6)):
@@ -94,6 +120,8 @@ class StoreData:
             sheet.write(rowId, 5, content[5])
             sheet.write(rowId, 6, content[6])
             sheet.write(rowId, 7, content[7])
+            sheet.write(rowId, 8, content[8])
+            sheet.write(rowId, 9, content[9])
             rowId += 1
 
         rowId = 1

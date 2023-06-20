@@ -222,11 +222,10 @@ class brain:
         # inpnodes = np.divide(inpnodes, self.normalizerValues)
         return np.array(inpnodes, np.float16), 0
 
-    def saveData(self, memid, Flystep, wholestep):
+    def saveData(self, memid, wholestep):
         for i in self.temporalMemory:
             if i['id'] == memid:
                 self.ann[i['line']].MemoryX.append(deepcopy(i['value']))
-                # ((1/Flystep) * self.outGama) + (1/wholestep))
                 self.ann[i['line']].MemoryY.append(wholestep)
                 self.temporalMemory.remove(i)
                 break

@@ -38,7 +38,7 @@ class MyCTable:
         self.FullCost_mem[d_id] = fullCostArray
         self.FlyCost_mem[d_id] = flyCostArray
 
-    def DropOuters(self):
+    def DropOuters(self):   # remove costumer if is out of reach from depots
         ousterListForRemove = []
         for i in range(len(self.FlyCost_mem[0])):
             sumCostsPearDep = 0
@@ -99,6 +99,7 @@ Depots = []
 unreachablePoints = []
 back2depotCount = 0
 flyFailerCount = 0
+costumer_id = 0
 
 images = []
 colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -229,15 +230,15 @@ def choiseTaskFromSubset(UAV_id, flied):
     minCosts = []
     faild = False
     for d in range(len(Depots)):
-        if MytempCostTable.getMinVal(d) == -1:
+        if MytempCostTable.getMinVal(d) == -1:  # if all costumer removed it's mean for all depot removed
             faild = True
             break
         minCosts.append(finalRes[d] + MytempCostTable.getMinVal(d))
     if faild:
         return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
     bestDep_id = np.argmin(minCosts)
-    if finalRes[bestDep_id] > 5500:
-        return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
+    # if finalRes[bestDep_id] > 5500:     # uav locked in costumer location and it seems that can't reach any depot 
+    #     return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
     bestReq_id = MytempCostTable.getMinInd(bestDep_id)
 
     result = [[Depots[bestDep_id].loc.x, Depots[bestDep_id].loc.y], requests.pop(bestReq_id)]
@@ -253,6 +254,8 @@ def taskManager():  # TODO Add loadSubSet function and check
     global Lines
     global Lines_json
     global BusStopStatus
+    global costumer_id
+    
     for counter in range(UAVCount):
         if UAVs[counter].delay > 1:
             UAVs[counter].delay -= 1
@@ -260,31 +263,41 @@ def taskManager():  # TODO Add loadSubSet function and check
             continue
         if UAVs[counter].delay == 1:
             UAVs[counter].delay = 0
-        if not UAVs[counter].status:  # be 0 mean subtask done
+        if not UAVs[counter].status:  # be 0 mean subtask done      # reached to depot or costumer 
             global request_id
             print(counter, ": --- %s seconds ---" % (time.time() - start_time))
             Uav_request[counter] = request_id
             request_id += 1
             stoplist = []
-            if len(UAVTasks[counter]) == 0 or UAVTasks[counter][0] == None :
+            if len(UAVTasks[counter]) == 0 or UAVTasks[counter][0] == None :    # if UAV is in costumer location and need cdC' task
 
                 if (not isnan(finisher)) and finisher:
                     return
 
                 UAVTasks[counter], choisedDepot = choiseTaskFromSubset(counter, UAVs[counter].flied)
                 storeMore.increaseDepotUsed(str(choisedDepot))
-                if point(*UAVTasks[counter][0]) == UAVs[counter].loc:
+                if point(*UAVTasks[counter][0]) == UAVs[counter].loc: # if UAV in depot. in initial state
                     UAVTasks[counter].pop(0)
                     UAVTasks[counter].append(None)
+                    storeData.setPathType(counter, 0)
+                    storeData.setCostumer_id(counter, costumer_id)
+                    costumer_id += 1
+                else:
+                    storeData.setPathType(counter, 1)
+                storeData.setDepot_id(counter, choisedDepot)
 
                 '''T_task = requests.pop(0)
                 UAVs[counter].loc = point(*T_task.pop(0))
                 UAVTasks[counter] = T_task'''
 
-            # End if
+            else:   # uav is in depot and recharge battery
+                UAVs[counter].flied = 0
+                storeData.setPathType(counter, 0)
+                storeData.setCostumer_id(counter, costumer_id)
+                costumer_id += 1
 
             stoplist = fns.nearStops(UAVs[counter].loc, int(MaxFlyDist * 0.45))
-            stoplist = fns.reviewNearStops(UAVs[counter].loc, stoplist, Lines_json, BusStopStatus)
+            stoplist = fns.reviewNearStops(UAVs[counter].loc, stoplist, Lines_json, BusStopStatus)  # just keep 2 stop in each line
 
             hiperPower = 0
             while not len(stoplist):
@@ -588,7 +601,7 @@ def go_forward():
                 UAVs[ctr].status = 1
                 UAVs[ctr].stepet = 0
                 UAVs[ctr].wait_step = 0
-                UAVs[ctr].flied = 0
+                # UAVs[ctr].flied = 0   # should not set here for every path, just for first path (set in taskManager)
                 UAVs[ctr].flayFail = False
 
         for tmp in range(UAVCount):
@@ -605,10 +618,9 @@ def go_forward():
                       UAVs[tmp].loc.x, ", ", UAVs[tmp].loc.y, ") ..|:)", ' with ', UAVs[tmp].stepet, ' whole step and ',
                       UAVs[tmp].flied, " fly step")
                 if approach == 'deepDecide':
-                    rc.saveData(UAVHistory[tmp],
-                                UAVs[tmp].flied, UAVs[tmp].wait_step)  # UAVs[tmp].stepet)
+                    rc.saveData(UAVHistory[tmp], UAVs[tmp].wait_step)  # UAVs[tmp].stepet)
 
-                storeData.storeTiming(Uav_request[tmp], tmp)
+                storeData.storeTiming(Uav_request[tmp], tmp, timeSlot=i)
                 storeData.increseReachs()
                 # sheet.write(Uav_request[tmp], 0, printCounter)
                 # sheet.write(Uav_request[tmp], 1, UAVs[tmp].stepet)
