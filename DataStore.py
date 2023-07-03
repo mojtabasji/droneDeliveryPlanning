@@ -47,11 +47,17 @@ class StoreData:
     def increseReachs(self):
         self.__Reachs += 1
 
-    def setPathType(self, UId, pathType):
+    def setPathType(self, UId, pathType, rowIndex=None):
         if pathType == 0:
             self.__pathType[UId] = "2Costumer"
         elif pathType == 1:
             self.__pathType[UId] = "2Depot"
+        elif pathType == 2:
+            self.__memory['timing'][rowIndex][7] = UId
+            self.__memory['timing'][rowIndex][8] = "back2depot"
+        elif pathType == 3:
+            self.__pathType[UId] = "Depot2Depot"
+            
             
     def setCostumer_id(self, UId, c_id):
         self.__costumer_id[UId] = c_id
@@ -77,6 +83,18 @@ class StoreData:
         
     def get_steps(self, UId):
         return self.__stepCounter[UId]
+
+
+    def sort_array_column_wise(self, arr, col):
+        size = len(arr)
+        for i in range(size):
+            for j in range(size - i - 1):
+                if arr[j][col] == None or (arr[j + 1][col] != None and arr[j][col] > arr[j + 1][col]):
+                    temp = arr[j]
+                    arr[j] = arr[j + 1]
+                    arr[j + 1] = temp
+        return arr
+
 
     def SaveToFile(self, nameAddation):
         pageNumber = 1
@@ -110,8 +128,9 @@ class StoreData:
             sheet.write(0,4 + colindex,'L '+str(i)+' onLine' ) 
             sheet.write(0,5 + colindex,'L '+str(i)+' onLineR' ) 
         
+        sortedFirstPart = self.sort_array_column_wise(self.__memory['timing'], 9)
         rowId =1
-        for content in self.__memory['timing']:
+        for content in sortedFirstPart:
             sheet.write(rowId, 0, content[0])
             sheet.write(rowId, 1, content[1])
             sheet.write(rowId, 2, content[2])

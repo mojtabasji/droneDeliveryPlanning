@@ -283,7 +283,10 @@ def taskManager():  # TODO Add loadSubSet function and check
                     storeData.setCostumer_id(counter, costumer_id)
                     costumer_id += 1
                 else:
-                    storeData.setPathType(counter, 1)
+                    if Uav_request[counter] < UAVCount:
+                        storeData.setPathType(counter, 3)
+                    else:
+                        storeData.setPathType(counter, 1)
                 storeData.setDepot_id(counter, choisedDepot)
 
                 '''T_task = requests.pop(0)
@@ -805,6 +808,7 @@ def go_forward():
                     if tmp in Lines[current_line].stations[goolBS].passengers:
                         Lines[current_line].stations[goolBS].passengers.remove(tmp)
 
+                    storeData.setPathType(tmp, 2, rowIndex=Uav_request[tmp])
                     destenation[tmp]["actionType"] = "fly"
                     min_dist = 3000
                     for dep in Depots:
