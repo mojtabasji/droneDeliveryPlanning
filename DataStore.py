@@ -1,4 +1,5 @@
 import xlwt
+import time
 
 
 class StoreData:
@@ -156,4 +157,4 @@ class StoreData:
                 rowId = 0
             rowId +=1
 
-        workbook.save('operations_'+ str(nameAddation) +'.xls')
+        workbook.save('result/operations_'+ str(nameAddation) + "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +'.xls')

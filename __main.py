@@ -954,7 +954,7 @@ if __name__ == "__main__":
 
     moreData2json = {"back2depotCount": back2depotCount, "flyFailerCount":flyFailerCount}
     jsonString = json.dumps(moreData2json)
-    jsonFile = open("moreInJson_"+str(UAVCount)+"_"+str(len(Depots))+".json", "w")
+    jsonFile = open("result/moreInJson_"+str(UAVCount)+"_"+str(len(Depots))+ "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +".json", "w")
     jsonFile.write(jsonString)
     jsonFile.close()
 

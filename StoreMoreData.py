@@ -1,5 +1,5 @@
 import xlwt
-
+import time
 
 class StoreMore:
     def __init__(self) -> None:
@@ -61,4 +61,4 @@ class StoreMore:
             sheet.write(i+1,4, self.existPathCount[i])
             sheet.write(i+1,5, self.selectedLines[i])
         
-        workbook.save('moreData'+ str(nameAddation) +'.xls')
+        workbook.save('result/moreData'+ str(nameAddation) + "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +'.xls')
