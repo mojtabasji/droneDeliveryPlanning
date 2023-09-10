@@ -15,6 +15,9 @@ import re
 import os
 
 
+TRANSPORT_REDUCE = 0.6
+
+
 class ANN:
     def __init__(self, line_num=0, line_count=1, UAVCount=0, inpNodeCount=1):
         self.lineNum = line_num
@@ -112,7 +115,7 @@ class brain:
                 
                 t, route = rf.find(int(stp), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-                sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + pval[0][0]
+                sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + pval[0][0]
                 
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                 if sumTime < maxRew:
@@ -120,7 +123,7 @@ class brain:
                     choiced = stp
         t, route = rf.find(int(choiced), state['destLoc'])
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-        return Cost['sourcefly'] + Cost['transport'] + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
+        return Cost['sourcefly'] +(Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
 
     def cost_greedy(self, stopsList, state, lines=None):
         num = self.Ucount
@@ -134,13 +137,13 @@ class brain:
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
             time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
-            sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + time2wait[-1]
+            sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
             mins.append(sumTime)
         
         choiced = stopsList[np.argmin(mins)]
         t, route = rf.find(int(choiced), state['destLoc'])
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-        return Cost['sourcefly'] + Cost['transport'] + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
+        return Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
     
     def greedy(self, stopsList, state, lines=None):
         num = self.Ucount
@@ -154,7 +157,7 @@ class brain:
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
             time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
-            sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + time2wait[-1]
+            sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
             mins.append(sumTime)
         
         choiced = stopsList[np.argmin(mins)]
@@ -191,7 +194,7 @@ class brain:
                 
                 t, route = rf.find(int(stp), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-                sumTime = Cost['destfly'] + Cost['sourcefly'] + Cost['transport'] + pval[0][0]
+                sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + pval[0][0]
                 
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                 if sumTime < maxRew:

@@ -11,6 +11,7 @@ class UAV:
         self.stepet = 0
         self.delay = 0
         self.flayFail = False
+        self.start_from = "depot"
 
 
 class Bus:
@@ -19,7 +20,7 @@ class Bus:
         self.passengers = []
         self.line = Line
         self.direction = 0
-        self.loc = location
+        self.loc = location     # point
         self.lastStop = lasStp
 
     def setLast(self, bs):
@@ -90,7 +91,10 @@ class Line_class:
         self.stations[ID] = BusStop(ID, location)
 
     def addBus(self, bus_id, bus_line, bus_loc, bus_lastStop=None):
-        self.busList[bus_id] =  Bus(bus_id, bus_line, bus_loc, bus_lastStop)
+        self.busList[bus_id] = Bus(bus_id, bus_line, bus_loc, bus_lastStop)
+
+    def get_bus_locations(self):
+        return [self.busList[bus].loc for bus in self.busList]
 
     def get_bus_station_count(self):
         return len(self.stations)
