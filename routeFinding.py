@@ -92,9 +92,8 @@ def __treeSearch(reachStop, Sline, dest, passedLines, route): # have problem
     else:
         return gdist, troute'''
 
-    
 
-def findStopLine(stp): # args Like => (int 121 ) -> string 'line4'
+def findStopLine(stp: int) -> str: # args Like => (int 121 ) -> string 'line4'
     for i in lines:
         if stp in lines[i]["stops"]:
             return i

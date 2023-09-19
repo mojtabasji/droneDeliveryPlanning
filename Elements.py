@@ -34,7 +34,7 @@ class BusStop:
     def __init__(self, Name, location) -> None:
         self.passengers = []
         self.coming = []
-        self.successRate = 1
+        self.success_rate = 1
         self.calCount = 1
         self.name = Name
         self.loc = location

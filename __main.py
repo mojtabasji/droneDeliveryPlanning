@@ -1,4 +1,4 @@
-from cmath import isnan
+from typing import List
 import keyboard
 import time
 import json
@@ -18,6 +18,7 @@ from uav_tjp import uav_tjp
 import routeFinding as Rf
 import routeController as Rc
 import findNearStops as Fns
+from utils import *
 import yaml
 
 
@@ -26,30 +27,30 @@ class MyCTable:
         self.FullCost_mem = {}
         self.FlyCost_mem = {}
 
-    def insert(self, d_id, fullCostArray, flyCostArray):
-        self.FullCost_mem[d_id] = fullCostArray
-        self.FlyCost_mem[d_id] = flyCostArray
+    def insert(self, d_id, full_cost_array, fly_cost_array):
+        self.FullCost_mem[d_id] = full_cost_array
+        self.FlyCost_mem[d_id] = fly_cost_array
 
-    def DropOuters(self, depot_id=None):  # remove costumer if is out of reach from depots
+    def drop_outers(self, depot_id: int = None):  # remove costumer if is out of reach from depots
         global requests
 
-        ousterListForRemove = []
+        ouster_list_for_remove = []
         if depot_id is None:
             for i in range(len(self.FlyCost_mem[0])):
-                sumCostsPearDep = 0
+                sum_costs_pear_dep = 0
                 for d in range(len(Depots)):
-                    sumCostsPearDep += self.FlyCost_mem[d][i]
-                if sumCostsPearDep > len(Depots) * 5500:
+                    sum_costs_pear_dep += self.FlyCost_mem[d][i]
+                if sum_costs_pear_dep > len(Depots) * 5500:
                     # just drop or add to outer list
-                    ousterListForRemove.append(i)
+                    ouster_list_for_remove.append(i)
         else:
             for i in range(len(self.FlyCost_mem[depot_id])):
                 if self.FlyCost_mem[depot_id][i] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
                     # just drop or add to outer list
-                    ousterListForRemove.append(i)
+                    ouster_list_for_remove.append(i)
 
-        ousterListForRemove.reverse()
-        for item in ousterListForRemove:
+        ouster_list_for_remove.reverse()
+        for item in ouster_list_for_remove:
             requests.append(requests.pop(item))
             if depot_id is None:
                 for d in range(len(Depots)):
@@ -59,31 +60,23 @@ class MyCTable:
                 self.FullCost_mem[depot_id].pop(item)
                 self.FlyCost_mem[depot_id].pop(item)
 
-    def getMinVal(self, dep):
+    def get_min_value(self, dep):
         if len(self.FullCost_mem[dep]) == 0:
             return -1
         return np.min(self.FullCost_mem[dep])
 
-    def getMinInd(self, dep):
+    def get_min_index(self, dep) -> int:
         if len(self.FlyCost_mem[dep]) == 0:
             return -1
         return np.argmin(self.FlyCost_mem[dep])
-
-
-def loc2point(inp):
-    return (int(inp[0] / 10), int(inp[1] / 10))
-
-
-def point2Loc(pnt):
-    return [pnt.x, pnt.y]
 
 
 with open('conf.yaml', 'r') as file:
     yaml_data = yaml.load(file, Loader=yaml.FullLoader)
 
 config = json.load(open('config.json'))
-# Options { 'greedlyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
-approach = 'deepDecide' if yaml_data['DECISION_APPROACH'] == 'DEEP' else 'greedlyDecide'
+# Options { 'greedyDecide' , 'fairnessDecide', 'deepDecide', 'algorithm', 'TimingDecide}
+approach = 'deepDecide' if yaml_data['DECISION_APPROACH'] == 'DEEP' else 'greedyDecide'
 requestConf_id = yaml_data['COSTUMER_DEST']
 
 loadModel = False
@@ -91,34 +84,41 @@ showImage = False
 createGif = yaml_data['CREATE_GIF']
 UAVs = []
 # reachTimeStoreXl = []
-episod = 9999999
+episode = 9999999
 reach2finish = yaml_data['COSTUMER_COUNT'] * 2
 workingTime = 60000
 finisher = None
 BussList = {}
+BussLastStations = {}
 Lines = {}
 ReqSubSet = []
 ReqSubSet_len = 50
 Depots = []
-uav_costumer = None
+lines_json = None
 
 back2depotCount = 0
 flyFailureCount = 0
 costumer_id = 0
 BUSS_DISTANCE_DELAY = 450
-AVَAILABLE_STOP_COEFFICIENT = 0.3
+AVAILABLE_STOP_COEFFICIENT = 0.3
 OUT_OF_REACH_COSTUMERS = yaml_data['OUT_OF_REACH_COSTUMERS']
 SOURCE_FLY_COEFFICIENT = yaml_data['SOURCE_FLY_COEFFICIENT']
 
+BUS_MAX_CAPACITY: int
+MAX_WAITING_TIME: float
+MaxFlyDist: int
+uav_costumer: any
+
 storeFailure = info_storage()
-rc = None
+rc: Rc.brain
 requests = []
 BusStopStatus = None
 images = []
-colors = [(204, 0, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
-          (0, 204, 0), (0, 204, 102), (0, 204, 204), (0, 102, 204),
-          (0, 0, 204), (102, 0, 204), (204, 0, 204), (204, 0, 102),
-          (96, 96, 96)]  # 13
+COLORS: List[tuple] = [(204, 10, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
+                       (0, 204, 0), (0, 204, 102), (0, 204, 204), (0, 102, 204),
+                       (0, 0, 204), (102, 0, 204), (204, 0, 204), (204, 0, 102),
+                       (96, 96, 96)]  # 13
+uav_wait_on_go_path = None
 
 Actions = [point(0, 0), point(0, 1), point(0, -1), point(1, 0), point(-1, 0)]
 
@@ -129,21 +129,22 @@ UAVPath = [[{"actionType": 'fly', "loc": point(1, 9)}, {"actionType": 'land', "l
            [{"actionType": 'fly', "loc": point(0, 0)}]] '''
 
 
-# local functions region  ( this functions may call in eachother)
+# local function's region  ( this functions may call in each other)
 
 
-def dpCost(depot, checkLen=None):
+def depot_customer_cost(depot, check_len=None):
     global finisher
     global BussList
-    global BusMaxCap
-    global Lines_json
+    global BUS_MAX_CAPACITY
+    global lines_json
     global Lines
     global BusStopStatus
     global requests
     global rc
+    global MaxFlyDist
 
-    if checkLen == None or checkLen > len(requests):
-        checkLen = len(requests)
+    if check_len is None or check_len > len(requests):
+        check_len = len(requests)
         if len(requests) < 10:
             f = open('requestConf' + str(requestConf_id) + '.json', 'r')
             requests = json.load(f)
@@ -151,41 +152,34 @@ def dpCost(depot, checkLen=None):
     if not len(requests):
         print(" all requests Done.")
         finisher = True
-        return [0 for i in range(checkLen)], [0 for i in range(checkLen)]
+        return [0 for _ in range(check_len)], [0 for _ in range(check_len)]
 
-    totalCostList = []
-    flyCostList = []
+    total_cost_list = []
+    fly_cost_list = []
 
-    for reqIndex in range(checkLen):
+    for reqIndex in range(check_len):
         start_point = Depots[depot].loc
         # change here if input requests location range Or point range
-        endPoint = point(*requests[reqIndex])
+        end_point = point(*requests[reqIndex])
         stoplist = Fns.nearStops(start_point, int(
-            MaxFlyDist * AVَAILABLE_STOP_COEFFICIENT))
+            MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
         stoplist = Fns.reviewNearStops(
-            start_point, stoplist, Lines_json, BusStopStatus)
-        hiperPower = 0
+            start_point, stoplist, lines_json, BusStopStatus)
+        hiper_power = 0
         while not len(stoplist):
-            stoplist = Fns.nearStops(start_point, MaxFlyDist + hiperPower)
+            stoplist = Fns.nearStops(start_point, MaxFlyDist + hiper_power)
             stoplist = Fns.reviewNearStops(
-                start_point, stoplist, Lines_json, BusStopStatus)
-            print("Try To find BS to Come Back --> ", MaxFlyDist + hiperPower)
-            hiperPower += 40
+                start_point, stoplist, lines_json, BusStopStatus)
+            print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
+            hiper_power += 40
 
-        netState = {'curLoc': start_point, 'destLoc': endPoint, 'BStop': StopStates(stoplist),
-                    'BussList': BussList, 'BusMaxCap': BusMaxCap}
-        if approach == 'fairnessDecide':
-            tmp_cost_val, fly_cost = rc.Cost_fairness(
-                stoplist, netState, Lines)
-        elif approach == 'greedlyDecide':
+        network_status = {'curLoc': start_point, 'destLoc': end_point, 'BStop': stop_states(stoplist),
+                          'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist}
+        if approach == 'greedyDecide':
             tmp_cost_val, fly_cost = rc.cost_greedy(
-                stoplist, netState, lines=Lines)
-        elif approach == 'TimingDecide':
-            tmp_cost_val, fly_cost = rc.Cost_Timing(stoplist, netState, Lines)
+                stoplist, network_status, lines=Lines)
         elif approach == 'deepDecide':
-            tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, netState, Lines)
-        elif approach == 'algorithm':
-            tmp_cost_val, fly_cost = rc.algorithm(stoplist, netState, Lines)
+            tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, network_status, Lines)
         else:
             tmp_cost_val = 0
             fly_cost = 0
@@ -193,71 +187,64 @@ def dpCost(depot, checkLen=None):
         if fly_cost * 2 > MaxFlyDist:
             fly_cost = 6000
 
-        totalCostList.append(tmp_cost_val)
-        flyCostList.append(fly_cost)
+        total_cost_list.append(tmp_cost_val)
+        fly_cost_list.append(fly_cost)
 
-    return totalCostList, flyCostList
+    return total_cost_list, fly_cost_list
 
 
-def choise_task_from_subset(UAV_id, flied):
+def choice_task_from_subset(UAV_id, flied):
     global BussList
-    global BusMaxCap
-    global Lines_json
+    global BUS_MAX_CAPACITY
+    global lines_json
     global Lines
     global BusStopStatus
+    global MaxFlyDist
+
     MytempCostTable = MyCTable()
     finalRes = {}
     fly_count_c2d = 0
 
     start_point = UAVs[UAV_id].loc
     stoplist = Fns.nearStops(start_point, int(
-        MaxFlyDist * AVَAILABLE_STOP_COEFFICIENT))
+        MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
     stoplist = Fns.reviewNearStops(
-        start_point, stoplist, Lines_json, BusStopStatus)
-    hiperPower = 0
+        start_point, stoplist, lines_json, BusStopStatus)
+    hiper_power = 0
     while not len(stoplist):
-        stoplist = Fns.nearStops(start_point, MaxFlyDist + hiperPower)
+        stoplist = Fns.nearStops(start_point, MaxFlyDist + hiper_power)
         stoplist = Fns.reviewNearStops(
-            start_point, stoplist, Lines_json, BusStopStatus)
-        print("Try To find BS to Come Back --> ", MaxFlyDist + hiperPower)
-        hiperPower += 40
-    netState = {'curLoc': start_point, 'BStop': StopStates(stoplist),
-                'BussList': BussList, 'BusMaxCap': BusMaxCap}
+            start_point, stoplist, lines_json, BusStopStatus)
+        print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
+        hiper_power += 40
+    network_status = {'curLoc': start_point, 'BStop': stop_states(stoplist),
+                      'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist}
 
     for dep in range(len(Depots)):
-        endPoint = Depots[dep].loc
+        end_point = Depots[dep].loc
 
-        # 'destLoc': endPoint ,
-        netState['destLoc'] = endPoint
+        # 'destLoc': end_point ,
+        network_status['destLoc'] = end_point
 
-        if start_point == endPoint:
+        if start_point == end_point:
             tmp_cost_val = 0
             fly_count_c2d = 0
         else:
-            if approach == 'fairnessDecide':
-                tmp_cost_val, fly_count_c2d = rc.Cost_fairness(
-                    stoplist, netState, Lines)
-            elif approach == 'greedlyDecide':
+            if approach == 'greedyDecide':
                 tmp_cost_val, fly_count_c2d = rc.cost_greedy(
-                    stoplist, netState, lines=Lines)
-            elif approach == 'TimingDecide':
-                tmp_cost_val, fly_count_c2d = rc.Cost_Timing(
-                    stoplist, netState, Lines)
+                    stoplist, network_status, lines=Lines)
             elif approach == 'deepDecide':
                 tmp_cost_val, fly_count_c2d = rc.Cost_deep(
-                    stoplist, netState, Lines)
-            elif approach == 'algorithm':
-                tmp_cost_val, fly_count_c2d = rc.algorithm(
-                    stoplist, netState, Lines)
+                    stoplist, network_status, Lines)
 
         # if fly_count_c2d + flied > MaxFlyDist:
         #     fly_count_c2d = 6000
 
         finalRes[dep] = fly_count_c2d
 
-        # MytempCostTable.insert(dep, *dpCost(dep, ReqSubSet_len))
+        # MytempCostTable.insert(dep, *depot_customer_cost(dep, ReqSubSet_len))
 
-    # MytempCostTable.DropOuters()
+    # MytempCostTable.drop_outers()
 
     minCosts = []
     failed = False
@@ -268,22 +255,22 @@ def choise_task_from_subset(UAV_id, flied):
             lowest_cost_depot_value = finalRes[d]
             lowest_cost_depot_id = d
         # if all costumer removed it's mean for all depot removed
-        # if MytempCostTable.getMinVal(d) == -1:
+        # if MytempCostTable.get_min_value(d) == -1:
         #     failed = True
         #     break
-        # minCosts.append(finalRes[d] + MytempCostTable.getMinVal(d))
+        # minCosts.append(finalRes[d] + MytempCostTable.get_min_value(d))
     if failed:
         return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
 
     # best_depot_id = np.argmin(minCosts)   # temporary comment for ensure that UAVs can reach to depot
     best_depot_id = lowest_cost_depot_id
     MytempCostTable.insert(
-        best_depot_id, *dpCost(best_depot_id, ReqSubSet_len))
-    MytempCostTable.DropOuters(depot_id=best_depot_id)
+        best_depot_id, *depot_customer_cost(best_depot_id, ReqSubSet_len))
+    MytempCostTable.drop_outers(depot_id=best_depot_id)
     # if finalRes[best_depot_id] > 5500:     # uav locked in costumer location and it seems that can't reach any depot
     #     return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
 
-    best_request_id = MytempCostTable.getMinInd(best_depot_id)
+    best_request_id = MytempCostTable.get_min_index(best_depot_id)
 
     result = [[Depots[best_depot_id].loc.x,
                Depots[best_depot_id].loc.y], requests.pop(best_request_id)]
@@ -295,22 +282,27 @@ def task_manager():  # TODO Add loadSubSet function and check
     global finisher
     global costTbl
     global BussList
-    global BusMaxCap
+    global BUS_MAX_CAPACITY
     global Lines
-    global Lines_json
+    global lines_json
     global BusStopStatus
     global costumer_id
     global MAX_WAITING_TIME
     global uav_costumer
+    global MaxFlyDist
 
     for counter in range(UAVCount):
         if UAVs[counter].delay > 1:
             UAVs[counter].delay -= 1
-            # destenation[counter] = {"actionType": 'delay', 'loc': 'there'}
+            # destination[counter] = {"actionType": 'delay', 'loc': 'there'}
             continue
         if UAVs[counter].delay == 1:
             UAVs[counter].delay = 0
         if not UAVs[counter].status:  # be 0 mean subtask done      # reached to depot or costumer
+            debug_list: List[int] = [4]
+            if counter in debug_list:
+                lets_debug = True
+
             global request_id
             print(counter, ": --- %s seconds ---" % (time.time() - start_time))
             Uav_request[counter] = request_id
@@ -318,11 +310,10 @@ def task_manager():  # TODO Add loadSubSet function and check
             # if UAV is in costumer location and need cdC' task
             if len(UAVTasks[counter]) == 0 or UAVTasks[counter][0] is None:
                 UAVs[counter].start_from = "costumer"
-                if (not isnan(finisher)) and finisher:
+                if finisher is not None and finisher:
                     return
 
-                UAVTasks[counter], chosen_depot = choise_task_from_subset(
-                    counter, UAVs[counter].flied)
+                UAVTasks[counter], chosen_depot = choice_task_from_subset(counter, UAVs[counter].flied)
                 storeMore.increaseDepotUsed(str(chosen_depot))
                 # if UAV in depot. in initial state
                 if point(*UAVTasks[counter][0]) == UAVs[counter].loc:
@@ -330,7 +321,7 @@ def task_manager():  # TODO Add loadSubSet function and check
                     UAVs[counter].start_from = "depot"
                     UAVTasks[counter].pop(0)
                     UAVTasks[counter].append(None)
-                    storeData.setPathType(counter, 0)   # to costumer
+                    storeData.setPathType(counter, 0)  # to costumer
                     uav_costumer[counter] = costumer_id
                     storeData.setCostumer_id(counter, costumer_id)
                     costumer_id += 1
@@ -357,44 +348,40 @@ def task_manager():  # TODO Add loadSubSet function and check
                 costumer_id += 1
 
             stoplist = Fns.nearStops(UAVs[counter].loc, int(
-                MaxFlyDist * AVَAILABLE_STOP_COEFFICIENT))
-            stoplist = Fns.reviewNearStops(UAVs[counter].loc, stoplist, Lines_json,
+                MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
+            stoplist = Fns.reviewNearStops(UAVs[counter].loc, stoplist, lines_json,
                                            BusStopStatus)  # just keep 2 stop in each line
 
-            hiperPower = 0
+            hiper_power = 0
             while not len(stoplist):
                 stoplist = Fns.nearStops(
-                    UAVs[counter].loc, MaxFlyDist + hiperPower)
+                    UAVs[counter].loc, MaxFlyDist + hiper_power)
                 stoplist = Fns.reviewNearStops(
-                    UAVs[counter].loc, stoplist, Lines_json, BusStopStatus)
+                    UAVs[counter].loc, stoplist, lines_json, BusStopStatus)
                 print("Try To find BS to Come Back --> ",
-                      MaxFlyDist + hiperPower)
-                hiperPower += 40
+                      MaxFlyDist + hiper_power)
+                hiper_power += 40
 
-            netState = {'curLoc': UAVs[counter].loc, 'destLoc': point(
-                *UAVTasks[counter][0]), 'BStop': StopStates(stoplist), 'BussList': BussList, 'BusMaxCap': BusMaxCap}
+            network_status = {'curLoc': UAVs[counter].loc, 'destLoc': point(
+                *UAVTasks[counter][0]), 'BStop': stop_states(stoplist), 'BussList': BussList,
+                              'BusMaxCap': BUS_MAX_CAPACITY,
+                              'MAX_FLY_DIST': MaxFlyDist}
             # lineBusyRateUpdate()
             er = 1
-            if approach == 'fairnessDecide':
-                memid, Sstop = rc.fairnessDecide(stoplist, netState, Lines)
-            elif approach == 'greedlyDecide':
-                Sstop = rc.greedy(stoplist, netState, lines=Lines)
-                memid = 1
-            elif approach == 'TimingDecide':
-                memid, Sstop = rc.TimingDecide(stoplist, netState, Lines)
+            if approach == 'greedyDecide':
+                start_station, wait_time = rc.greedy(stoplist, network_status, lines=Lines)
+                mem_id = 1
             elif approach == 'deepDecide':
-                memid, Sstop, er = rc.decide(stoplist, netState, Lines)
-            elif approach == 'algorithm':
-                memid, Sstop = rc.algorithm(stoplist, netState, Lines)
-            selected_line = Rf.findStopLine(int(Sstop))
-            storeData.setRouteLine(counter, Rf.findStopLine(int(Sstop)))
+                mem_id, start_station, er, wait_time = rc.decide(stoplist, network_status, Lines)
+            selected_line = Rf.findStopLine(int(start_station))
+            storeData.setRouteLine(counter, Rf.findStopLine(int(start_station)))
             storeMore.storedecideParams(er, len(stoplist), selected_line)
             destini = point(*UAVTasks[counter].pop(0))
-            nothing, route = Rf.find(int(Sstop), destini)
+            nothing, route = Rf.find(int(start_station), destini)
             route = list(map(str, route))
-            UAVPath[counter], start_station_with_direction = route2path(        # for change line this function need to fix
+            UAVPath[counter], start_station_with_direction = route2path(  # for change line this function need to fix
                 route, destini)
-            UAVHistory[counter] = memid
+            UAVHistory[counter] = mem_id
             Lines[selected_line].stations[start_station_with_direction].coming.append(
                 counter)
 
@@ -403,10 +390,13 @@ def task_manager():  # TODO Add loadSubSet function and check
             waiting2stations = len(
                 Lines[selected_line].stations[start_station_with_direction].passengers)
             bus_count2reach = int(
-                (coming2stations + waiting2stations) / BusMaxCap)
-            # drop delay for busy stations
-            if UAVs[counter].start_from == "depot" and ((bus_count2reach + 1) * BUSS_DISTANCE_DELAY) > MAX_WAITING_TIME:
-                UAVs[counter].delay = bus_count2reach * BUSS_DISTANCE_DELAY
+                (coming2stations + waiting2stations) / BUS_MAX_CAPACITY)
+            # drop delay for busy stations ((bus_count2reach + 1) * BUSS_DISTANCE_DELAY)
+            if UAVs[counter].start_from == "depot" and wait_time - UAVs[counter].loc.distance(
+                    UAVPath[counter][0]['loc']) > MAX_WAITING_TIME:
+                if wait_time > 140000:
+                    wait_time = bus_count2reach * BUSS_DISTANCE_DELAY
+                UAVs[counter].delay = wait_time  # bus_count2reach * BUSS_DISTANCE_DELAY
 
 
 def lineBusyRateUpdate():
@@ -447,53 +437,51 @@ def route2path(routeOrg, dest):
     return pth, start_station_with_driection
 
 
-def StopStates(Slist):
+def stop_states(Slist):
     Slst = copy.deepcopy(Slist)
     Stt = {}
     for stp in Slst:
         # get po #get p #get loc
         T_s = {}
         T_s['passengers'] = len(BusStopStatus[str(stp) + '_0'].passengers)
-        T_s['p'] = BusStopStatus[str(stp) + '_0'].successRate
+        T_s['p'] = BusStopStatus[str(stp) + '_0'].success_rate
         T_s['loc'] = point(*loc2point(BusStopsLoc[stp + '_0']))
-        temp_beforeStops, T_s['freeSpace'], T_s['comingBuss'] = __busStopSuccessRate(
-            str(stp) + '_0')
+        temp_beforeStops, T_s['freeSpace'], T_s['comingBuss'] = __bus_stop_success_rate(str(stp) + '_0')
         T_s['beforeStops'] = temp_beforeStops
-        T_s['coming'] = __flierCountToBS(str(stp) + '_0')
+        T_s['coming'] = __flier_count2bs(str(stp) + '_0')
         sumBeforFlierCount = 0
         for cunt in temp_beforeStops:
-            sumBeforFlierCount += __flierCountToBS(cunt)
+            sumBeforFlierCount += __flier_count2bs(cunt)
         T_s['goingToBefore'] = sumBeforFlierCount
         Stt[stp + '_0'] = T_s
 
         T_s = {}
         T_s['passengers'] = len(BusStopStatus[str(stp) + '_1'].passengers)
-        T_s['p'] = BusStopStatus[str(stp) + '_1'].successRate
+        T_s['p'] = BusStopStatus[str(stp) + '_1'].success_rate
         T_s['loc'] = point(*loc2point(BusStopsLoc[stp + '_1']))
-        temp_beforeStops, T_s['freeSpace'], T_s['comingBuss'] = __busStopSuccessRate(
-            str(stp) + '_1')
+        temp_beforeStops, T_s['freeSpace'], T_s['comingBuss'] = __bus_stop_success_rate(str(stp) + '_1')
         T_s['beforeStops'] = temp_beforeStops
-        T_s['coming'] = __flierCountToBS(str(stp) + '_1')
+        T_s['coming'] = __flier_count2bs(str(stp) + '_1')
         sumBeforFlierCount = 0
         for cunt in temp_beforeStops:
-            sumBeforFlierCount += __flierCountToBS(cunt)
+            sumBeforFlierCount += __flier_count2bs(cunt)
         T_s['goingToBefore'] = sumBeforFlierCount
         Stt[stp + '_1'] = T_s
 
     return Stt
 
 
-def __flierCountToBS(chicedBS):  # args Like => ('79_0') --> 2
+def __flier_count2bs(chosen_bs: str) -> int:  # args Like => ('79_0') --> 2
     cnt = 0
-    gool_BS = {"actionType": 'land', 'loc': chicedBS}
+    goal_bs = {"actionType": 'land', 'loc': chosen_bs}
     for tmp_pth in UAVPath:
-        if gool_BS in tmp_pth:
+        if goal_bs in tmp_pth:
             cnt += 1
     return cnt
 
 
-# args Like => ('79_1') ---> ['78_1','78_0','79_0'] ,4  count of from number stop before bus reach with which capasity
-def __busStopSuccessRate(busStp):
+# args Like => ('79_1') ---> ['78_1','78_0','79_0'] ,4  count of from number stop before bus reach with which capacity
+def __bus_stop_success_rate(busStp):
     beforeStops = Rf.beforeStops(busStp)  # ,['78_1','78_0','79_0']
     comingBuss = []
     temporal_passengers = []
@@ -505,12 +493,12 @@ def __busStopSuccessRate(busStp):
     for bs_cnt in beforeStops:
         temporal_passengers.append(len(BusStopStatus[bs_cnt].passengers))
 
-    freeSpace = 0
+    freeSpace = 0  # number of free space reach to goal station from N station before
     for combus in comingBuss:
-        B_freeSpace = BusMaxCap
+        B_freeSpace = BUS_MAX_CAPACITY
         UavsOnThisBus = [i for i, x in enumerate(UonBusID) if x == combus]
         for tmp_uav in UavsOnThisBus:
-            if destenation[tmp_uav]["actionType"] == "drive" and destenation[tmp_uav]["loc"] not in beforeStops:
+            if destination[tmp_uav]["actionType"] == "drive" and destination[tmp_uav]["loc"] not in beforeStops:
                 B_freeSpace -= 1
         for tmp_BS in range(beforeStops.index(BussList[combus].lastStop) + 1, len(beforeStops)):
             while (B_freeSpace > 0):
@@ -529,8 +517,8 @@ def get_options():
     opt_parser = optparse.OptionParser()
     opt_parser.add_option("--nogui", action="store_true",
                           default=False, help="run the commandLine version of sumo")
-    options, args = opt_parser.parse_args()
-    return options
+    options_, args = opt_parser.parse_args()
+    return options_
 
 
 def convert(iAction):
@@ -560,7 +548,7 @@ def loadConfig():
     global BusStopsLoc
     global UAVTasks
     global BusStopStatus
-    global BusMaxCap
+    global BUS_MAX_CAPACITY
     global requests
     global UAVHistory
     global images
@@ -569,19 +557,20 @@ def loadConfig():
     global MAX_WAITING_TIME
     global Uav_request
     global request_id
-    global destenation
+    global destination
     global storeData
     global storeMore
-    global Lines_json
+    global lines_json
     global uav_costumer
+    global uav_wait_on_go_path
 
     Env_dim = int(traci.simulation.getNetBoundary()[1][0] / 10)
     # UAVCount = config['UAVCount']
     UAVCount = yaml_data['UAVS_COUNT']
     MaxFlyDist = config['MaxFlyDist']
     MAX_WAITING_TIME = MaxFlyDist * SOURCE_FLY_COEFFICIENT
-    # BusMaxCap = config['BusMaxCap']
-    BusMaxCap = yaml_data['BUS_CAPACITY']
+    # BUS_MAX_CAPACITY = config['BusMaxCap']
+    BUS_MAX_CAPACITY = yaml_data['BUS_CAPACITY']
     group_uperbound = config["group_uperbound"]
     BusStopsLoc = config["BusStopsLoc"]
     tmpDepots = config["3_Depots"] if yaml_data['DEPOT_DEST'] == 1 else config["4_Depots"]
@@ -599,10 +588,10 @@ def loadConfig():
     requests = [requests[i]
                 for i in range(yaml_data['COSTUMER_COUNT'] + UAVCount)]
     lineFile = open('lineConfig.json')
-    Lines_json = json.load(lineFile)
+    lines_json = json.load(lineFile)
     lineFile.close()
-    for line in Lines_json:
-        new_line_details = Lines_json[line]
+    for line in lines_json:
+        new_line_details = lines_json[line]
         new_line = Line_class(new_line_details["id"])
         for station in new_line_details["stops"]:
             new_line.addBusStation(
@@ -612,22 +601,23 @@ def loadConfig():
         Lines[line] = new_line
 
     setUavs()
-    destenation = [None for i in range(UAVCount)]
+    destination = [None for _ in range(UAVCount)]
     UonBusID = [-1] * UAVCount
-    Uav_request = [None for i in range(UAVCount)]
+    Uav_request = [None for _ in range(UAVCount)]
+    uav_wait_on_go_path = [0 for _ in range(UAVCount)]
     request_id = 0
     # images = [[] for i in range(UAVCount)]
-    storeData = StoreData(UAVCount, reach2finish, len(Lines_json))
+    storeData = StoreData(UAVCount, reach2finish, len(lines_json))
     storeMore = StoreMore()
 
 
 def map_station2line(station_id):  # station_id = 79
-    global Lines_json
+    global lines_json
     # if station_id is string
     if type(station_id) == str:
         station_id = int(station_id.split("_")[0])
-    for line in Lines_json:
-        if station_id in Lines_json[line]["stops"]:
+    for line in lines_json:
+        if station_id in lines_json[line]["stops"]:
             return line
     return None
 
@@ -654,14 +644,17 @@ def go_forward():
     global flyFailureCount
     global MAX_WAITING_TIME
     global uav_costumer
+    global uav_wait_on_go_path
 
     monitoring = 0
-    takePic = False
+    take_pic = False
     finisher = False
     UAVPath = [[] for i in range(UAVCount)]
-    # UAVPath = [[{"actionType": 'fly', "loc": point(*loc2point(BusStopsLoc['85_0']))},{"actionType":'land','loc':'85_0'},
-    #           {"actionType":'drive','loc':'95_0'},{"actionType":'rise','loc':point(1493, 852)},{'actionType':'fly', 'loc': point(1493, 852)},{'actionType':'finish'}], ]
-    prev_Action = []
+    # UAVPath = [[{"actionType": 'fly', "loc": point(*loc2point(BusStopsLoc['85_0']))},
+    # {"actionType":'land','loc':'85_0'},
+    #           {"actionType":'drive','loc':'95_0'},{"actionType":'rise','loc':point(1493, 852)},
+    #           {'actionType':'fly', 'loc': point(1493, 852)},{'actionType':'finish'}], ]
+    prev_action = []
 
     # drop Delay **************
     '''if UAVCount > 40 :
@@ -670,15 +663,15 @@ def go_forward():
     # End drop Delay
 
     for i in range(UAVCount):
-        prev_Action.append(Actions[0])
+        prev_action.append(Actions[0])
 
     printCounter = 1
     UAVActions = [None] * UAVCount
     LastDistance = [None] * UAVCount
 
-    for i in range(episod):  # start to go
+    for i in range(episode):  # start to go
         traci.simulationStep()
-        Bus_state_update()  # update buss location and last station and location
+        bus_state_update()  # update buss location and last station and location
         task_manager()
 
         if i < 80:
@@ -691,7 +684,7 @@ def go_forward():
         for ctr in range(UAVCount):
             # when uav get new task, it's status is 0, and it's delay is 0 ## or UAVs[ctr].delay
             if not (UAVs[ctr].status):
-                destenation[ctr] = UAVPath[ctr].pop(0)
+                destination[ctr] = UAVPath[ctr].pop(0)
                 UAVs[ctr].status = 1
                 UAVs[ctr].stepet = 0
                 UAVs[ctr].wait_step = 0
@@ -702,12 +695,12 @@ def go_forward():
             if UAVs[tmp].delay:
                 # storeData.incrementStep(tmp)
                 continue
-            elif destenation[tmp]["actionType"] == "back2depot":
+            elif destination[tmp]["actionType"] == "back2depot":
                 UAVs[tmp].status = 0
                 UAVTasks[tmp] = []
                 storeData.resetStepsData(tmp)
 
-            elif destenation[tmp]["actionType"] == "finish":
+            elif destination[tmp]["actionType"] == "finish":
                 UAVs[tmp].status = 0
                 print(printCounter, ": hey, I'm ", tmp, " in destination. (",
                       UAVs[tmp].loc.x, ", ", UAVs[tmp].loc.y, ") =>", ' with ', UAVs[tmp].stepet, ' whole step and ',
@@ -723,13 +716,13 @@ def go_forward():
                 printCounter += 1
                 if printCounter == reach2finish:
                     finisher = True
-            elif (destenation[tmp]["actionType"] == "fly"):
+            elif destination[tmp]["actionType"] == "fly":
                 storeData.incrementStep(tmp)
-                if destenation[tmp]["loc"] == UAVs[tmp].loc:
+                if destination[tmp]["loc"] == UAVs[tmp].loc:
                     storeData.storeTiming(Uav_request[tmp], tmp)
-                    destenation[tmp] = UAVPath[tmp].pop(0)
-                    if destenation[tmp]["actionType"] == "land":
-                        goal_bs = destenation[tmp]['loc']
+                    destination[tmp] = UAVPath[tmp].pop(0)
+                    if destination[tmp]["actionType"] == "land":
+                        goal_bs = destination[tmp]['loc']
                         current_line = map_station2line(goal_bs)
                         if tmp not in Lines[current_line].stations[goal_bs].passengers:
                             Lines[current_line].stations[goal_bs].coming.remove(
@@ -737,64 +730,69 @@ def go_forward():
                             Lines[current_line].stations[goal_bs].passengers.append(
                                 tmp)
 
-            elif destenation[tmp]["actionType"] == "changeLine":
+            elif destination[tmp]["actionType"] == "changeLine":
                 current_line = traci.vehicle.getRouteID(UonBusID[tmp])
                 Lines[current_line].busList[UonBusID[tmp]].passengers.pop(
                     Lines[current_line].busList[UonBusID[tmp]].passengers.index(tmp))
                 UonBusID[tmp] = -1
                 UAVs[tmp].loc = tmpVhclPnt
-                destenation[tmp] = UAVPath[tmp].pop(0)
-                new_station = destenation[tmp]['loc']
+                destination[tmp] = UAVPath[tmp].pop(0)
+                new_station = destination[tmp]['loc']
                 new_line = map_station2line(new_station)
                 Lines[new_line].stations[new_station].passengers.append(tmp)
                 print("line changed from " + current_line + " to " + new_line)
 
-            elif destenation[tmp]["actionType"] == "land":
+            elif destination[tmp]["actionType"] == "land":
+                if UAVs[tmp].start_from == "depot":
+                    uav_wait_on_go_path[tmp] += 1
+                else:
+                    uav_wait_on_go_path[tmp] = 0
+
                 storeData.incrementStep(tmp)
-                goal_bs = destenation[tmp]['loc']
+                goal_bs = destination[tmp]['loc']
                 # BusStop witing vehicles
                 current_line = map_station2line(goal_bs)
 
                 TmpBusStopVhcl = traci.busstop.getVehicleIDs(goal_bs)
                 if len(TmpBusStopVhcl) != 0:
-                    prob = Lines[current_line].stations[goal_bs].successRate * \
-                        Lines[current_line].stations[goal_bs].calCount
+                    prob = Lines[current_line].stations[goal_bs].success_rate * \
+                           Lines[current_line].stations[goal_bs].calCount
                     Lines[current_line].stations[goal_bs].calCount += 1
                     newProb = (
-                        BusMaxCap - UonBusID.count(TmpBusStopVhcl[0])) / BusMaxCap
+                                      BUS_MAX_CAPACITY - UonBusID.count(TmpBusStopVhcl[0])) / BUS_MAX_CAPACITY
                     prob += newProb
-                    Lines[current_line].stations[goal_bs].successRate = prob / \
-                        Lines[current_line].stations[goal_bs].calCount
-                    if UonBusID.count(TmpBusStopVhcl[0]) < BusMaxCap and Lines[current_line].stations[
-                            goal_bs].passengers.index(
-                            tmp) < BusMaxCap - UonBusID.count(TmpBusStopVhcl[0]):
+                    Lines[current_line].stations[goal_bs].success_rate = prob / \
+                                                                         Lines[current_line].stations[goal_bs].calCount
+                    if UonBusID.count(TmpBusStopVhcl[0]) < BUS_MAX_CAPACITY and Lines[current_line].stations[
+                        goal_bs].passengers.index(
+                        tmp) < BUS_MAX_CAPACITY - UonBusID.count(TmpBusStopVhcl[0]):
                         UonBusID[tmp] = TmpBusStopVhcl[0]
-                        destenation[tmp] = UAVPath[tmp].pop(0)
+                        destination[tmp] = UAVPath[tmp].pop(0)
                         Lines[current_line].stations[goal_bs].passengers.remove(
                             tmp)
                         Lines[current_line].busList[TmpBusStopVhcl[0]
-                                                    ].passengers.append(tmp)
+                        ].passengers.append(tmp)
                         storeData.storeTiming(Uav_request[tmp], tmp)
 
-            elif destenation[tmp]["actionType"] == "drive":
+            elif destination[tmp]["actionType"] == "drive":
                 storeData.incrementStep(tmp)
                 TmpBusStopVhcl = traci.busstop.getVehicleIDs(
-                    destenation[tmp]['loc'])
+                    destination[tmp]['loc'])
                 if UonBusID[tmp] in TmpBusStopVhcl:
                     storeData.storeTiming(Uav_request[tmp], tmp)
-                    destenation[tmp] = UAVPath[tmp].pop(0)
+                    destination[tmp] = UAVPath[tmp].pop(0)
                     TmpVhclPos = traci.vehicle.getPosition(UonBusID[tmp])
                     tmpVhclPnt = point(*loc2point(TmpVhclPos))
-                    if destenation[tmp]["actionType"] == "rise":
+                    if destination[tmp]["actionType"] == "rise":
                         storeData.resetStoreOption(tmp, "transport")
                         LastDistance[tmp] = tmpVhclPnt.distance(
-                            destenation[tmp]['loc'])
+                            destination[tmp]['loc'])
 
-            elif destenation[tmp]["actionType"] == "rise":
+            elif destination[tmp]["actionType"] == "rise":
                 storeData.incrementStep(tmp)
                 TmpVhclPos = traci.vehicle.getPosition(UonBusID[tmp])
                 tmpVhclPnt = point(*loc2point(TmpVhclPos))
-                TmpVhclDstnc = tmpVhclPnt.distance(destenation[tmp]['loc'])
+                TmpVhclDstnc = tmpVhclPnt.distance(destination[tmp]['loc'])
                 if TmpVhclDstnc < LastDistance[tmp]:
                     LastDistance[tmp] = TmpVhclDstnc
                 else:
@@ -803,7 +801,7 @@ def go_forward():
                         Lines[current_line].busList[UonBusID[tmp]].passengers.index(tmp))
                     UonBusID[tmp] = -1
                     UAVs[tmp].loc = tmpVhclPnt
-                    destenation[tmp] = UAVPath[tmp].pop(0)
+                    destination[tmp] = UAVPath[tmp].pop(0)
                     storeData.storeTiming(Uav_request[tmp], tmp)
 
         for cntr in range(UAVCount):  # update driveing UAVs location
@@ -820,7 +818,7 @@ def go_forward():
             time.sleep(0.5)
 
         # if keyboard.is_pressed('P'):
-        #     takePic = True
+        #     take_pic = True
         #     time.sleep(0.5)
 
         # '''
@@ -837,7 +835,7 @@ def go_forward():
                     # clr = (0, 0, 0)
                     draw.rounded_rectangle(
                         [point2pixel_x - 20, point2pixel_y - 20,
-                            point2pixel_x + 20, point2pixel_y + 20],
+                         point2pixel_x + 20, point2pixel_y + 20],
                         radius=10,
                         outline=(0, 0, 0),
                         width=2,
@@ -854,16 +852,16 @@ def go_forward():
                     clr = (255, 0, 0)
                 draw.rounded_rectangle(
                     [point2pixel_x - 10, point2pixel_y - 10,
-                        point2pixel_x + 10, point2pixel_y + 10],
+                     point2pixel_x + 10, point2pixel_y + 10],
                     radius=10, fill=clr)
                 draw.text([point2pixel_x, point2pixel_y],
-                          str(k.id), fill=(0, 0, 0), font=font)
+                          str(k.id - 1), fill=(0, 0, 0), font=font)
             for k in range(UAVCount):
                 pnt = None
                 if len(UAVPath[k]) > 1:
                     pnt = UAVPath[k][-2]['loc']
                 if len(UAVPath[k]) == 1:
-                    pnt = destenation[k]['loc']
+                    pnt = destination[k]['loc']
                 if pnt is not None:
                     point2pixel_x = pnt.x
                     point2pixel_y = height - pnt.y
@@ -871,7 +869,7 @@ def go_forward():
                     # draw.text([point2pixel_x, point2pixel_y], "*", fill=clr, font=font)
                     draw.rounded_rectangle(
                         [point2pixel_x - 7, point2pixel_y - 7,
-                            point2pixel_x + 7, point2pixel_y + 7],
+                         point2pixel_x + 7, point2pixel_y + 7],
                         radius=5, fill=clr)
 
             for k in Depots:
@@ -889,10 +887,10 @@ def go_forward():
                 # im = cv2.resize(im, (960, 540))
                 cv2.imshow('tehran', im)
                 cv2.waitKey(40)
-            if takePic:
+            if take_pic:
                 # '+ str(datetime.now())+'
                 cv2.imwrite('./images/store/runConf.png', im)
-                takePic = False
+                take_pic = False
             monitoring = 10
             images.append(im_pil)
         monitoring -= 1
@@ -904,7 +902,7 @@ def go_forward():
 
         for tmp in range(UAVCount):
             UAVs[tmp].stepet += 1
-            if destenation[tmp]["actionType"] == "fly" and not UAVs[tmp].delay:
+            if destination[tmp]["actionType"] == "fly" and not UAVs[tmp].delay:
                 fliers.append(tmp)
                 UAVs[tmp].flied += 1
 
@@ -912,8 +910,8 @@ def go_forward():
             if UAVs[tmp].flied > MaxFlyDist and UAVs[tmp].flayFail is False and UAVs[tmp].start_from == "costumer":
                 UAVs[tmp].flayFail = True
                 flyFailureCount += 1
-                if destenation[tmp]["actionType"] == "fly":
-                    if "loc" in UAVPath[tmp][0]:    # fly -> land
+                if destination[tmp]["actionType"] == "fly":
+                    if "loc" in UAVPath[tmp][0]:  # fly -> land
                         goal_bs = UAVPath[tmp][0]['loc']
                         current_line = map_station2line(goal_bs)
                         situation = "fly to station"
@@ -921,36 +919,41 @@ def go_forward():
                         goal_bs = "near depot"
                         current_line = "passed"
                         situation = "fly to depot"
-                elif destenation[tmp]["actionType"] == "land":
-                    goal_bs = destenation[tmp]["loc"]
+                elif destination[tmp]["actionType"] == "land":
+                    goal_bs = destination[tmp]["loc"]
                     current_line = map_station2line(goal_bs)
                     situation = "waiting in station"
                 else:
                     goal_bs = "there is a problem"
                     current_line = "Error"
                     situation = "somthing else with error"
-                storeFailure.add_info(str(flyFailureCount) + " - UAV: "+str(tmp)+"  Flied: "+str(UAVs[tmp].flied)+"  From: "+str(
-                    UAVs[tmp].start_from)+"  Stept: "+str(UAVs[tmp].stepet) + "  Wait: " + str(UAVs[tmp].wait_step) + "  Line: "+str(current_line) + "  Station: "+str(goal_bs) + " RowInFile: "+str(uav_costumer[tmp]) + " Situation: "+situation)
+                storeFailure.add_info(
+                    str(flyFailureCount) + " - UAV: " + str(tmp) + " Go path wait: " + str(uav_wait_on_go_path[
+                                                                                               tmp]) + "  Flied: " + str(
+                        UAVs[tmp].flied) + "  From: " + str(
+                        UAVs[tmp].start_from) + "  Stept: " + str(UAVs[tmp].stepet) + "  Wait: " + str(
+                        UAVs[tmp].wait_step) + "  Line: " + str(current_line) + "  Station: " + str(
+                        goal_bs) + " RowInFile: " + str(uav_costumer[tmp]) + " Situation: " + situation)
 
-            if destenation[tmp]["actionType"] == "land":
+            if destination[tmp]["actionType"] == "land":
                 UAVs[tmp].wait_step += 1
                 UAVs[tmp].flied += 1
                 # if wait too much return to depot
                 if UAVs[tmp].start_from == "depot" and UAVs[tmp].flied > MAX_WAITING_TIME:
-                    goal_bs = destenation[tmp]['loc']
+                    goal_bs = destination[tmp]['loc']
                     current_line = map_station2line(goal_bs)
                     if tmp in Lines[current_line].stations[goal_bs].passengers:
                         Lines[current_line].stations[goal_bs].passengers.remove(
                             tmp)
 
                     storeData.setPathType(tmp, 2, rowIndex=Uav_request[tmp])
-                    destenation[tmp]["actionType"] = "fly"
+                    destination[tmp]["actionType"] = "fly"
                     min_dist = 3000
                     for dep in Depots:
                         if dep.loc.distance(UAVs[tmp].loc) < min_dist:
                             best_depot = dep
                             min_dist = dep.loc.distance(UAVs[tmp].loc)
-                    destenation[tmp]["loc"] = best_depot.loc
+                    destination[tmp]["loc"] = best_depot.loc
                     # return UAVs costumer to request list
                     costumer_location_point = UAVPath[tmp][-2]["loc"]
                     requests.append(
@@ -962,29 +965,29 @@ def go_forward():
                     back2depotCount += 1
 
         # print(i,": flier Count: ........    ",len(fliers))
-        # to_test = np.array(destenation)
-        # print("destinies",[point2Loc(i["loc"]) for i in to_test[fliers] ])
+        # to_test = np.array(destination)
+        # print("destinies",[point2loc(i["loc"]) for i in to_test[fliers] ])
 
         fly = uav_tjp(Env_dim, group_uperbound)
 
         for i_imp in fliers:
-            fly.imp_uav(UAVs[i_imp].loc, prev_Action[i_imp],
-                        destenation[i_imp]["loc"])
+            fly.imp_uav(UAVs[i_imp].loc, prev_action[i_imp],
+                        destination[i_imp]["loc"])
 
         actNumber = fly.go_forward()
         UAVActions = convertActionFromString(actNumber, len(fliers))
-        # print("Fliers Act: ", [ pointPrint(flier) for flier in UAVActions])
+        # print("Fliers Act: ", [ point_print(flier) for flier in UAVActions])
         # go to next step
         for tmp in range(len(fliers)):
             UAVs[fliers[tmp]].loc = UAVs[fliers[tmp]].loc + UAVActions[tmp]
-            prev_Action[fliers[tmp]] = UAVActions[tmp]
+            prev_action[fliers[tmp]] = UAVActions[tmp]
 
 
 # --> [flying to 1 , waiting on 1, driving on 1, flying to 2, waiting on 2, ... ]
 def LinesStatus():
-    global Lines_json
+    global lines_json
     res = []
-    for line in Lines_json:
+    for line in lines_json:
         flierCounter = 0
         flierCounterReverse = 0
         BStationPassengers = 0
@@ -992,9 +995,9 @@ def LinesStatus():
         Linepassenger = 0
         LinepassengerReverse = 0
 
-        for BStation in Lines_json[line]['stops']:
-            flierCounter += __flierCountToBS(str(BStation) + '_0')
-            flierCounterReverse += __flierCountToBS(str(BStation) + '_1')
+        for BStation in lines_json[line]['stops']:
+            flierCounter += __flier_count2bs(str(BStation) + '_0')
+            flierCounterReverse += __flier_count2bs(str(BStation) + '_1')
             current_line = map_station2line(BStation)
             BStationPassengers += Lines[current_line].stations[str(
                 BStation) + '_0'].get_passengers_count()
@@ -1014,23 +1017,11 @@ def LinesStatus():
     return res
 
 
-def pointPrint(pnt):
-    if pnt.x == 1:
-        return "right"
-    if pnt.x == -1:
-        return "left"
-    if pnt.y == 1:
-        return "up"
-    if pnt.y == -1:
-        return "down"
-    return "stay"
-
-
-def Bus_state_update():
+def bus_state_update():
     for line in Lines:
         for bs in Lines[line].stations:
-            vehicles_in_busStation = traci.busstop.getVehicleIDs(bs)
-            for veh in vehicles_in_busStation:
+            vehicles_in_bus_station = traci.busstop.getVehicleIDs(bs)
+            for veh in vehicles_in_bus_station:
                 Lines[line].busList[veh].setLast(bs)
                 Lines[line].busList[veh].direction = int(bs[-1])
         for veh in Lines[line].busList:
@@ -1039,29 +1030,40 @@ def Bus_state_update():
 
 
 def __loadSimulationParams():
+    global BussLastStations
     T_BusList = traci.vehicle.getIDList()
     for bs in T_BusList:
         # *****# lineConfig.js -> line name must bi Like what is in sumo configuration
         routeID = traci.vehicle.getRouteID(bs)
         BussList[bs] = Bus(bs, routeID, point(
             *loc2point(traci.vehicle.getPosition(bs))))
+        BussList[bs].setLast(BussLastStations[bs])
         Lines[routeID].addBus(bs, routeID, point(
             *loc2point(traci.vehicle.getPosition(bs))))
+    del BussLastStations
 
 
 def __loadBrain():
     global rc
-    global Lines_json
+    global lines_json
     global Lines
     rc = Rc.brain(UAVCount, LoadModel=loadModel, lines=Lines)
 
 
-class DegubTools:
+def set_last_stations():
+    for line in Lines:
+        for bs in Lines[line].stations:
+            vehicles_in_bus_station = traci.busstop.getVehicleIDs(bs)
+            for veh in vehicles_in_bus_station:
+                BussLastStations[veh] = bs
+
+
+class DebugTools:
     def find_uav(self, uav_id):
         global Lines
         for line in Lines:
             res = Lines[line].have_passenger(uav_id)
-            if res != False:
+            if res:
                 print("UAV ", uav_id, " is in line ", line, " and ", res)
                 return line, res
 
@@ -1085,8 +1087,10 @@ if __name__ == "__main__":
     loadConfig()  # import config
     for distrubute in range(13000):
         traci.simulation.step()
+        if distrubute > 12000:
+            set_last_stations()
 
-    debug_tools = DegubTools()
+    debug_tools = DebugTools()
     start_time = time.time()
     __loadSimulationParams()
     __loadBrain()
@@ -1102,8 +1106,9 @@ if __name__ == "__main__":
     jsonFile.write(jsonString)
     jsonFile.close()
 
-    storeFailure.write_info_to_file("result/flyFailureCount_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
-        '%Y-%m-%d_%H-%M-%S') + ".txt")
+    storeFailure.write_info_to_file(
+        "result/flyFailureCount_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
+            '%Y-%m-%d_%H-%M-%S') + ".txt")
 
     '''pic = open('picpath.json','w')
     pic.write(json.dumps(images))'''

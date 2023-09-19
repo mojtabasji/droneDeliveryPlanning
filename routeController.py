@@ -15,7 +15,7 @@ import re
 import os
 
 
-TRANSPORT_REDUCE = 0.6
+TRANSPORT_REDUCE = 0.5
 
 
 class ANN:
@@ -103,7 +103,7 @@ class brain:
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
             # choiced = np.random.choice(stopsList)
-            choiced = self.greedy(stopsList, state)
+            choiced, _ = self.greedy(stopsList, state)
         else:
             choiced = ''
             maxRew = 900000
@@ -151,20 +151,24 @@ class brain:
         mins = []
         time2wait = []
         choiced = ''
-        StopsDistances = 50 
+        StopsDistances = 50
         for stp in stopsList:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
+            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) * StopsDistances)
             sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
+            if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2:
+                sumTime += 10000
             mins.append(sumTime)
-        
+
         choiced = stopsList[np.argmin(mins)]
-        return choiced
+        wait_time = time2wait[np.argmin(mins)]
+        return choiced, wait_time
 
     def decide(self, stopsList, state, Lines):  # out -> str( stopID) Like "78"
         efected_lines = []
+        wait_time = None
         for stp in stopsList:
             line_name = rf.findStopLine(int(stp))
             efected_lines.append(line_name)
@@ -174,7 +178,7 @@ class brain:
             # max_explore = max_explore / np.sum(max_explore)
             # choiced = np.random.choice(stopsList, p=max_explore)
             
-            choiced = self.greedy(stopsList, state)
+            choiced, wait_time = self.greedy(stopsList, state)
             
             bestInpnodes, stopInDirection = self.__inpCreate(
                 choiced, state, Lines)
@@ -195,18 +199,21 @@ class brain:
                 t, route = rf.find(int(stp), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
                 sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + pval[0][0]
-                
+                if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2:
+                    sumTime += 10000
+
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                 if sumTime < maxRew:
                     maxRew = sumTime
                     choiced = stp
+                    wait_time = pval[0][0]
                     choicedStopInDirection = stopInDirection
                     bestInpnodes = inpnodes
         detected_line_name = rf.findStopLine(int(choiced))
         memid = int(np.random.rand() * 9000 + 1000)
         self.temporalMemory.append(
             {'id': memid, 'value': bestInpnodes, 'line': detected_line_name})
-        return memid, choiced, self.ann[detected_line_name].explore_rate
+        return memid, choiced, self.ann[detected_line_name].explore_rate, wait_time
 
     def __inpCreate(self, stp, state, Lines):
         
@@ -239,12 +246,12 @@ def reachFreeSpaceLoc(stopInDirection,
                       net):  # return the location (bus is in which bs) of the stop that the bus can reach the free space
     freeSpace = net['BStop'][stopInDirection]['freeSpace']
     wanters = net['BStop'][stopInDirection]['coming'] + \
-        net['BStop'][stopInDirection]['goingToBefore'] + 1
+        net['BStop'][stopInDirection]['goingToBefore']
     latest = freeSpace - wanters
     if latest <= 0:
         return 3000  # maximum Value
 
-    latest = (latest / net['BusMaxCap']) + 1
+    latest = int(latest / net['BusMaxCap']) + 1
     BussList = net['BussList']
     ComingBuss = net['BStop'][stopInDirection]['comingBuss']
     BBSs = deepcopy(net['BStop'][stopInDirection]['beforeStops'])

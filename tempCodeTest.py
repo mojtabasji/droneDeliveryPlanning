@@ -146,7 +146,7 @@ def choiseTaskFromSubset(UAV_id, flied):
         minCosts.append(finalRes[d] + MytempCostTable.getMinVal(d))
 
     bestDep_id = np.argmin(minCosts)
-    bestReq_id = MytempCostTable.getMinInd(bestDep_id)
+    bestReq_id = MytempCostTable.get_min_index(bestDep_id)
 
     result = [[Depots[bestDep_id].loc.x, Depots[bestDep_id].loc.y], requests.pop(bestReq_id)]
         
