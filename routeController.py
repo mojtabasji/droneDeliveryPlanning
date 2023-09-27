@@ -90,10 +90,9 @@ class brain:
             input_nodes = lines[line_attubutes[i][0]].get_bus_station_count(
             ) + (lines[line_attubutes[i][0]].get_bus_count() * 2) + 1
             self.ann[line_attubutes[i][0]] = ANN(line_num=i, line_count=line_count, UAVCount=UAVCount,
-                                              inpNodeCount=(int(input_nodes), int(2)))
+                                                 inpNodeCount=(int(input_nodes), int(2)))
         self.outGama = 2
         self.Ucount = UAVCount
-        
 
     def Cost_deep(self, stopsList, state, Lines):
         efected_lines = []
@@ -112,18 +111,19 @@ class brain:
                 line_name = rf.findStopLine(int(stp))
                 X_predict = np.reshape(inpnodes, (1, *self.ann[line_name].inpNodeCount))
                 pval = self.ann[line_name].predict(X_predict)
-                
+
                 t, route = rf.find(int(stp), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
                 sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + pval[0][0]
-                
+
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
                 if sumTime < maxRew:
                     maxRew = sumTime
                     choiced = stp
         t, route = rf.find(int(choiced), state['destLoc'])
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-        return Cost['sourcefly'] +(Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
+        return Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost[
+            'sourcefly']
 
     def cost_greedy(self, stopsList, state, lines=None):
         num = self.Ucount
@@ -131,20 +131,21 @@ class brain:
         mins = []
         time2wait = []
         choiced = ''
-        StopsDistances = 50 
+        StopsDistances = 50
         for stp in stopsList:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) *  StopsDistances)
+            time2wait.append(reachFreeSpaceLoc(str(stp) + Cost['direction'], state) * StopsDistances)
             sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
             mins.append(sumTime)
-        
+
         choiced = stopsList[np.argmin(mins)]
         t, route = rf.find(int(choiced), state['destLoc'])
         Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-        return Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost['sourcefly']
-    
+        return Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost[
+            'sourcefly']
+
     def greedy(self, stopsList, state, lines=None):
         num = self.Ucount
         soufli = 500
@@ -156,9 +157,10 @@ class brain:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            time2wait.append(reachFreeSpaceLoc(str(stp)+Cost['direction'], state) * StopsDistances)
+            time2wait.append(reachFreeSpaceLoc(str(stp) + Cost['direction'], state) * StopsDistances)
             sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
-            if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2:
+            if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2 or \
+                    Cost['destfly'] + Cost['sourcefly'] > state['UAV_battery']:
                 sumTime += 10000
             mins.append(sumTime)
 
@@ -166,7 +168,7 @@ class brain:
         wait_time = time2wait[np.argmin(mins)]
         return choiced, wait_time
 
-    def decide(self, stopsList, state, Lines):  # out -> str( stopID) Like "78"
+    def decide(self, stopsList, state, Lines) -> str:  # out -> str( stopID) Like "78"
         efected_lines = []
         wait_time = None
         for stp in stopsList:
@@ -177,9 +179,9 @@ class brain:
             # max_explore = [self.ann[i].explore_rate for i in efected_lines]
             # max_explore = max_explore / np.sum(max_explore)
             # choiced = np.random.choice(stopsList, p=max_explore)
-            
+
             choiced, wait_time = self.greedy(stopsList, state)
-            
+
             bestInpnodes, stopInDirection = self.__inpCreate(
                 choiced, state, Lines)
         else:
@@ -195,11 +197,12 @@ class brain:
                 x_predict = np.reshape(inpnodes, (1, *self.ann[line_name].inpNodeCount))
                 pval = self.ann[line_name].predict(x_predict)
                 print('pval is: ', pval)
-                
+
                 t, route = rf.find(int(stp), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
                 sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + pval[0][0]
-                if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2:
+                if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2 or \
+                        Cost['destfly'] + Cost['sourcefly'] > state['UAV_battery']:
                     sumTime += 10000
 
                 # * (1 / (state['BStop'][stopInDirection]['passengers'] + 1))
@@ -216,13 +219,13 @@ class brain:
         return memid, choiced, self.ann[detected_line_name].explore_rate, wait_time
 
     def __inpCreate(self, stp, state, Lines):
-        
+
         t, route = rf.find(int(stp), state['destLoc'])
         if int(stp) < int(route[1]):
             stopInDirection = str(stp) + '_0'
         else:
             stopInDirection = str(stp) + '_1'
-        
+
         current_line = rf.findStopLine(int(stp))
         inpnodes = Lines[current_line].create_deep_input()
         first_station_location = Lines[current_line].stations[stopInDirection].loc
@@ -246,7 +249,7 @@ def reachFreeSpaceLoc(stopInDirection,
                       net):  # return the location (bus is in which bs) of the stop that the bus can reach the free space
     freeSpace = net['BStop'][stopInDirection]['freeSpace']
     wanters = net['BStop'][stopInDirection]['coming'] + \
-        net['BStop'][stopInDirection]['goingToBefore']
+              net['BStop'][stopInDirection]['goingToBefore']
     latest = freeSpace - wanters
     if latest <= 0:
         return 3000  # maximum Value

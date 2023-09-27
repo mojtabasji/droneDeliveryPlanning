@@ -48,7 +48,8 @@ class MyCTable:
                 if self.FlyCost_mem[depot_id][i] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
                     # just drop or add to outer list
                     ouster_list_for_remove.append(i)
-
+            if len(ouster_list_for_remove) == len(self.FlyCost_mem[depot_id]):
+                return
         ouster_list_for_remove.reverse()
         for item in ouster_list_for_remove:
             requests.append(requests.pop(item))
@@ -174,7 +175,7 @@ def depot_customer_cost(depot, check_len=None):
             hiper_power += 40
 
         network_status = {'curLoc': start_point, 'destLoc': end_point, 'BStop': stop_states(stoplist),
-                          'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist}
+                          'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist, 'UAV_battery': MaxFlyDist}
         if approach == 'greedyDecide':
             tmp_cost_val, fly_cost = rc.cost_greedy(
                 stoplist, network_status, lines=Lines)
@@ -218,7 +219,7 @@ def choice_task_from_subset(UAV_id, flied):
         print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
         hiper_power += 40
     network_status = {'curLoc': start_point, 'BStop': stop_states(stoplist),
-                      'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist}
+                      'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist, 'UAV_battery': MaxFlyDist - flied}
 
     for dep in range(len(Depots)):
         end_point = Depots[dep].loc
@@ -290,6 +291,7 @@ def task_manager():  # TODO Add loadSubSet function and check
     global MAX_WAITING_TIME
     global uav_costumer
     global MaxFlyDist
+    global request_id
 
     for counter in range(UAVCount):
         if UAVs[counter].delay > 1:
@@ -299,11 +301,10 @@ def task_manager():  # TODO Add loadSubSet function and check
         if UAVs[counter].delay == 1:
             UAVs[counter].delay = 0
         if not UAVs[counter].status:  # be 0 mean subtask done      # reached to depot or costumer
-            debug_list: List[int] = [4]
-            if counter in debug_list:
+            debug_list: List[int] = [27]
+            if counter in debug_list and request_id > 118:
                 lets_debug = True
 
-            global request_id
             print(counter, ": --- %s seconds ---" % (time.time() - start_time))
             Uav_request[counter] = request_id
             request_id += 1
@@ -364,7 +365,7 @@ def task_manager():  # TODO Add loadSubSet function and check
 
             network_status = {'curLoc': UAVs[counter].loc, 'destLoc': point(
                 *UAVTasks[counter][0]), 'BStop': stop_states(stoplist), 'BussList': BussList,
-                              'BusMaxCap': BUS_MAX_CAPACITY,
+                              'BusMaxCap': BUS_MAX_CAPACITY, 'UAV_battery': MaxFlyDist - UAVs[counter].flied,
                               'MAX_FLY_DIST': MaxFlyDist}
             # lineBusyRateUpdate()
             er = 1
@@ -931,7 +932,7 @@ def go_forward():
                     str(flyFailureCount) + " - UAV: " + str(tmp) + " Go path wait: " + str(uav_wait_on_go_path[
                                                                                                tmp]) + "  Flied: " + str(
                         UAVs[tmp].flied) + "  From: " + str(
-                        UAVs[tmp].start_from) + "  Stept: " + str(UAVs[tmp].stepet) + "  Wait: " + str(
+                        UAVs[tmp].start_from) + "  Step: " + str(UAVs[tmp].stepet) + "  Wait: " + str(
                         UAVs[tmp].wait_step) + "  Line: " + str(current_line) + "  Station: " + str(
                         goal_bs) + " RowInFile: " + str(uav_costumer[tmp]) + " Situation: " + situation)
 
