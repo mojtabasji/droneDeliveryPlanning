@@ -7,6 +7,7 @@ BUS_CAPACITY: 3     # bus capacity
 CREATE_GIF: True   # create gif of simulation
 SOURCE_FLY_COEFFICIENT: 0.4 # waiting time coefficient for source
 OUT_OF_REACH_COSTUMERS: 0.35
+UAV_MAX_FLY_DIST: 1200 # max fly distance of UAV
 
 
 

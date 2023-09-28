@@ -568,7 +568,7 @@ def loadConfig():
     Env_dim = int(traci.simulation.getNetBoundary()[1][0] / 10)
     # UAVCount = config['UAVCount']
     UAVCount = yaml_data['UAVS_COUNT']
-    MaxFlyDist = config['MaxFlyDist']
+    MaxFlyDist = yaml_data['UAV_MAX_FLY_DIST']   # config['MaxFlyDist']
     MAX_WAITING_TIME = MaxFlyDist * SOURCE_FLY_COEFFICIENT
     # BUS_MAX_CAPACITY = config['BusMaxCap']
     BUS_MAX_CAPACITY = yaml_data['BUS_CAPACITY']
