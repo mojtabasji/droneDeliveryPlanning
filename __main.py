@@ -27,6 +27,10 @@ class MyCTable:
         self.FullCost_mem = {}
         self.FlyCost_mem = {}
 
+    def clear(self):
+        self.FullCost_mem = {}
+        self.FlyCost_mem = {}
+
     def insert(self, d_id, full_cost_array, fly_cost_array):
         self.FullCost_mem[d_id] = full_cost_array
         self.FlyCost_mem[d_id] = fly_cost_array
@@ -48,8 +52,6 @@ class MyCTable:
                 if self.FlyCost_mem[depot_id][i] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
                     # just drop or add to outer list
                     ouster_list_for_remove.append(i)
-            if len(ouster_list_for_remove) == len(self.FlyCost_mem[depot_id]):
-                return
         ouster_list_for_remove.reverse()
         for item in ouster_list_for_remove:
             requests.append(requests.pop(item))
@@ -133,7 +135,7 @@ UAVPath = [[{"actionType": 'fly', "loc": point(1, 9)}, {"actionType": 'land', "l
 # local function's region  ( this functions may call in each other)
 
 
-def depot_customer_cost(depot, check_len=None):
+def depot_customer_cost(depot, check_len=None, go_next_set=0):
     global finisher
     global BussList
     global BUS_MAX_CAPACITY
@@ -144,11 +146,11 @@ def depot_customer_cost(depot, check_len=None):
     global rc
     global MaxFlyDist
 
-    if check_len is None or check_len > len(requests):
-        check_len = len(requests)
-        if len(requests) < 10:
-            f = open('requestConf' + str(requestConf_id) + '.json', 'r')
-            requests = json.load(f)
+    if check_len is None:
+        check_len: int = len(requests)
+    if check_len * go_next_set + check_len > len(requests):
+        f = open('requestConf' + str(requestConf_id) + '.json', 'r')
+        requests.extend(json.load(f))
 
     if not len(requests):
         print(" all requests Done.")
@@ -158,21 +160,21 @@ def depot_customer_cost(depot, check_len=None):
     total_cost_list = []
     fly_cost_list = []
 
-    for reqIndex in range(check_len):
-        start_point = Depots[depot].loc
-        # change here if input requests location range Or point range
-        end_point = point(*requests[reqIndex])
-        stoplist = Fns.nearStops(start_point, int(
-            MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
+    start_point = Depots[depot].loc
+    stoplist = Fns.nearStops(start_point, int(
+        MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
+    stoplist = Fns.reviewNearStops(
+        start_point, stoplist, lines_json, BusStopStatus)
+    hiper_power = 0
+    while not len(stoplist):
+        stoplist = Fns.nearStops(start_point, MaxFlyDist + hiper_power)
         stoplist = Fns.reviewNearStops(
             start_point, stoplist, lines_json, BusStopStatus)
-        hiper_power = 0
-        while not len(stoplist):
-            stoplist = Fns.nearStops(start_point, MaxFlyDist + hiper_power)
-            stoplist = Fns.reviewNearStops(
-                start_point, stoplist, lines_json, BusStopStatus)
-            print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
-            hiper_power += 40
+        print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
+        hiper_power += 40
+    for reqIndex in range(go_next_set * check_len, check_len + go_next_set * check_len):
+        # change here if input requests location range Or point range
+        end_point = point(*requests[reqIndex])
 
         network_status = {'curLoc': start_point, 'destLoc': end_point, 'BStop': stop_states(stoplist),
                           'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist, 'UAV_battery': MaxFlyDist}
@@ -273,6 +275,17 @@ def choice_task_from_subset(UAV_id, flied):
 
     best_request_id = MytempCostTable.get_min_index(best_depot_id)
 
+    next_set_counter = 0
+    while best_request_id == -1:       # if all costumer in this subset is out of reach from depot change subset range
+        next_set_counter += 1
+        MytempCostTable.clear()
+        MytempCostTable.insert(
+            best_depot_id, *depot_customer_cost(best_depot_id, ReqSubSet_len, go_next_set=next_set_counter))
+        MytempCostTable.drop_outers(depot_id=best_depot_id)
+        best_request_id = MytempCostTable.get_min_index(best_depot_id)
+
+    best_request_id = best_request_id + next_set_counter * ReqSubSet_len
+
     result = [[Depots[best_depot_id].loc.x,
                Depots[best_depot_id].loc.y], requests.pop(best_request_id)]
 
@@ -301,8 +314,8 @@ def task_manager():  # TODO Add loadSubSet function and check
         if UAVs[counter].delay == 1:
             UAVs[counter].delay = 0
         if not UAVs[counter].status:  # be 0 mean subtask done      # reached to depot or costumer
-            debug_list: List[int] = [27]
-            if counter in debug_list and request_id > 118:
+            debug_list: List[int] = [27, 9]
+            if counter in debug_list :
                 lets_debug = True
 
             print(counter, ": --- %s seconds ---" % (time.time() - start_time))
