@@ -35,7 +35,7 @@ class MyCTable:
         self.FullCost_mem[d_id] = full_cost_array
         self.FlyCost_mem[d_id] = fly_cost_array
 
-    def drop_outers(self, depot_id: int = None):  # remove costumer if is out of reach from depots
+    def drop_outers(self, depot_id: int = None, subset_len=None, new_set_index=0):  # remove costumer if is out of reach from depots
         global requests
 
         ouster_list_for_remove = []
@@ -54,7 +54,7 @@ class MyCTable:
                     ouster_list_for_remove.append(i)
         ouster_list_for_remove.reverse()
         for item in ouster_list_for_remove:
-            requests.append(requests.pop(item))
+            requests.append(requests.pop(subset_len * new_set_index + item))
             if depot_id is None:
                 for d in range(len(Depots)):
                     self.FullCost_mem[d].pop(item)
@@ -148,9 +148,9 @@ def depot_customer_cost(depot, check_len=None, go_next_set=0):
 
     if check_len is None:
         check_len: int = len(requests)
-    if check_len * go_next_set + check_len > len(requests):
-        f = open('requestConf' + str(requestConf_id) + '.json', 'r')
-        requests.extend(json.load(f))
+    # if check_len * go_next_set + check_len > len(requests):
+    #     f = open('requestConf' + str(requestConf_id) + '.json', 'r')
+    #     requests.extend(json.load(f))
 
     if not len(requests):
         print(" all requests Done.")
@@ -268,28 +268,47 @@ def choice_task_from_subset(UAV_id, flied):
     # best_depot_id = np.argmin(minCosts)   # temporary comment for ensure that UAVs can reach to depot
     best_depot_id = lowest_cost_depot_id
     MytempCostTable.insert(
-        best_depot_id, *depot_customer_cost(best_depot_id, ReqSubSet_len))
-    MytempCostTable.drop_outers(depot_id=best_depot_id)
+        best_depot_id, *depot_customer_cost(best_depot_id, check_len=ReqSubSet_len))
+    MytempCostTable.drop_outers(depot_id=best_depot_id, subset_len=ReqSubSet_len, new_set_index=0)
     # if finalRes[best_depot_id] > 5500:     # uav locked in costumer location and it seems that can't reach any depot
     #     return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
 
     best_request_id = MytempCostTable.get_min_index(best_depot_id)
 
     next_set_counter = 0
+    change_depot = False
+    depots_id_list = [i for i in range(len(Depots))]
+    depots_id_list.remove(best_depot_id)
+    chosen_depot = best_depot_id
     while best_request_id == -1:       # if all costumer in this subset is out of reach from depot change subset range
         next_set_counter += 1
+        if next_set_counter * ReqSubSet_len + ReqSubSet_len >= len(requests) and best_request_id == -1:
+            change_depot = True
+            next_set_counter = 0
+            if len(depots_id_list) == 0:
+                # there is not enough reachable customer in input requests
+                print(" can not find any comfortable depot for this costumer (in choice_task_from_subset function)")    # todo: handle it with turn off uav for a while
+            chosen_depot = np.random.choice(depots_id_list)
+            depots_id_list.remove(chosen_depot)
         MytempCostTable.clear()
         MytempCostTable.insert(
-            best_depot_id, *depot_customer_cost(best_depot_id, ReqSubSet_len, go_next_set=next_set_counter))
-        MytempCostTable.drop_outers(depot_id=best_depot_id)
-        best_request_id = MytempCostTable.get_min_index(best_depot_id)
+            chosen_depot, *depot_customer_cost(chosen_depot, ReqSubSet_len, go_next_set=next_set_counter))
+        MytempCostTable.drop_outers(depot_id=chosen_depot, subset_len=ReqSubSet_len, new_set_index=next_set_counter)
+        best_request_id = MytempCostTable.get_min_index(chosen_depot)
 
     best_request_id = best_request_id + next_set_counter * ReqSubSet_len
 
-    result = [[Depots[best_depot_id].loc.x,
-               Depots[best_depot_id].loc.y], requests.pop(best_request_id)]
+    if change_depot:
+        result = [[Depots[best_depot_id].loc.x,
+                  Depots[best_depot_id].loc.y],
+                  [Depots[chosen_depot].loc.x,
+                  Depots[chosen_depot].loc.y],
+                  requests.pop(best_request_id)]
+    else:
+        result = [[Depots[best_depot_id].loc.x,
+                   Depots[best_depot_id].loc.y], requests.pop(best_request_id)]
 
-    return result, Depots[best_depot_id].id
+    return result, Depots[chosen_depot].id
 
 
 def task_manager():  # TODO Add loadSubSet function and check
@@ -314,13 +333,14 @@ def task_manager():  # TODO Add loadSubSet function and check
         if UAVs[counter].delay == 1:
             UAVs[counter].delay = 0
         if not UAVs[counter].status:  # be 0 mean subtask done      # reached to depot or costumer
-            debug_list: List[int] = [27, 9]
-            if counter in debug_list :
-                lets_debug = True
-
             print(counter, ": --- %s seconds ---" % (time.time() - start_time))
             Uav_request[counter] = request_id
             request_id += 1
+
+            debug_list: List[int] = [163, 203, 204, 205]
+            if costumer_id in debug_list:
+                lets_debug = True
+
             # if UAV is in costumer location and need cdC' task
             if len(UAVTasks[counter]) == 0 or UAVTasks[counter][0] is None:
                 UAVs[counter].start_from = "costumer"
@@ -334,11 +354,17 @@ def task_manager():  # TODO Add loadSubSet function and check
                     UAVs[counter].flied = 0
                     UAVs[counter].start_from = "depot"
                     UAVTasks[counter].pop(0)
-                    UAVTasks[counter].append(None)
-                    storeData.setPathType(counter, 0)  # to costumer
-                    uav_costumer[counter] = costumer_id
-                    storeData.setCostumer_id(counter, costumer_id)
-                    costumer_id += 1
+                    if len(UAVTasks[counter]) >= 2:     # change depot if costumer is out of reach from depot
+                        storeData.setPathType(counter, 3)  # depot2depot
+                        uav_costumer[counter] = costumer_id
+                        storeData.setCostumer_id(counter, costumer_id)
+                        UAVs[counter].change_depot = True
+                    else:
+                        UAVTasks[counter].append(None)
+                        storeData.setPathType(counter, 0)  # to costumer
+                        uav_costumer[counter] = costumer_id
+                        storeData.setCostumer_id(counter, costumer_id)
+                        costumer_id += 1
                 else:
                     # point(*UAVTasks[counter][0]) in [ de.loc for de in Depots]:
                     if Uav_request[counter] < UAVCount:
@@ -347,6 +373,11 @@ def task_manager():  # TODO Add loadSubSet function and check
                         UAVs[counter].flied = 0
                     else:
                         storeData.setPathType(counter, 1)
+                    if len(UAVTasks[counter]) >= 3:     # change depot if costumer is out of reach from depot
+                        storeData.setPathType(counter, 1)  # depot2depot
+                        UAVs[counter].start_from = "costumer"
+                        uav_costumer[counter] = costumer_id
+
                 storeData.setDepot_id(counter, chosen_depot)
 
                 '''T_task = requests.pop(0)
@@ -360,6 +391,10 @@ def task_manager():  # TODO Add loadSubSet function and check
                 storeData.setCostumer_id(counter, costumer_id)
                 uav_costumer[counter] = costumer_id
                 costumer_id += 1
+                for dep in Depots:
+                    if dep.loc == UAVs[counter].loc:
+                        storeData.setDepot_id(counter, dep.id)
+                        break
 
             stoplist = Fns.nearStops(UAVs[counter].loc, int(
                 MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
@@ -599,8 +634,8 @@ def loadConfig():
     requests = json.load(f)
     f.close()
     # split some first items from requests
-    requests = [requests[i]
-                for i in range(yaml_data['COSTUMER_COUNT'] + UAVCount)]
+    # requests = [requests[i]
+    #             for i in range(yaml_data['COSTUMER_COUNT'] + UAVCount)]
     lineFile = open('lineConfig.json')
     lines_json = json.load(lineFile)
     lineFile.close()

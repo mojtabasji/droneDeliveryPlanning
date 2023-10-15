@@ -3,6 +3,8 @@ from point import point
 
 class UAV:
     def __init__(self, location = point(0,0), iden = None):
+        self.is_working = True
+        self.change_depot = False
         self.loc = location
         self.id = iden
         self.status = 0
@@ -51,7 +53,7 @@ class BusStop:
 
 
 class Depot:
-    def __init__(self, ID, location = point(0,0)) -> None:
+    def __init__(self, ID, location=point(0, 0)) -> None:
         self.id = ID
         self.loc = location
 
