@@ -161,7 +161,7 @@ class brain:
             sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
             if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2 or \
                     Cost['destfly'] + Cost['sourcefly'] > state['UAV_battery']:
-                sumTime += 10000
+                sumTime += 500000
             mins.append(sumTime)
 
         choiced = stopsList[np.argmin(mins)]

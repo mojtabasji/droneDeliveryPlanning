@@ -1,6 +1,8 @@
 from typing import List
 import keyboard
 import time
+import sys
+import os
 import json
 import copy
 import optparse
@@ -8,7 +10,6 @@ from DataStore import StoreData
 from StoreMoreData import StoreMore
 from storeFaillure import info_storage
 import cv2
-import numpy as np
 from sumolib import checkBinary
 import traci
 from PIL import Image, ImageDraw, ImageFont
@@ -19,59 +20,80 @@ import routeFinding as Rf
 import routeController as Rc
 import findNearStops as Fns
 from utils import *
+from constants import *
 import yaml
 
 
-class MyCTable:
-    def __init__(self) -> None:
-        self.FullCost_mem = {}
-        self.FlyCost_mem = {}
+class SubRequest:
+    def __init__(self, length, depot_count):
+        self.length = length
+        self.depot_count = depot_count
+        self.last_request_index = length
+        self.sub_requests = [i for i in range(length)]
+        self.depots_reachability = {i: [True for _ in range(length)] for i in range(depot_count)}
+        self.serve_cost = {i: [None for _ in range(length)] for i in range(depot_count)}
 
-    def clear(self):
-        self.FullCost_mem = {}
-        self.FlyCost_mem = {}
+    def refill(self, main_request_list):
+        if self.last_request_index < len(main_request_list):
+            shortage = self.length - len(self.sub_requests)
+            if shortage > len(main_request_list) - self.last_request_index:
+                shortage = len(main_request_list) - self.last_request_index
+            self.sub_requests.extend(range(self.last_request_index, self.last_request_index + shortage))
+            self.last_request_index += shortage
+            for d in self.depots_reachability:
+                self.depots_reachability[d].extend([True for _ in range(shortage)])
+                self.serve_cost[d].extend([None for _ in range(shortage)])
 
-    def insert(self, d_id, full_cost_array, fly_cost_array):
-        self.FullCost_mem[d_id] = full_cost_array
-        self.FlyCost_mem[d_id] = fly_cost_array
+    def remove_unreachable(self, main_request_list):
+        remove_list = []
+        for ind in range(len(self.sub_requests)):
+            if all([not self.depots_reachability[d][ind] for d in self.depots_reachability]):
+                remove_list.append(ind)
+        remove_list.reverse()
+        for ind in remove_list:
+            main_request_list[self.sub_requests[ind]][1] = CustomerSate.not_reachable
+            self.sub_requests.pop(ind)
+            for d in self.depots_reachability:
+                self.depots_reachability[d].pop(ind)
+                self.serve_cost[d].pop(ind)
 
-    def drop_outers(self, depot_id: int = None, subset_len=None, new_set_index=0):  # remove costumer if is out of reach from depots
-        global requests
+    def insert_depot_cost(self, depot_id, indexes, costs):
+        cost_list_index_counter = 0
+        for ind in indexes:
+            self.serve_cost[depot_id][ind] = costs[cost_list_index_counter]
+            if costs[cost_list_index_counter] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
+                self.depots_reachability[depot_id][ind] = False
+            cost_list_index_counter += 1
 
-        ouster_list_for_remove = []
-        if depot_id is None:
-            for i in range(len(self.FlyCost_mem[0])):
-                sum_costs_pear_dep = 0
-                for d in range(len(Depots)):
-                    sum_costs_pear_dep += self.FlyCost_mem[d][i]
-                if sum_costs_pear_dep > len(Depots) * 5500:
-                    # just drop or add to outer list
-                    ouster_list_for_remove.append(i)
-        else:
-            for i in range(len(self.FlyCost_mem[depot_id])):
-                if self.FlyCost_mem[depot_id][i] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
-                    # just drop or add to outer list
-                    ouster_list_for_remove.append(i)
-        ouster_list_for_remove.reverse()
-        for item in ouster_list_for_remove:
-            requests.append(requests.pop(subset_len * new_set_index + item))
-            if depot_id is None:
-                for d in range(len(Depots)):
-                    self.FullCost_mem[d].pop(item)
-                    self.FlyCost_mem[d].pop(item)
-            else:
-                self.FullCost_mem[depot_id].pop(item)
-                self.FlyCost_mem[depot_id].pop(item)
+    def get_none_cost_indexes(self, depot_id):
+        indexes = []
+        for ind in range(len(self.serve_cost[depot_id])):
+            if self.serve_cost[depot_id][ind] is None:
+                indexes.append(ind)
+        return indexes
 
-    def get_min_value(self, dep):
-        if len(self.FullCost_mem[dep]) == 0:
-            return -1
-        return np.min(self.FullCost_mem[dep])
+    def get_request_loc(self, sub_req_indexes):
+        return [requests[self.sub_requests[i]][0] for i in sub_req_indexes]
 
-    def get_min_index(self, dep) -> int:
-        if len(self.FlyCost_mem[dep]) == 0:
-            return -1
-        return np.argmin(self.FlyCost_mem[dep])
+    def get_min_cost_request(self, depot_id):
+        min_cost = None
+        min_cost_index = None
+        for ind in range(len(self.serve_cost[depot_id])):
+            if self.serve_cost[depot_id][ind] is not None:
+                if (min_cost is None or min_cost > self.serve_cost[depot_id][ind]) and \
+                        self.depots_reachability[depot_id][ind]:
+                    min_cost = self.serve_cost[depot_id][ind]
+                    min_cost_index = ind
+        return min_cost_index
+
+    def pop_to_server(self, sub_request_index, main_request_list):
+        resp = main_request_list[self.sub_requests[sub_request_index]][0]
+        main_request_list[self.sub_requests[sub_request_index]][1] = CustomerSate.served
+        self.sub_requests.pop(sub_request_index)
+        for d in self.depots_reachability:
+            self.depots_reachability[d].pop(sub_request_index)
+            self.serve_cost[d].pop(sub_request_index)
+        return resp
 
 
 with open('conf.yaml', 'r') as file:
@@ -115,6 +137,7 @@ uav_costumer: any
 storeFailure = info_storage()
 rc: Rc.brain
 requests = []
+requests_subset: SubRequest = None
 BusStopStatus = None
 images = []
 COLORS: List[tuple] = [(204, 10, 0), (204, 102, 0), (204, 204, 0), (102, 204, 0),
@@ -135,7 +158,7 @@ UAVPath = [[{"actionType": 'fly', "loc": point(1, 9)}, {"actionType": 'land', "l
 # local function's region  ( this functions may call in each other)
 
 
-def depot_customer_cost(depot, check_len=None, go_next_set=0):
+def depot_customer_cost(depot, sub_request_indexes):
     global finisher
     global BussList
     global BUS_MAX_CAPACITY
@@ -145,17 +168,9 @@ def depot_customer_cost(depot, check_len=None, go_next_set=0):
     global requests
     global rc
     global MaxFlyDist
+    global requests_subset
 
-    if check_len is None:
-        check_len: int = len(requests)
-    # if check_len * go_next_set + check_len > len(requests):
-    #     f = open('requestConf' + str(requestConf_id) + '.json', 'r')
-    #     requests.extend(json.load(f))
-
-    if not len(requests):
-        print(" all requests Done.")
-        finisher = True
-        return [0 for _ in range(check_len)], [0 for _ in range(check_len)]
+    customers_loc = requests_subset.get_request_loc(sub_request_indexes)
 
     total_cost_list = []
     fly_cost_list = []
@@ -172,12 +187,13 @@ def depot_customer_cost(depot, check_len=None, go_next_set=0):
             start_point, stoplist, lines_json, BusStopStatus)
         print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
         hiper_power += 40
-    for reqIndex in range(go_next_set * check_len, check_len + go_next_set * check_len):
+    for reqIndex in range(len(customers_loc)):
         # change here if input requests location range Or point range
-        end_point = point(*requests[reqIndex])
+        end_point = point(*customers_loc[reqIndex])
 
         network_status = {'curLoc': start_point, 'destLoc': end_point, 'BStop': stop_states(stoplist),
-                          'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist, 'UAV_battery': MaxFlyDist}
+                          'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist,
+                          'UAV_battery': MaxFlyDist}
         if approach == 'greedyDecide':
             tmp_cost_val, fly_cost = rc.cost_greedy(
                 stoplist, network_status, lines=Lines)
@@ -193,7 +209,7 @@ def depot_customer_cost(depot, check_len=None, go_next_set=0):
         total_cost_list.append(tmp_cost_val)
         fly_cost_list.append(fly_cost)
 
-    return total_cost_list, fly_cost_list
+    return fly_cost_list
 
 
 def choice_task_from_subset(UAV_id, flied):
@@ -203,8 +219,9 @@ def choice_task_from_subset(UAV_id, flied):
     global Lines
     global BusStopStatus
     global MaxFlyDist
+    global requests_subset
+    global requests
 
-    MytempCostTable = MyCTable()
     finalRes = {}
     fly_count_c2d = 0
 
@@ -221,7 +238,8 @@ def choice_task_from_subset(UAV_id, flied):
         print("Try To find BS to Come Back --> ", MaxFlyDist + hiper_power)
         hiper_power += 40
     network_status = {'curLoc': start_point, 'BStop': stop_states(stoplist),
-                      'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist, 'UAV_battery': MaxFlyDist - flied}
+                      'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist,
+                      'UAV_battery': MaxFlyDist - flied}
 
     for dep in range(len(Depots)):
         end_point = Depots[dep].loc
@@ -267,51 +285,51 @@ def choice_task_from_subset(UAV_id, flied):
 
     # best_depot_id = np.argmin(minCosts)   # temporary comment for ensure that UAVs can reach to depot
     best_depot_id = lowest_cost_depot_id
-    MytempCostTable.insert(
-        best_depot_id, *depot_customer_cost(best_depot_id, check_len=ReqSubSet_len))
-    MytempCostTable.drop_outers(depot_id=best_depot_id, subset_len=ReqSubSet_len, new_set_index=0)
+    requests_subset.refill(requests)
+    empty_customer_depot_indexes = requests_subset.get_none_cost_indexes(best_depot_id)
+    requests_subset.insert_depot_cost(best_depot_id, empty_customer_depot_indexes,
+                                      depot_customer_cost(best_depot_id, empty_customer_depot_indexes))
+    requests_subset.remove_unreachable(requests)
     # if finalRes[best_depot_id] > 5500:     # uav locked in costumer location and it seems that can't reach any depot
     #     return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
 
-    best_request_id = MytempCostTable.get_min_index(best_depot_id)
+    best_request_id = requests_subset.get_min_cost_request(best_depot_id)
 
-    next_set_counter = 0
     change_depot = False
     depots_id_list = [i for i in range(len(Depots))]
     depots_id_list.remove(best_depot_id)
     chosen_depot = best_depot_id
-    while best_request_id == -1:       # if all costumer in this subset is out of reach from depot change subset range
-        next_set_counter += 1
-        if next_set_counter * ReqSubSet_len + ReqSubSet_len >= len(requests) and best_request_id == -1:
-            change_depot = True
-            next_set_counter = 0
-            if len(depots_id_list) == 0:
-                # there is not enough reachable customer in input requests
-                print(" can not find any comfortable depot for this costumer (in choice_task_from_subset function)")    # todo: handle it with turn off uav for a while
-            chosen_depot = np.random.choice(depots_id_list)
-            depots_id_list.remove(chosen_depot)
-        MytempCostTable.clear()
-        MytempCostTable.insert(
-            chosen_depot, *depot_customer_cost(chosen_depot, ReqSubSet_len, go_next_set=next_set_counter))
-        MytempCostTable.drop_outers(depot_id=chosen_depot, subset_len=ReqSubSet_len, new_set_index=next_set_counter)
-        best_request_id = MytempCostTable.get_min_index(chosen_depot)
+    while best_request_id is None:
+        change_depot = True
+        if len(depots_id_list) == 0:
+            # reachable customer's done. turn off uav in depot
+            print("reachable customer's done. turn off uav in depot")
+            return [[Depots[best_depot_id].loc.x, Depots[best_depot_id].loc.y], ["turn", "off"]], best_depot_id
+        chosen_depot = np.random.choice(depots_id_list)
+        depots_id_list.remove(chosen_depot)
+        requests_subset.refill(requests)
+        empty_customer_depot_indexes = requests_subset.get_none_cost_indexes(chosen_depot)
+        requests_subset.insert_depot_cost(chosen_depot, empty_customer_depot_indexes,
+                                          depot_customer_cost(chosen_depot, empty_customer_depot_indexes))
+        requests_subset.remove_unreachable(requests)
+        best_request_id = requests_subset.get_min_cost_request(chosen_depot)
 
-    best_request_id = best_request_id + next_set_counter * ReqSubSet_len
+    best_request = requests_subset.pop_to_server(best_request_id, requests)
 
     if change_depot:
         result = [[Depots[best_depot_id].loc.x,
-                  Depots[best_depot_id].loc.y],
+                   Depots[best_depot_id].loc.y],
                   [Depots[chosen_depot].loc.x,
-                  Depots[chosen_depot].loc.y],
-                  requests.pop(best_request_id)]
+                   Depots[chosen_depot].loc.y],
+                  best_request]
     else:
         result = [[Depots[best_depot_id].loc.x,
-                   Depots[best_depot_id].loc.y], requests.pop(best_request_id)]
+                   Depots[best_depot_id].loc.y], best_request]
 
     return result, Depots[chosen_depot].id
 
 
-def task_manager():  # TODO Add loadSubSet function and check
+def task_manager():
     global finisher
     global costTbl
     global BussList
@@ -326,6 +344,8 @@ def task_manager():  # TODO Add loadSubSet function and check
     global request_id
 
     for counter in range(UAVCount):
+        if not UAVs[counter].is_working:
+            continue
         if UAVs[counter].delay > 1:
             UAVs[counter].delay -= 1
             # destination[counter] = {"actionType": 'delay', 'loc': 'there'}
@@ -337,8 +357,9 @@ def task_manager():  # TODO Add loadSubSet function and check
             Uav_request[counter] = request_id
             request_id += 1
 
-            debug_list: List[int] = [163, 203, 204, 205]
-            if costumer_id in debug_list:
+            debug_list: List[int] = []
+            uav_debug_list: List[int] = [31]
+            if costumer_id in debug_list or counter in uav_debug_list:
                 lets_debug = True
 
             # if UAV is in costumer location and need cdC' task
@@ -354,7 +375,10 @@ def task_manager():  # TODO Add loadSubSet function and check
                     UAVs[counter].flied = 0
                     UAVs[counter].start_from = "depot"
                     UAVTasks[counter].pop(0)
-                    if len(UAVTasks[counter]) >= 2:     # change depot if costumer is out of reach from depot
+                    if UAVTasks[counter][0] == ["turn", "off"]:
+                        UAVs[counter].is_working = False
+                        continue
+                    if len(UAVTasks[counter]) >= 2:  # change depot if costumer is out of reach from depot
                         storeData.setPathType(counter, 3)  # depot2depot
                         uav_costumer[counter] = costumer_id
                         storeData.setCostumer_id(counter, costumer_id)
@@ -364,7 +388,7 @@ def task_manager():  # TODO Add loadSubSet function and check
                         storeData.setPathType(counter, 0)  # to costumer
                         uav_costumer[counter] = costumer_id
                         storeData.setCostumer_id(counter, costumer_id)
-                        costumer_id += 1
+                    costumer_id += 1
                 else:
                     # point(*UAVTasks[counter][0]) in [ de.loc for de in Depots]:
                     if Uav_request[counter] < UAVCount:
@@ -373,7 +397,7 @@ def task_manager():  # TODO Add loadSubSet function and check
                         UAVs[counter].flied = 0
                     else:
                         storeData.setPathType(counter, 1)
-                    if len(UAVTasks[counter]) >= 3:     # change depot if costumer is out of reach from depot
+                    if len(UAVTasks[counter]) >= 3:  # change depot if costumer is out of reach from depot
                         storeData.setPathType(counter, 1)  # depot2depot
                         UAVs[counter].start_from = "costumer"
                         uav_costumer[counter] = costumer_id
@@ -385,12 +409,20 @@ def task_manager():  # TODO Add loadSubSet function and check
                 UAVTasks[counter] = T_task'''
 
             else:  # uav is in depot and recharge battery
+                if UAVTasks[counter][0] == ["turn", "off"]:
+                    UAVs[counter].is_working = False
+                    continue
+
                 UAVs[counter].flied = 0
                 UAVs[counter].start_from = "depot"
-                storeData.setPathType(counter, 0)
                 storeData.setCostumer_id(counter, costumer_id)
                 uav_costumer[counter] = costumer_id
-                costumer_id += 1
+                if len(UAVTasks[counter]) == 1:     # uav is in depot and wants go to customer location
+                    storeData.setPathType(counter, 0)
+                    costumer_id += 1
+                else:                               # uav is in depot and wants to change depot
+                    storeData.setPathType(counter, 3)
+
                 for dep in Depots:
                     if dep.loc == UAVs[counter].loc:
                         storeData.setDepot_id(counter, dep.id)
@@ -411,9 +443,10 @@ def task_manager():  # TODO Add loadSubSet function and check
                       MaxFlyDist + hiper_power)
                 hiper_power += 40
 
+            uav_battery = int(MaxFlyDist / 2) if UAVs[counter].start_from == "depot" else int(MaxFlyDist - UAVs[counter].flied)
             network_status = {'curLoc': UAVs[counter].loc, 'destLoc': point(
                 *UAVTasks[counter][0]), 'BStop': stop_states(stoplist), 'BussList': BussList,
-                              'BusMaxCap': BUS_MAX_CAPACITY, 'UAV_battery': MaxFlyDist - UAVs[counter].flied,
+                              'BusMaxCap': BUS_MAX_CAPACITY, 'UAV_battery': uav_battery,
                               'MAX_FLY_DIST': MaxFlyDist}
             # lineBusyRateUpdate()
             er = 1
@@ -606,6 +639,7 @@ def loadConfig():
     global MAX_WAITING_TIME
     global Uav_request
     global request_id
+    global requests_subset
     global destination
     global storeData
     global storeMore
@@ -616,7 +650,7 @@ def loadConfig():
     Env_dim = int(traci.simulation.getNetBoundary()[1][0] / 10)
     # UAVCount = config['UAVCount']
     UAVCount = yaml_data['UAVS_COUNT']
-    MaxFlyDist = yaml_data['UAV_MAX_FLY_DIST']   # config['MaxFlyDist']
+    MaxFlyDist = yaml_data['UAV_MAX_FLY_DIST']  # config['MaxFlyDist']
     MAX_WAITING_TIME = MaxFlyDist * SOURCE_FLY_COEFFICIENT
     # BUS_MAX_CAPACITY = config['BusMaxCap']
     BUS_MAX_CAPACITY = yaml_data['BUS_CAPACITY']
@@ -634,8 +668,8 @@ def loadConfig():
     requests = json.load(f)
     f.close()
     # split some first items from requests
-    # requests = [requests[i]
-    #             for i in range(yaml_data['COSTUMER_COUNT'] + UAVCount)]
+    requests = [[requests[i], CustomerSate.not_served] for i in range(yaml_data['COSTUMER_COUNT'])]
+    requests_subset = SubRequest(ReqSubSet_len, len(Depots))
     lineFile = open('lineConfig.json')
     lines_json = json.load(lineFile)
     lineFile.close()
@@ -726,11 +760,16 @@ def go_forward():
         if i < 80:
             print("step: ", i, ": --- %s seconds ---" %
                   (time.time() - start_time))
+            
+        if len([u for u in UAVs if u.is_working]) == 0:
+            finisher = True
 
         if finisher or i == workingTime:
             break
 
         for ctr in range(UAVCount):
+            if UAVs[ctr].is_working is False:
+                continue
             # when uav get new task, it's status is 0, and it's delay is 0 ## or UAVs[ctr].delay
             if not (UAVs[ctr].status):
                 destination[ctr] = UAVPath[ctr].pop(0)
@@ -741,7 +780,7 @@ def go_forward():
                 UAVs[ctr].flayFail = False
 
         for tmp in range(UAVCount):
-            if UAVs[tmp].delay:
+            if UAVs[tmp].delay or UAVs[tmp].is_working is False:
                 # storeData.incrementStep(tmp)
                 continue
             elif destination[tmp]["actionType"] == "back2depot":
@@ -854,6 +893,8 @@ def go_forward():
                     storeData.storeTiming(Uav_request[tmp], tmp)
 
         for cntr in range(UAVCount):  # update driveing UAVs location
+            if UAVs[cntr].is_working is False:
+                continue
             if UonBusID[cntr] != -1:
                 TmpVhclPos = traci.vehicle.getPosition(UonBusID[cntr])
                 tmpVhclPnt = point(*loc2point(TmpVhclPos))
@@ -950,6 +991,8 @@ def go_forward():
         fliers = []
 
         for tmp in range(UAVCount):
+            if UAVs[tmp].is_working is False:
+                continue
             UAVs[tmp].stepet += 1
             if destination[tmp]["actionType"] == "fly" and not UAVs[tmp].delay:
                 fliers.append(tmp)
@@ -1005,8 +1048,15 @@ def go_forward():
                     destination[tmp]["loc"] = best_depot.loc
                     # return UAVs costumer to request list
                     costumer_location_point = UAVPath[tmp][-2]["loc"]
-                    requests.append(
-                        [costumer_location_point.x, costumer_location_point.y])
+                    if len(UAVTasks[tmp]) > 0 and UAVTasks[tmp][0] is not None:
+                        requests.append(
+                            [UAVTasks[tmp][0],
+                             CustomerSate.not_served])
+                        UAVTasks[tmp] = []
+                    else:
+                        requests.append(
+                            [[costumer_location_point.x, costumer_location_point.y],
+                             CustomerSate.not_served])
                     # reset UAVs path
                     UAVPath[tmp] = [{'actionType': 'back2depot'}]
                     print("One more back 2 depot, id: ", tmp, " from line: ",
@@ -1119,8 +1169,15 @@ class DebugTools:
 
 # Starter
 if __name__ == "__main__":
-
-    print("have vars: ", back2depotCount, flyFailureCount)
+    print("checking parameters ...")
+    result_path_extend: str = ""
+    if len(sys.argv) > 1:
+        result_path_extend = str(sys.argv[1]) + "/"
+        # create path if not exist
+        if not os.path.exists("result/" + result_path_extend):
+            os.makedirs("result/" + result_path_extend)
+        open("result/" + result_path_extend + "init.txt", "w").close()
+    print("back2depotCount: ", back2depotCount, "flyFailureCount: ", flyFailureCount, "customer to serve: ", reach2finish / 2, "len_request: ", len(requests))
 
     # sumo config
     options = get_options()
@@ -1147,23 +1204,26 @@ if __name__ == "__main__":
     print("--- %s seconds ---" % (time.time() - start_time))
     print("Back 2 depot count : ", back2depotCount)
 
+    unreachable_customer_count = len([Cus for Cus in requests if Cus[1] == CustomerSate.not_reachable])
     moreData2json = {"back2depotCount": back2depotCount,
-                     "flyFailureCount": flyFailureCount}
+                     "flyFailureCount": flyFailureCount,
+                     "unreachable_customer_count": unreachable_customer_count,
+                     "served_customer_count": (int(reach2finish) / 2) - unreachable_customer_count}
     jsonString = json.dumps(moreData2json)
-    jsonFile = open("result/moreInJson_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
+    jsonFile = open("result/" + result_path_extend + "moreInJson_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
         '%Y-%m-%d_%H-%M-%S') + ".json", "w")
     jsonFile.write(jsonString)
     jsonFile.close()
 
     storeFailure.write_info_to_file(
-        "result/flyFailureCount_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
+        "result/" + result_path_extend + "flyFailureCount_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
             '%Y-%m-%d_%H-%M-%S') + ".txt")
 
     '''pic = open('picpath.json','w')
     pic.write(json.dumps(images))'''
     storeMore.setKeyVal('running Time', time.time() - start_time)
-    storeData.SaveToFile(str(UAVCount) + "-" + str(len(Depots)))
-    storeMore.Save2file(str(UAVCount) + "-" + str(len(Depots)))
+    storeData.SaveToFile(str(UAVCount) + "-" + str(len(Depots)), path_extend=result_path_extend)
+    storeMore.Save2file(str(UAVCount) + "-" + str(len(Depots)), path_extend=result_path_extend)
     # rc.saveModel(UAVCount)
 
     if createGif:
