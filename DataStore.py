@@ -97,7 +97,7 @@ class StoreData:
         return arr
 
 
-    def SaveToFile(self, nameAddation):
+    def SaveToFile(self, nameAddation, path_extend=""):
         pageNumber = 1
         workbook = xlwt.Workbook()
         sheet = workbook.add_sheet("page"+str(pageNumber))
@@ -157,4 +157,4 @@ class StoreData:
                 rowId = 0
             rowId +=1
 
-        workbook.save('result/operations_'+ str(nameAddation) + "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +'.xls')
+        workbook.save('result/' + path_extend + 'operations_'+ str(nameAddation) + "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +'.xls')

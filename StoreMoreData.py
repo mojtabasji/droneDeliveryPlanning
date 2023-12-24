@@ -30,7 +30,7 @@ class StoreMore:
         self.selectedLines.append(sel_line)
 
     
-    def Save2file(self, nameAddation):
+    def Save2file(self, nameAddation, path_extend=""):
         workbook = xlwt.Workbook()
         sheet = workbook.add_sheet("sheet1")
         header_font = xlwt.Font()
@@ -61,4 +61,4 @@ class StoreMore:
             sheet.write(i+1,4, self.existPathCount[i])
             sheet.write(i+1,5, self.selectedLines[i])
         
-        workbook.save('result/moreData'+ str(nameAddation) + "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +'.xls')
+        workbook.save('result/' + path_extend + 'moreData'+ str(nameAddation) + "_" + time.strftime('%Y-%m-%d_%H-%M-%S') +'.xls')
