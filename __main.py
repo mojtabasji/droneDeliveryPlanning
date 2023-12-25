@@ -198,7 +198,9 @@ def depot_customer_cost(depot, sub_request_indexes):
             tmp_cost_val, fly_cost = rc.cost_greedy(
                 stoplist, network_status, lines=Lines)
         elif approach == 'deepDecide':
-            tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, network_status, Lines)
+            # tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, network_status, Lines)
+            tmp_cost_val, fly_cost = rc.cost_greedy(
+                stoplist, network_status, lines=Lines)
         else:
             tmp_cost_val = 0
             fly_cost = 0
