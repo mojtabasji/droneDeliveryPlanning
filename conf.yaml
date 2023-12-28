@@ -4,10 +4,9 @@ UAVS_COUNT: 40 # 1: 1 UAV, 2: 2 UAV, 3: 3 UAV
 DECISION_APPROACH: DEEP # GREEDY: Greedy, DEEP: Deep Q-Learning
 COSTUMER_COUNT: 50    # income customer product requests. if all costumers are served, simulation ends.
 BUS_CAPACITY: 3     # bus capacity
-CREATE_GIF: True   # create gif of simulation
+CREATE_GIF: False   # create gif of simulation
 SOURCE_FLY_COEFFICIENT: 0.4 # waiting time coefficient for source
 OUT_OF_REACH_COSTUMERS: 0.35
 UAV_MAX_FLY_DIST: 1200 # max fly distance of UAV
-
-
+EXPLORE_DECAY: 0.995 # decay rate of deep q-learning exploration
 

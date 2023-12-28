@@ -19,13 +19,13 @@ TRANSPORT_REDUCE = 0.5
 
 
 class ANN:
-    def __init__(self, line_num=0, line_count=1, UAVCount=0, inpNodeCount=1):
+    def __init__(self, line_num=0, line_count=1, UAVCount=0, inpNodeCount=1, decay=0.995):
         self.lineNum = line_num
         self.lineCount = line_count
         self.UAVCount = UAVCount
         self.explore_rate = 1.0
         self.explore_min = 0.03
-        self.explore_decay = 0.995
+        self.explore_decay = decay
         self.inpNodeCount = inpNodeCount
         self.MemoryX = deque(maxlen=1000)
         self.MemoryY = deque(maxlen=1000)
@@ -80,7 +80,7 @@ class ANN:
 
 
 class brain:
-    def __init__(self, UAVCount, LoadModel=False, lines={}) -> None:
+    def __init__(self, UAVCount, LoadModel=False, lines={}, exploration_decay=0.995) -> None:
         self.weight_backup = "U_Brine_weight.h5"
         self.temporalMemory = []  # deque(UAVCount)
         self.ann = {}
@@ -90,7 +90,7 @@ class brain:
             input_nodes = lines[line_attubutes[i][0]].get_bus_station_count(
             ) + (lines[line_attubutes[i][0]].get_bus_count() * 2) + 1
             self.ann[line_attubutes[i][0]] = ANN(line_num=i, line_count=line_count, UAVCount=UAVCount,
-                                                 inpNodeCount=(int(input_nodes), int(2)))
+                                                 inpNodeCount=(int(input_nodes), int(2)), decay=exploration_decay)
         self.outGama = 2
         self.Ucount = UAVCount
 

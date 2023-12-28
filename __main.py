@@ -1148,7 +1148,7 @@ def __loadBrain():
     global rc
     global lines_json
     global Lines
-    rc = Rc.brain(UAVCount, LoadModel=loadModel, lines=Lines)
+    rc = Rc.brain(UAVCount, LoadModel=loadModel, lines=Lines, exploration_decay=yaml_data['EXPLORE_DECAY'])
 
 
 def set_last_stations():
@@ -1202,6 +1202,7 @@ if __name__ == "__main__":
     start_time = time.time()
     __loadSimulationParams()
     __loadBrain()
+    print("Deep Q-network Loaded ... ")
     go_forward()
     print("--- %s seconds ---" % (time.time() - start_time))
     print("Back 2 depot count : ", back2depotCount)
