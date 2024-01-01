@@ -196,11 +196,11 @@ def depot_customer_cost(depot, sub_request_indexes):
                           'UAV_battery': MaxFlyDist}
         if approach == 'greedyDecide':
             tmp_cost_val, fly_cost = rc.cost_greedy(
-                stoplist, network_status, lines=Lines)
+                stoplist, network_status, lines=Lines, ignore_wait=True)
         elif approach == 'deepDecide':
             # tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, network_status, Lines)
             tmp_cost_val, fly_cost = rc.cost_greedy(
-                stoplist, network_status, lines=Lines)
+                stoplist, network_status, lines=Lines, ignore_wait=True)
         else:
             tmp_cost_val = 0
             fly_cost = 0

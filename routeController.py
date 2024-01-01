@@ -125,7 +125,7 @@ class brain:
         return Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + Cost['destfly'], Cost['destfly'] + Cost[
             'sourcefly']
 
-    def cost_greedy(self, stopsList, state, lines=None):
+    def cost_greedy(self, stopsList, state, lines=None, ignore_wait=False):
         num = self.Ucount
         soufli = 500
         mins = []
@@ -136,8 +136,10 @@ class brain:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            # time2wait.append(reachFreeSpaceLoc(str(stp) + Cost['direction'], state) * StopsDistances)
             sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) # + time2wait[-1]
+            if not ignore_wait:
+                time2wait.append(reachFreeSpaceLoc(str(stp) + Cost['direction'], state) * StopsDistances)
+                sumTime += time2wait[-1]
             if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2 or \
                     Cost['destfly'] + Cost['sourcefly'] > state['UAV_battery']:
                 sumTime += 500000
