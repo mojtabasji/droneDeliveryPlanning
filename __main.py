@@ -28,21 +28,32 @@ class SubRequest:
     def __init__(self, length, depot_count):
         self.length = length
         self.depot_count = depot_count
-        self.last_request_index = length
-        self.sub_requests = [i for i in range(length)]
+        self.last_request_index = 0
+        self.sub_requests = []
         self.depots_reachability = {i: [True for _ in range(length)] for i in range(depot_count)}
-        self.serve_cost = {i: [None for _ in range(length)] for i in range(depot_count)}
+        self.serve_cost = {i: [] for i in range(depot_count)}
 
     def refill(self, main_request_list):
         if self.last_request_index < len(main_request_list):
             shortage = self.length - len(self.sub_requests)
             if shortage > len(main_request_list) - self.last_request_index:
                 shortage = len(main_request_list) - self.last_request_index
-            self.sub_requests.extend(range(self.last_request_index, self.last_request_index + shortage))
-            self.last_request_index += shortage
-            for d in self.depots_reachability:
-                self.depots_reachability[d].extend([True for _ in range(shortage)])
-                self.serve_cost[d].extend([None for _ in range(shortage)])
+            new_last = self.last_request_index + shortage
+            shorter_counter = 0
+            tempo_counter = self.last_request_index
+            tempo_list = []
+            while shorter_counter < shortage:
+                if tempo_counter >= len(main_request_list):
+                    break
+                if main_request_list[tempo_counter][1] != CustomerSate.not_reachable:
+                    tempo_list.append(tempo_counter)
+                    shorter_counter += 1
+                tempo_counter += 1
+            self.sub_requests.extend(tempo_list)
+            self.last_request_index = tempo_counter
+            for d in self.serve_cost:
+                self.serve_cost[d].extend([None for _ in range(shorter_counter)])
+            #     self.depots_reachability[d].extend([True for _ in range(shortage)])
 
     def remove_unreachable(self, main_request_list):
         remove_list = []
@@ -61,8 +72,8 @@ class SubRequest:
         cost_list_index_counter = 0
         for ind in indexes:
             self.serve_cost[depot_id][ind] = costs[cost_list_index_counter]
-            if costs[cost_list_index_counter] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
-                self.depots_reachability[depot_id][ind] = False
+            # if costs[cost_list_index_counter] > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
+            #     self.depots_reachability[depot_id][ind] = False
             cost_list_index_counter += 1
 
     def get_none_cost_indexes(self, depot_id):
@@ -80,8 +91,8 @@ class SubRequest:
         min_cost_index = None
         for ind in range(len(self.serve_cost[depot_id])):
             if self.serve_cost[depot_id][ind] is not None:
-                if (min_cost is None or min_cost > self.serve_cost[depot_id][ind]) and \
-                        self.depots_reachability[depot_id][ind]:
+                if (min_cost is None or min_cost > self.serve_cost[depot_id][ind]):
+                        # and self.depots_reachability[depot_id][ind]
                     min_cost = self.serve_cost[depot_id][ind]
                     min_cost_index = ind
         return min_cost_index
@@ -90,9 +101,9 @@ class SubRequest:
         resp = main_request_list[self.sub_requests[sub_request_index]][0]
         main_request_list[self.sub_requests[sub_request_index]][1] = CustomerSate.served
         self.sub_requests.pop(sub_request_index)
-        for d in self.depots_reachability:
-            self.depots_reachability[d].pop(sub_request_index)
+        for d in self.serve_cost:
             self.serve_cost[d].pop(sub_request_index)
+            # self.depots_reachability[d].pop(sub_request_index)
         return resp
 
 
@@ -111,7 +122,7 @@ UAVs = []
 # reachTimeStoreXl = []
 episode = 9999999
 reach2finish = yaml_data['COSTUMER_COUNT'] * 2
-workingTime = 60000
+workingTime = yaml_data['TIME_DURATION']
 finisher = None
 BussList = {}
 BussLastStations = {}
@@ -157,6 +168,34 @@ UAVPath = [[{"actionType": 'fly', "loc": point(1, 9)}, {"actionType": 'land', "l
 
 # local function's region  ( this functions may call in each other)
 
+def drup_unreachable_customers(main_request_list):
+    print("drup_unreachable_customers ...")
+    depot_stops = []
+    depot_fixed_stop_states = []
+    counter = 0
+    for depot in range(len(Depots)):
+        stoplist = Fns.nearStops(Depots[depot].loc, int(
+            MaxFlyDist * AVAILABLE_STOP_COEFFICIENT))
+        stoplist = Fns.reviewNearStops(
+            Depots[depot].loc, stoplist, lines_json, BusStopStatus)
+        depot_stops.append(stoplist)
+        depot_fixed_stop_states.append(stop_states(stoplist))
+    for req in main_request_list:
+        depot_reachable = [True for _ in range(len(Depots))]
+        for depot in range(len(Depots)):
+            network_status = {'curLoc': Depots[depot].loc, 'destLoc': point(*req[0]), 'BStop': depot_fixed_stop_states[depot],
+                              'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist,
+                              'UAV_battery': MaxFlyDist}
+            _, temp_cost = rc.cost_greedy(depot_stops[depot],
+                                          network_status, lines=Lines, ignore_wait=True)
+            if temp_cost > MaxFlyDist * OUT_OF_REACH_COSTUMERS:
+                depot_reachable[depot] = False
+        if not any(depot_reachable):
+            counter += 1
+            print(counter, ": ", req[0], " is not reachable")
+            req[1] = CustomerSate.not_reachable
+    print("drup_unreachable_customers done")
+
 
 def depot_customer_cost(depot, sub_request_indexes):
     global finisher
@@ -198,9 +237,9 @@ def depot_customer_cost(depot, sub_request_indexes):
             tmp_cost_val, fly_cost = rc.cost_greedy(
                 stoplist, network_status, lines=Lines, ignore_wait=True)
         elif approach == 'deepDecide':
-            # tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, network_status, Lines)
-            tmp_cost_val, fly_cost = rc.cost_greedy(
-                stoplist, network_status, lines=Lines, ignore_wait=True)
+            tmp_cost_val, fly_cost = rc.Cost_deep(stoplist, network_status, Lines)
+            # tmp_cost_val, fly_cost = rc.cost_greedy(
+            #     stoplist, network_status, lines=Lines, ignore_wait=False)
         else:
             tmp_cost_val = 0
             fly_cost = 0
@@ -291,7 +330,9 @@ def choice_task_from_subset(UAV_id, flied):
     empty_customer_depot_indexes = requests_subset.get_none_cost_indexes(best_depot_id)
     requests_subset.insert_depot_cost(best_depot_id, empty_customer_depot_indexes,
                                       depot_customer_cost(best_depot_id, empty_customer_depot_indexes))
-    requests_subset.remove_unreachable(requests)
+    # requests_subset.remove_unreachable(requests)
+
+
     # if finalRes[best_depot_id] > 5500:     # uav locked in costumer location and it seems that can't reach any depot
     #     return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
 
@@ -313,7 +354,7 @@ def choice_task_from_subset(UAV_id, flied):
         empty_customer_depot_indexes = requests_subset.get_none_cost_indexes(chosen_depot)
         requests_subset.insert_depot_cost(chosen_depot, empty_customer_depot_indexes,
                                           depot_customer_cost(chosen_depot, empty_customer_depot_indexes))
-        requests_subset.remove_unreachable(requests)
+        # requests_subset.remove_unreachable(requests)
         best_request_id = requests_subset.get_min_cost_request(chosen_depot)
 
     best_request = requests_subset.pop_to_server(best_request_id, requests)
@@ -419,10 +460,10 @@ def task_manager():
                 UAVs[counter].start_from = "depot"
                 storeData.setCostumer_id(counter, costumer_id)
                 uav_costumer[counter] = costumer_id
-                if len(UAVTasks[counter]) == 1:     # uav is in depot and wants go to customer location
+                if len(UAVTasks[counter]) == 1:  # uav is in depot and wants go to customer location
                     storeData.setPathType(counter, 0)
                     costumer_id += 1
-                else:                               # uav is in depot and wants to change depot
+                else:  # uav is in depot and wants to change depot
                     storeData.setPathType(counter, 3)
 
                 for dep in Depots:
@@ -445,7 +486,8 @@ def task_manager():
                       MaxFlyDist + hiper_power)
                 hiper_power += 40
 
-            uav_battery = int(MaxFlyDist / 2) if UAVs[counter].start_from == "depot" else int(MaxFlyDist - UAVs[counter].flied)
+            uav_battery = int(MaxFlyDist / 2) if UAVs[counter].start_from == "depot" else int(
+                MaxFlyDist - UAVs[counter].flied)
             network_status = {'curLoc': UAVs[counter].loc, 'destLoc': point(
                 *UAVTasks[counter][0]), 'BStop': stop_states(stoplist), 'BussList': BussList,
                               'BusMaxCap': BUS_MAX_CAPACITY, 'UAV_battery': uav_battery,
@@ -754,6 +796,8 @@ def go_forward():
     UAVActions = [None] * UAVCount
     LastDistance = [None] * UAVCount
 
+    drup_unreachable_customers(requests)
+
     for i in range(episode):  # start to go
         traci.simulationStep()
         bus_state_update()  # update buss location and last station and location
@@ -762,9 +806,9 @@ def go_forward():
         if i < 80:
             print("step: ", i, ": --- %s seconds ---" %
                   (time.time() - start_time))
-            
+
         if len([u for u in UAVs if u.is_working]) == 0:
-            finisher = True
+            finisher = True     # all UAVs are off
 
         if finisher or i == workingTime:
             break
@@ -1179,7 +1223,8 @@ if __name__ == "__main__":
         if not os.path.exists("result/" + result_path_extend):
             os.makedirs("result/" + result_path_extend)
         open("result/" + result_path_extend + "init.txt", "w").close()
-    print("back2depotCount: ", back2depotCount, "flyFailureCount: ", flyFailureCount, "customer to serve: ", reach2finish / 2, "len_request: ", len(requests))
+    print("back2depotCount: ", back2depotCount, "flyFailureCount: ", flyFailureCount, "customer to serve: ",
+          reach2finish / 2, "len_request: ", len(requests))
 
     # sumo config
     options = get_options()
@@ -1213,13 +1258,15 @@ if __name__ == "__main__":
                      "unreachable_customer_count": unreachable_customer_count,
                      "served_customer_count": (int(reach2finish) / 2) - unreachable_customer_count}
     jsonString = json.dumps(moreData2json)
-    jsonFile = open("result/" + result_path_extend + "moreInJson_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
-        '%Y-%m-%d_%H-%M-%S') + ".json", "w")
+    jsonFile = open(
+        "result/" + result_path_extend + "moreInJson_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
+            '%Y-%m-%d_%H-%M-%S') + ".json", "w")
     jsonFile.write(jsonString)
     jsonFile.close()
 
     storeFailure.write_info_to_file(
-        "result/" + result_path_extend + "flyFailureCount_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(
+        "result/" + result_path_extend + "flyFailureCount_" + str(UAVCount) + "_" + str(
+            len(Depots)) + "_" + time.strftime(
             '%Y-%m-%d_%H-%M-%S') + ".txt")
 
     '''pic = open('picpath.json','w')

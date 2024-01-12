@@ -8,5 +8,6 @@ CREATE_GIF: False   # create gif of simulation
 SOURCE_FLY_COEFFICIENT: 0.4 # waiting time coefficient for source
 OUT_OF_REACH_COSTUMERS: 0.35
 UAV_MAX_FLY_DIST: 1200 # max fly distance of UAV
-EXPLORE_DECAY: 0.995 # decay rate of deep q-learning exploration
+EXPLORE_DECAY: 0.995 # decay rate of deep q-learning exploration -> defult: 0.995
+TIME_DURATION: 60000 # MAX time duration of simulation
 
