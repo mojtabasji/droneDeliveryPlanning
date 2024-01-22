@@ -101,8 +101,8 @@ class brain:
             efected_lines.append(line_name)
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
-            # choiced = np.random.choice(stopsList)
-            choiced, _ = self.greedy(stopsList, state)
+            choiced = np.random.choice(stopsList)
+            # choiced, _ = self.greedy(stopsList, state)
         else:
             choiced = ''
             maxRew = 900000
@@ -176,16 +176,20 @@ class brain:
     def decide(self, stopsList, state, Lines) -> str:  # out -> str( stopID) Like "78"
         efected_lines = []
         wait_time = None
+        StopsDistances = 50
         for stp in stopsList:
             line_name = rf.findStopLine(int(stp))
             efected_lines.append(line_name)
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
-            # max_explore = [self.ann[i].explore_rate for i in efected_lines]
-            # max_explore = max_explore / np.sum(max_explore)
-            # choiced = np.random.choice(stopsList, p=max_explore)
+            max_explore = [self.ann[i].explore_rate for i in efected_lines]
+            max_explore = max_explore / np.sum(max_explore)
+            choiced = np.random.choice(stopsList, p=max_explore)
+            _, route = rf.find(int(choiced), state['destLoc'])
+            Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+            wait_time = reachFreeSpaceLoc(str(choiced) + Cost['direction'], state) * StopsDistances
 
-            choiced, wait_time = self.greedy(stopsList, state)
+            # choiced, wait_time = self.greedy(stopsList, state)
 
             bestInpnodes, stopInDirection = self.__inpCreate(
                 choiced, state, Lines)
