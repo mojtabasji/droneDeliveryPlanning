@@ -124,6 +124,7 @@ episode = 9999999
 reach2finish = yaml_data['COSTUMER_COUNT'] * 2
 workingTime = yaml_data['TIME_DURATION']
 finisher = None
+finish_time = None
 BussList = {}
 BussLastStations = {}
 Lines = {}
@@ -811,6 +812,7 @@ def go_forward():
             finisher = True     # all UAVs are off
 
         if finisher or i == workingTime:
+            finish_time = i
             break
 
         for ctr in range(UAVCount):
@@ -1256,7 +1258,8 @@ if __name__ == "__main__":
     moreData2json = {"back2depotCount": back2depotCount,
                      "flyFailureCount": flyFailureCount,
                      "unreachable_customer_count": unreachable_customer_count,
-                     "served_customer_count": (int(reach2finish) / 2) - unreachable_customer_count}
+                     "served_customer_count": (int(reach2finish) / 2) - unreachable_customer_count,
+                     "end_time": finish_time}
     jsonString = json.dumps(moreData2json)
     jsonFile = open(
         "result/" + result_path_extend + "moreInJson_" + str(UAVCount) + "_" + str(len(Depots)) + "_" + time.strftime(

@@ -16,10 +16,17 @@ import os
 
 
 TRANSPORT_REDUCE = 0.5
+_2n = [2 ** i for i in range(1, 12)]
+
+
+def first_collision_2n(inp):
+    for i in _2n:
+        if inp < i:
+            return i
 
 
 class ANN:
-    def __init__(self, line_num=0, line_count=1, UAVCount=0, inpNodeCount=1, decay=0.995):
+    def __init__(self, line_num=0, line_count=1, UAVCount=0, inpNodeCount=(1, 2), decay=0.995):
         self.lineNum = line_num
         self.lineCount = line_count
         self.UAVCount = UAVCount
@@ -34,12 +41,11 @@ class ANN:
         self.sample_batch_size = UAVCount / line_count
 
     def __build_model(self):
+        layer_node = first_collision_2n(self.inpNodeCount[0] * self.inpNodeCount[1])
         mdl = Sequential()
-        # mdl.add(Dense(300, input_shape=self.inpNodeCount, activation='relu'))
-        # mdl.add(Flatten())
         mdl.add(Reshape((self.inpNodeCount[0] * self.inpNodeCount[1],), input_shape=self.inpNodeCount))
-        mdl.add(Dense(300, activation='relu'))
-        mdl.add(Dense(1000, activation='softplus'))
+        mdl.add(Dense(layer_node, activation='relu'))
+        mdl.add(Dense(layer_node, activation='softplus'))
         mdl.add(Dense(1, activation='linear'))  # linear softmax  sigmoid  softplus
         mdl.compile(loss='mse', optimizer=Adam(learning_rate=0.002),
                     metrics=['mae', 'mse'])  # optimizer='rmsprop'
