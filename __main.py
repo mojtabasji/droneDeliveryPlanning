@@ -120,7 +120,6 @@ showImage = False
 createGif = yaml_data['CREATE_GIF']
 UAVs = []
 # reachTimeStoreXl = []
-episode = 9999999
 reach2finish = yaml_data['COSTUMER_COUNT'] * 2
 workingTime = yaml_data['TIME_DURATION']
 finisher = None
@@ -773,6 +772,7 @@ def go_forward():
     global MAX_WAITING_TIME
     global uav_costumer
     global uav_wait_on_go_path
+    global finish_time
 
     monitoring = 0
     take_pic = False
@@ -799,7 +799,9 @@ def go_forward():
 
     drup_unreachable_customers(requests)
 
-    for i in range(episode):  # start to go
+    i: int = -1
+    while True:  # start to go
+        i = i + 1
         traci.simulationStep()
         bus_state_update()  # update buss location and last station and location
         task_manager()
