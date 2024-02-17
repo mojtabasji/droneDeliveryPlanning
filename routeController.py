@@ -107,6 +107,19 @@ class brain:
             efected_lines.append(line_name)
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
+            # remove wrong line stations
+            index = 0
+            failure_list = []
+            for stp in stopsList:
+                t, route = rf.find(int(stp), state['destLoc'])
+                Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+                if Cost['destfly'] > Cost['transport']:
+                    failure_list.append(index)
+                index += 1
+            failure_list = failure_list.reverse()
+            for i in failure_list:
+                stopsList.pop(i)
+
             choiced = np.random.choice(stopsList)
             # choiced, _ = self.greedy(stopsList, state)
         else:
@@ -190,6 +203,20 @@ class brain:
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
             max_explore = [self.ann[i].explore_rate for i in efected_lines]
             max_explore = max_explore / np.sum(max_explore)
+            # remove wrong line stations
+            index = 0
+            failure_list = []
+            for stp in stopsList:
+                t, route = rf.find(int(stp), state['destLoc'])
+                Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+                if Cost['destfly'] > Cost['transport']:
+                    failure_list.append(index)
+                index += 1
+            failure_list = failure_list.reverse()
+            for i in failure_list:
+                max_explore.pop(i)
+                stopsList.pop(i)
+
             choiced = np.random.choice(stopsList, p=max_explore)
             _, route = rf.find(int(choiced), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
