@@ -1256,6 +1256,9 @@ if __name__ == "__main__":
     print("--- %s seconds ---" % (time.time() - start_time))
     print("Back 2 depot count : ", back2depotCount)
 
+    if yaml_data['SAVE_MODEL']:
+        rc.save_model_weights()
+
     unreachable_customer_count = len([Cus for Cus in requests if Cus[1] == CustomerSate.not_reachable])
     moreData2json = {"back2depotCount": back2depotCount,
                      "flyFailureCount": flyFailureCount,

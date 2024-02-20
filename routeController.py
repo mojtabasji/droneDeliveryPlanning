@@ -13,6 +13,15 @@ import numpy as np
 import random
 import re
 import os
+import yaml
+
+yaml_data = None
+with open('conf.yaml', 'r') as file:
+    yaml_data = yaml.load(file, Loader=yaml.FullLoader)
+
+MIN_TRANSPORT_PATH = yaml_data['MIN_TRANSPORT_PATH']
+DEEP_INITIALIZE_APPROACH = yaml_data['DEEP_INITIALIZE_APPROACH']
+LOAD_MODEL = yaml_data['LOAD_MODEL']
 
 
 TRANSPORT_REDUCE = 0.5
@@ -53,6 +62,12 @@ class ANN:
 
     def predict(self, inp):
         return self.model.predict(inp)
+
+    def save_model(self):
+        self.model.save(f'weights/U_Brine_weight_line{str(self.lineNum)}.h5')
+
+    def load_model(self):
+        self.model = load_model(f'weights/U_Brine_weight_line{str(self.lineNum)}.h5')
 
     def train(self):
         if len(self.MemoryX) < self.sample_batch_size * 2 or self.explore_rate < self.explore_min:
@@ -100,6 +115,14 @@ class brain:
         self.outGama = 2
         self.Ucount = UAVCount
 
+        if LOAD_MODEL:
+            for i in range(line_count):
+                self.ann[line_attubutes[i][0]].load_model()
+
+    def save_model_weights(self):
+        for i in self.ann:
+            self.ann[i].save_model()
+
     def Cost_deep(self, stopsList, state, Lines):
         efected_lines = []
         for stp in stopsList:
@@ -107,21 +130,26 @@ class brain:
             efected_lines.append(line_name)
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
-            # remove wrong line stations
-            index = 0
-            failure_list = []
-            for stp in stopsList:
-                t, route = rf.find(int(stp), state['destLoc'])
-                Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-                if Cost['destfly'] > Cost['transport']:
-                    failure_list.append(index)
-                index += 1
-            failure_list = failure_list.reverse()
-            for i in failure_list:
-                stopsList.pop(i)
+            if DEEP_INITIALIZE_APPROACH == 'RANDOM':
+                # remove wrong line stations
+                index = 0
+                failure_list = []
+                for stp in stopsList:
+                    t, route = rf.find(int(stp), state['destLoc'])
+                    Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+                    if Cost['transport'] < MIN_TRANSPORT_PATH:
+                        failure_list.append(index)
+                    index += 1
+                failure_list.reverse()
+                for i in failure_list:
+                    stopsList.pop(i)
 
-            choiced = np.random.choice(stopsList)
-            # choiced, _ = self.greedy(stopsList, state)
+                choiced = np.random.choice(stopsList)
+            elif DEEP_INITIALIZE_APPROACH == 'GREEDY':
+                choiced, _ = self.greedy(stopsList, state)
+            else:
+                print("ERROR: DEEP_INITIALIZE_APPROACH is not defined")
+                exit(1)
         else:
             choiced = ''
             maxRew = 900000
@@ -202,27 +230,30 @@ class brain:
         random_value = np.random.rand()
         if any([random_value <= self.ann[i].explore_rate for i in efected_lines]):
             max_explore = [self.ann[i].explore_rate for i in efected_lines]
-            max_explore = max_explore / np.sum(max_explore)
-            # remove wrong line stations
-            index = 0
-            failure_list = []
-            for stp in stopsList:
-                t, route = rf.find(int(stp), state['destLoc'])
+            if DEEP_INITIALIZE_APPROACH == 'RANDOM':
+                # remove wrong line stations
+                index = 0
+                failure_list = []
+                for stp in stopsList:
+                    t, route = rf.find(int(stp), state['destLoc'])
+                    Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
+                    if Cost['transport'] < MIN_TRANSPORT_PATH:
+                        failure_list.append(index)
+                    index += 1
+                failure_list.reverse()
+                for i in failure_list:
+                    max_explore.pop(i)
+                    stopsList.pop(i)
+                max_explore = max_explore / np.sum(max_explore)
+                choiced = np.random.choice(stopsList, p=max_explore)
+                _, route = rf.find(int(choiced), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-                if Cost['destfly'] > Cost['transport']:
-                    failure_list.append(index)
-                index += 1
-            failure_list = failure_list.reverse()
-            for i in failure_list:
-                max_explore.pop(i)
-                stopsList.pop(i)
-
-            choiced = np.random.choice(stopsList, p=max_explore)
-            _, route = rf.find(int(choiced), state['destLoc'])
-            Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            wait_time = reachFreeSpaceLoc(str(choiced) + Cost['direction'], state) * StopsDistances
-
-            # choiced, wait_time = self.greedy(stopsList, state)
+                wait_time = reachFreeSpaceLoc(str(choiced) + Cost['direction'], state) * StopsDistances
+            elif DEEP_INITIALIZE_APPROACH == 'GREEDY':
+                choiced, wait_time = self.greedy(stopsList, state)
+            else:
+                print("ERROR: DEEP_INITIALIZE_APPROACH is not defined")
+                exit(1)
 
             bestInpnodes, stopInDirection = self.__inpCreate(
                 choiced, state, Lines)
