@@ -92,7 +92,7 @@ class SubRequest:
         for ind in range(len(self.serve_cost[depot_id])):
             if self.serve_cost[depot_id][ind] is not None:
                 if (min_cost is None or min_cost > self.serve_cost[depot_id][ind]):
-                        # and self.depots_reachability[depot_id][ind]
+                    # and self.depots_reachability[depot_id][ind]
                     min_cost = self.serve_cost[depot_id][ind]
                     min_cost_index = ind
         return min_cost_index
@@ -118,7 +118,7 @@ requestConf_id = yaml_data['COSTUMER_DEST']
 loadModel = False
 showImage = False
 createGif = yaml_data['CREATE_GIF']
-UAVs = []
+UAVs: List[UAV] = []
 # reachTimeStoreXl = []
 reach2finish = yaml_data['COSTUMER_COUNT'] * 2
 workingTime = yaml_data['TIME_DURATION']
@@ -183,7 +183,8 @@ def drup_unreachable_customers(main_request_list):
     for req in main_request_list:
         depot_reachable = [True for _ in range(len(Depots))]
         for depot in range(len(Depots)):
-            network_status = {'curLoc': Depots[depot].loc, 'destLoc': point(*req[0]), 'BStop': depot_fixed_stop_states[depot],
+            network_status = {'curLoc': Depots[depot].loc, 'destLoc': point(*req[0]),
+                              'BStop': depot_fixed_stop_states[depot],
                               'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist,
                               'UAV_battery': MaxFlyDist}
             _, temp_cost = rc.cost_greedy(depot_stops[depot],
@@ -331,7 +332,6 @@ def choice_task_from_subset(UAV_id, flied):
     requests_subset.insert_depot_cost(best_depot_id, empty_customer_depot_indexes,
                                       depot_customer_cost(best_depot_id, empty_customer_depot_indexes))
     # requests_subset.remove_unreachable(requests)
-
 
     # if finalRes[best_depot_id] > 5500:     # uav locked in costumer location and it seems that can't reach any depot
     #     return [[UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y], [UAVs[UAV_id].loc.x, UAVs[UAV_id].loc.y]], 1
@@ -504,6 +504,8 @@ def task_manager():
             storeMore.storedecideParams(er, len(stoplist), selected_line)
             destini = point(*UAVTasks[counter].pop(0))
             nothing, route = Rf.find(int(start_station), destini)
+            Costs = Rf.Costing(UAVs[counter].loc, route, destini)
+            UAVs[counter].dest_fly_estimate = Costs['destfly']
             route = list(map(str, route))
             UAVPath[counter], start_station_with_direction = route2path(  # for change line this function need to fix
                 route, destini)
@@ -811,7 +813,7 @@ def go_forward():
                   (time.time() - start_time))
 
         if len([u for u in UAVs if u.is_working]) == 0:
-            finisher = True     # all UAVs are off
+            finisher = True  # all UAVs are off
 
         if finisher or i == workingTime:
             finish_time = i
@@ -880,6 +882,7 @@ def go_forward():
                 Lines[new_line].stations[new_station].passengers.append(tmp)
                 print("line changed from " + current_line + " to " + new_line)
 
+            # UAV wait's in stations to bus reach
             elif destination[tmp]["actionType"] == "land":
                 if UAVs[tmp].start_from == "depot":
                     uav_wait_on_go_path[tmp] += 1
@@ -892,18 +895,17 @@ def go_forward():
                 current_line = map_station2line(goal_bs)
 
                 TmpBusStopVhcl = traci.busstop.getVehicleIDs(goal_bs)
-                if len(TmpBusStopVhcl) != 0:
+                if len(TmpBusStopVhcl) != 0:  # at last one bus exist in station
                     prob = Lines[current_line].stations[goal_bs].success_rate * \
                            Lines[current_line].stations[goal_bs].calCount
                     Lines[current_line].stations[goal_bs].calCount += 1
-                    newProb = (
-                                      BUS_MAX_CAPACITY - UonBusID.count(TmpBusStopVhcl[0])) / BUS_MAX_CAPACITY
+                    newProb = (BUS_MAX_CAPACITY - UonBusID.count(TmpBusStopVhcl[0])) / BUS_MAX_CAPACITY
                     prob += newProb
                     Lines[current_line].stations[goal_bs].success_rate = prob / \
                                                                          Lines[current_line].stations[goal_bs].calCount
-                    if UonBusID.count(TmpBusStopVhcl[0]) < BUS_MAX_CAPACITY and Lines[current_line].stations[
-                        goal_bs].passengers.index(
-                        tmp) < BUS_MAX_CAPACITY - UonBusID.count(TmpBusStopVhcl[0]):
+                    # check free space exist on bus  AND  uav in first free-space of UAVs
+                    if UonBusID.count(TmpBusStopVhcl[0]) < BUS_MAX_CAPACITY and \
+                            is_in_land_priority(tmp, goal_bs, BUS_MAX_CAPACITY - UonBusID.count(TmpBusStopVhcl[0])):
                         UonBusID[tmp] = TmpBusStopVhcl[0]
                         destination[tmp] = UAVPath[tmp].pop(0)
                         Lines[current_line].stations[goal_bs].passengers.remove(
@@ -1130,6 +1132,33 @@ def go_forward():
         for tmp in range(len(fliers)):
             UAVs[fliers[tmp]].loc = UAVs[fliers[tmp]].loc + UAVActions[tmp]
             prev_action[fliers[tmp]] = UAVActions[tmp]
+
+
+def is_in_land_priority(uav_id, station_id, free_spaces) -> bool:
+    uavs_on_station = Lines[map_station2line(station_id)].stations[station_id].passengers
+    times = {}
+    for uav in uavs_on_station:
+        times[uav] = UAVs[uav].remain_fly()
+
+    sorted_times = []
+    for i in times.keys():
+        if len(sorted_times) == 0:
+            sorted_times.append({i: times[i]})
+        else:
+            for j in range(len(sorted_times)):
+                if list(sorted_times[j].values())[0] > times[i]:
+                    sorted_times.insert(j, {i: times[i]})
+                    break
+                elif j == len(sorted_times) - 1:
+                    sorted_times.append({i: times[i]})
+                    break
+
+    for i in range(len(sorted_times)):
+        if list(sorted_times[i].keys())[0] == uav_id:
+            if i < free_spaces:
+                return True
+            else:
+                return False
 
 
 # --> [flying to 1 , waiting on 1, driving on 1, flying to 2, waiting on 2, ... ]
