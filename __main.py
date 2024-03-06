@@ -6,6 +6,7 @@ import os
 import json
 import copy
 import optparse
+import random
 from DataStore import StoreData
 from StoreMoreData import StoreMore
 from storeFaillure import info_storage
@@ -89,12 +90,16 @@ class SubRequest:
     def get_min_cost_request(self, depot_id):
         min_cost = None
         min_cost_index = None
-        for ind in range(len(self.serve_cost[depot_id])):
-            if self.serve_cost[depot_id][ind] is not None:
-                if (min_cost is None or min_cost > self.serve_cost[depot_id][ind]):
-                    # and self.depots_reachability[depot_id][ind]
-                    min_cost = self.serve_cost[depot_id][ind]
-                    min_cost_index = ind
+        if CHOOSE_CUSTOMER_RANDOMLY:
+            if len(self.serve_cost[depot_id]) > 0:
+                min_cost_index = random.randint(0, len(self.serve_cost[depot_id]) - 1)
+        else:
+            for ind in range(len(self.serve_cost[depot_id])):
+                if self.serve_cost[depot_id][ind] is not None:
+                    if (min_cost is None or min_cost > self.serve_cost[depot_id][ind]):
+                        # and self.depots_reachability[depot_id][ind]
+                        min_cost = self.serve_cost[depot_id][ind]
+                        min_cost_index = ind
         return min_cost_index
 
     def pop_to_server(self, sub_request_index, main_request_list):
@@ -139,6 +144,7 @@ BUSS_DISTANCE_DELAY = 450
 AVAILABLE_STOP_COEFFICIENT = 0.3
 OUT_OF_REACH_COSTUMERS = yaml_data['OUT_OF_REACH_COSTUMERS']
 SOURCE_FLY_COEFFICIENT = yaml_data['SOURCE_FLY_COEFFICIENT']
+CHOOSE_CUSTOMER_RANDOMLY = yaml_data['CHOOSE_CUSTOMER_RANDOMLY']
 
 BUS_MAX_CAPACITY: int
 MAX_WAITING_TIME: float
@@ -525,6 +531,7 @@ def task_manager():
                 if wait_time > 140000:
                     wait_time = bus_count2reach * BUSS_DISTANCE_DELAY
                 UAVs[counter].delay = wait_time  # bus_count2reach * BUSS_DISTANCE_DELAY
+                UAVs[counter].wait_in_depot = wait_time
 
 
 def lineBusyRateUpdate():
@@ -869,6 +876,8 @@ def go_forward():
                                 tmp)
                             Lines[current_line].stations[goal_bs].passengers.append(
                                 tmp)
+                        if UAVs[tmp].start_from == "depot":
+                            storeData.setWaitInDepot(Uav_request[tmp], tmp, UAVs[tmp].wait_in_depot)
 
             elif destination[tmp]["actionType"] == "changeLine":
                 current_line = traci.vehicle.getRouteID(UonBusID[tmp])
@@ -1090,6 +1099,8 @@ def go_forward():
                         Lines[current_line].stations[goal_bs].passengers.remove(
                             tmp)
 
+                    storeData.storeTiming(Uav_request[tmp], tmp)
+                    storeData.resetStoreOption(tmp, "dest_fly")
                     storeData.setPathType(tmp, 2, rowIndex=Uav_request[tmp])
                     destination[tmp]["actionType"] = "fly"
                     min_dist = 3000

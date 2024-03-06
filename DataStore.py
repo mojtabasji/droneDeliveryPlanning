@@ -5,7 +5,7 @@ import time
 class StoreData:
 
     def __init__(self, UAV_count, T_steps, line_count) -> None:
-        self.__memory = {'timing':[],'status':[]}
+        self.__memory = {'timing': [], 'status': []}
         self.__storeOptions = [0 for i in range(UAV_count)]
         self.__UTimingRow = [None for i in range(UAV_count)]
         self.__stepCounter = [0 for i in range(UAV_count) ]
@@ -23,7 +23,7 @@ class StoreData:
     def storeTiming(self, rowIndex, UId, timeSlot=None): # (rowNumber, Uid, )
         if rowIndex >= len(self.__memory['timing']):
             for i in range(rowIndex - len(self.__memory['timing']) + 1):
-                self.__memory['timing'].append([None, None, None ,None, None, None, None, None, None, None])
+                self.__memory['timing'].append([None, None, None ,None, None, None, None, None, None, None, None])
         if self.__storeOptions[UId] == 4:
             # self.__memory['timing'][rowIndex][4] = self.__Reachs
             self.__memory['timing'][rowIndex][4] = self.__depot_id[UId]
@@ -44,6 +44,11 @@ class StoreData:
 
     def incrementStep(self, UId):
         self.__stepCounter[UId] += 1
+
+
+    def setWaitInDepot(self, rowIndex, UId=None, wait=None):
+        self.__memory['timing'][rowIndex][10] = wait
+
 
     def increseReachs(self):
         self.__Reachs += 1
@@ -73,6 +78,8 @@ class StoreData:
             self.__storeOptions[Uid] = 1
         elif opt == "Source_fly":
             self.__storeOptions[Uid] = 0
+        elif opt == "dest_fly":
+            self.__storeOptions[Uid] = 3
             
     def resetStepsData(self, UId):
         self.__stepCounter[UId] = 0
@@ -94,6 +101,13 @@ class StoreData:
                     temp = arr[j]
                     arr[j] = arr[j + 1]
                     arr[j + 1] = temp
+        last_item = size - 1
+        for i in range(size):
+            if arr[i][col] == None and arr[i][0] == None:
+                for j in range(i+1, size):
+                    if arr[j][col] == None and arr[j][0] != None:
+                        arr[i], arr[j] = arr[j], arr[i]
+                        break
         return arr
 
 
@@ -118,8 +132,9 @@ class StoreData:
         sheet.write(0, 7, 'UAV ID', header_style)
         sheet.write(0, 8, 'path type', header_style)
         sheet.write(0, 9, 'time slot', header_style)
+        sheet.write(0, 10, 'wait in depot', header_style)
 
-        spaceBitween = 10
+        spaceBitween = 12
         for i in range(int(len(self.__memory['status'][0]) / 6)):
             colindex = i * 6 + spaceBitween
             sheet.write(0,0 + colindex,'L '+str(i)+' fly2' ) #im was here to set heders for saving line status
@@ -142,6 +157,7 @@ class StoreData:
             sheet.write(rowId, 7, content[7])
             sheet.write(rowId, 8, content[8])
             sheet.write(rowId, 9, content[9])
+            sheet.write(rowId, 10, content[10])
             rowId += 1
 
         rowId = 1
@@ -149,7 +165,7 @@ class StoreData:
             itemCol = spaceBitween
             if rowId < 65000:
                 for contentItem in content:
-                    sheet.write(rowId,itemCol,contentItem)
+                    sheet.write(rowId, itemCol, contentItem)
                     itemCol +=1
             else:
                 pageNumber +=1
