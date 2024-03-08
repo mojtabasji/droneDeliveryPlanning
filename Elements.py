@@ -16,6 +16,7 @@ class UAV:
         self.start_from = "depot"
         self.dest_fly_estimate = 0
         self.wait_in_depot = 0
+        self.wait_estimate = 0
 
     def remain_fly(self):
         return self.dest_fly_estimate - self.flied

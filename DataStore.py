@@ -23,7 +23,7 @@ class StoreData:
     def storeTiming(self, rowIndex, UId, timeSlot=None): # (rowNumber, Uid, )
         if rowIndex >= len(self.__memory['timing']):
             for i in range(rowIndex - len(self.__memory['timing']) + 1):
-                self.__memory['timing'].append([None, None, None ,None, None, None, None, None, None, None, None])
+                self.__memory['timing'].append([None, None, None ,None, None, None, None, None, None, None, None, None])
         if self.__storeOptions[UId] == 4:
             # self.__memory['timing'][rowIndex][4] = self.__Reachs
             self.__memory['timing'][rowIndex][4] = self.__depot_id[UId]
@@ -49,6 +49,8 @@ class StoreData:
     def setWaitInDepot(self, rowIndex, UId=None, wait=None):
         self.__memory['timing'][rowIndex][10] = wait
 
+    def setEstimateWait(self, rowIndex, UId=None, wait=None):
+        self.__memory['timing'][rowIndex][11] = wait
 
     def increseReachs(self):
         self.__Reachs += 1
@@ -133,6 +135,7 @@ class StoreData:
         sheet.write(0, 8, 'path type', header_style)
         sheet.write(0, 9, 'time slot', header_style)
         sheet.write(0, 10, 'wait in depot', header_style)
+        sheet.write(0, 11, 'es_wait', header_style)
 
         spaceBitween = 12
         for i in range(int(len(self.__memory['status'][0]) / 6)):
@@ -158,6 +161,7 @@ class StoreData:
             sheet.write(rowId, 8, content[8])
             sheet.write(rowId, 9, content[9])
             sheet.write(rowId, 10, content[10])
+            sheet.write(rowId, 11, content[11])
             rowId += 1
 
         rowId = 1

@@ -525,6 +525,7 @@ def task_manager():
                 Lines[selected_line].stations[start_station_with_direction].passengers)
             bus_count2reach = int(
                 (coming2stations + waiting2stations) / BUS_MAX_CAPACITY)
+            UAVs[counter].wait_estimate = int(wait_time)
             # drop delay for busy stations ((bus_count2reach + 1) * BUSS_DISTANCE_DELAY)
             if UAVs[counter].start_from == "depot" and wait_time - UAVs[counter].loc.distance(
                     UAVPath[counter][0]['loc']) > MAX_WAITING_TIME:
@@ -876,6 +877,8 @@ def go_forward():
                                 tmp)
                             Lines[current_line].stations[goal_bs].passengers.append(
                                 tmp)
+
+                        storeData.setEstimateWait(Uav_request[tmp], tmp, UAVs[tmp].wait_estimate)
                         if UAVs[tmp].start_from == "depot":
                             storeData.setWaitInDepot(Uav_request[tmp], tmp, UAVs[tmp].wait_in_depot)
 
