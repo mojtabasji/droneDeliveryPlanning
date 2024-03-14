@@ -14,4 +14,5 @@ MIN_TRANSPORT_PATH: 120 # min distance of transport path in deep random choice
 DEEP_INITIALIZE_APPROACH: GREEDY # RANDOM: Random, GREEDY: Greedy
 SAVE_MODEL: False # save model after training
 LOAD_MODEL: False # load model before training
-CHOOSE_CUSTOMER_RANDOMLY: True #
+CHOOSE_CUSTOMER_RANDOMLY: False # choose customer randomly if approach is DEEP and exploration is less yet
+PREVIOUS_STATIONS_CHECKED_COUNT: 4 # locking for bus in count of previous stations to calc wait time

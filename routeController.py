@@ -14,6 +14,7 @@ import random
 import re
 import os
 import yaml
+from Elements import UAV, Line_class, Bus
 
 yaml_data = None
 with open('conf.yaml', 'r') as file:
@@ -22,7 +23,6 @@ with open('conf.yaml', 'r') as file:
 MIN_TRANSPORT_PATH = yaml_data['MIN_TRANSPORT_PATH']
 DEEP_INITIALIZE_APPROACH = yaml_data['DEEP_INITIALIZE_APPROACH']
 LOAD_MODEL = yaml_data['LOAD_MODEL']
-
 
 TRANSPORT_REDUCE = 0.5
 _2n = [2 ** i for i in range(1, 12)]
@@ -146,7 +146,7 @@ class brain:
 
                 choiced = np.random.choice(stopsList)
             elif DEEP_INITIALIZE_APPROACH == 'GREEDY':
-                choiced, _ = self.greedy(stopsList, state)
+                choiced, _ = self.greedy(stopsList, state, lines=Lines)
             else:
                 print("ERROR: DEEP_INITIALIZE_APPROACH is not defined")
                 exit(1)
@@ -183,9 +183,9 @@ class brain:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) # + time2wait[-1]
+            sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE)  # + time2wait[-1]
             if not ignore_wait:
-                time2wait.append(reachFreeSpaceLoc(str(stp) + Cost['direction'], state) * StopsDistances)
+                time2wait.append(estimate_wait_time(state['UAV'], lines, state, stp + Cost['direction']))
                 sumTime += time2wait[-1]
             if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2 or \
                     Cost['destfly'] + Cost['sourcefly'] > state['UAV_battery']:
@@ -209,7 +209,7 @@ class brain:
             Lin = rf.findStopLine(int(stp))
             t, route = rf.find(int(stp), state['destLoc'])
             Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-            time2wait.append(reachFreeSpaceLoc(str(stp) + Cost['direction'], state) * StopsDistances)
+            time2wait.append(estimate_wait_time(state['UAV'], lines, state, stp + Cost['direction']))
             sumTime = Cost['destfly'] + Cost['sourcefly'] + (Cost['transport'] * TRANSPORT_REDUCE) + time2wait[-1]
             if Cost['destfly'] + Cost['sourcefly'] > state['MAX_FLY_DIST'] / 2 or \
                     Cost['destfly'] + Cost['sourcefly'] > state['UAV_battery']:
@@ -248,9 +248,9 @@ class brain:
                 choiced = np.random.choice(stopsList, p=max_explore)
                 _, route = rf.find(int(choiced), state['destLoc'])
                 Cost = rf.Costing(state['curLoc'], route, state['destLoc'])
-                wait_time = reachFreeSpaceLoc(str(choiced) + Cost['direction'], state) * StopsDistances
+                wait_time = estimate_wait_time(state['UAV'], Lines, state, choiced + Cost['direction'])
             elif DEEP_INITIALIZE_APPROACH == 'GREEDY':
-                choiced, wait_time = self.greedy(stopsList, state)
+                choiced, wait_time = self.greedy(stopsList, state, lines=Lines)
             else:
                 print("ERROR: DEEP_INITIALIZE_APPROACH is not defined")
                 exit(1)
@@ -318,25 +318,32 @@ class brain:
         self.ann[i['line']].train()
 
 
-def reachFreeSpaceLoc(stopInDirection,
-                      net):  # return the location (bus is in which bs) of the stop that the bus can reach the free space
-    freeSpace = net['BStop'][stopInDirection]['freeSpace']
-    wanters = net['BStop'][stopInDirection]['coming'] + \
-              net['BStop'][stopInDirection]['goingToBefore']
-    latest = freeSpace - wanters
-    if latest <= 0:
-        return 3000  # maximum Value
 
-    latest = int(latest / net['BusMaxCap']) + 1
-    BussList = net['BussList']
-    ComingBuss = net['BStop'][stopInDirection]['comingBuss']
-    BBSs = deepcopy(net['BStop'][stopInDirection]['beforeStops'])
-    BBSs.reverse()
-    latest_counter = 0
-    for i in BBSs:
-        for j in ComingBuss:
-            if BussList[j].lastStop == i:
-                latest_counter += 1
-            if latest_counter == latest:
-                return abs(int(stopInDirection.split('_')[0]) - int(i.split('_')[0]))
-    return 3000
+def estimate_wait_time(uav: UAV, lines: dict[str, Line_class], net_state: dict, goal_station: str) -> int:
+    before_stations = net_state['BStop'][goal_station]['beforeStops']  # list of before stops ['1_0', '2_0', ...]
+    goal_line = rf.findStopLine(int(goal_station[:-2]))
+    goal_line = lines[goal_line]
+    time_to_reach_goal = uav.loc.distance(goal_line.stations[goal_station].loc)
+    drones_in_way_count = 0
+    effected_station = goal_station
+    for station in before_stations:
+        drones_in_way_count += goal_line.stations[effected_station].get_coming_count() + \
+                               goal_line.stations[effected_station].get_passengers_count()
+        bus_list = station_passed_buss(station, goal_line)
+        for bus in bus_list:
+            if bus.get_passengers_count() + drones_in_way_count < net_state['BusMaxCap']:
+                if time_to_reach_goal < bus.loc.distance(goal_line.stations[goal_station].loc):
+                    return bus.loc.distance(goal_line.stations[goal_station].loc)
+                drones_in_way_count -= (net_state['BusMaxCap'] - bus.get_passengers_count())
+                if drones_in_way_count < 0:
+                    drones_in_way_count = 0
+        effected_station = station
+    return 150000
+
+
+def station_passed_buss(station: str, line: Line_class) -> list[Bus]:
+    passed_buss = []
+    for bus in line.busList:
+        if station == line.busList[bus].lastStop:
+            passed_buss.append(line.busList[bus])
+    return passed_buss

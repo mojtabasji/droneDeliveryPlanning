@@ -239,7 +239,7 @@ def depot_customer_cost(depot, sub_request_indexes):
 
         network_status = {'curLoc': start_point, 'destLoc': end_point, 'BStop': stop_states(stoplist),
                           'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist,
-                          'UAV_battery': MaxFlyDist}
+                          'UAV_battery': MaxFlyDist, 'UAV': UAV(location=start_point)}
         if approach == 'greedyDecide':
             tmp_cost_val, fly_cost = rc.cost_greedy(
                 stoplist, network_status, lines=Lines, ignore_wait=True)
@@ -287,7 +287,7 @@ def choice_task_from_subset(UAV_id, flied):
         hiper_power += 40
     network_status = {'curLoc': start_point, 'BStop': stop_states(stoplist),
                       'BussList': BussList, 'BusMaxCap': BUS_MAX_CAPACITY, 'MAX_FLY_DIST': MaxFlyDist,
-                      'UAV_battery': MaxFlyDist - flied}
+                      'UAV_battery': MaxFlyDist - flied, 'UAV': UAVs[UAV_id]}
 
     for dep in range(len(Depots)):
         end_point = Depots[dep].loc
@@ -497,7 +497,7 @@ def task_manager():
             network_status = {'curLoc': UAVs[counter].loc, 'destLoc': point(
                 *UAVTasks[counter][0]), 'BStop': stop_states(stoplist), 'BussList': BussList,
                               'BusMaxCap': BUS_MAX_CAPACITY, 'UAV_battery': uav_battery,
-                              'MAX_FLY_DIST': MaxFlyDist}
+                              'MAX_FLY_DIST': MaxFlyDist, 'UAV': UAVs[counter]}
             # lineBusyRateUpdate()
             er = 1
             if approach == 'greedyDecide':

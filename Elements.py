@@ -1,8 +1,9 @@
 import numpy as np
 from point import point
 
+
 class UAV:
-    def __init__(self, location = point(0,0), iden = None):
+    def __init__(self, location = point(0, 0), iden=None):
         self.is_working = True
         self.change_depot = False
         self.loc = location

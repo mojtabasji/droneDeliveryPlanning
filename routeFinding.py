@@ -1,10 +1,15 @@
 import json
-import re
+import yaml
 
 from numpy import linspace
 
 from point import point
 from copy import deepcopy
+
+yaml_data = None
+with open('conf.yaml', 'r') as file:
+    yaml_data = yaml.load(file, Loader=yaml.FullLoader)
+
 
 cnfg = open('config.json')
 f = open('lineConfig.json')
@@ -17,10 +22,13 @@ maxdist=9000000
 lines = json.load(f)
 configData = json.load(cnfg)
 stopsloc = configData['BusStopsLoc']
-BeforeStopCheckCount = configData['BeforeStopCheckCount']
+# BeforeStopCheckCount = configData['BeforeStopCheckCount']
+BeforeStopCheckCount = yaml_data['PREVIOUS_STATIONS_CHECKED_COUNT']
+
 
 def __loc2point(inp):
-    return (int(inp[0]/10), int(inp[1] /10))
+    return int(inp[0]/10), int(inp[1] /10)
+
 
 def find(Sstop , dest): # args Like => ('80', point(123,234))
     for i in lines:
@@ -28,8 +36,9 @@ def find(Sstop , dest): # args Like => ('80', point(123,234))
             cost, rout =  __treeSearch(Sstop, i,dest,[i],[Sstop]) 
             rout = __resetRoute(rout, dest)
             return cost , rout
-        
-def __resetRoute(rout, dest): # args Like => ([int 12, int 45, ... odd count], point(12,12) ) -> [12, 44]
+
+
+def __resetRoute(rout, dest):   # args Like => ([int 12, int 45, ... odd count], point(12,12) ) -> [12, 44]
     lastStop = rout[-1]
     secondlastStop = rout[-2]
     if secondlastStop > lastStop:
@@ -54,8 +63,7 @@ def __resetRoute(rout, dest): # args Like => ([int 12, int 45, ... odd count], p
     return rout
 
 
-
-def __treeSearch(reachStop, Sline, dest, passedLines, route): # have problem
+def __treeSearch(reachStop, Sline, dest, passedLines, route):   # have problem
     gdist = maxdist
 
     for i in lines[Sline]['stops']:
@@ -115,6 +123,7 @@ def __stopINline(stp, Lin): # match stop location and line points. args Like => 
     print("stop ", stp, " is not in Line ", Lin)
     return
 
+
 def Stop2StopCost(stp1, stp2): #arguments must be string like (str '75',str '80')
     Lin = findStopLine(int(stp1))
     if Lin != findStopLine(int(stp2)):
@@ -131,7 +140,8 @@ def Stop2StopCost(stp1, stp2): #arguments must be string like (str '75',str '80'
     ind2 = __stopINline(stp2, Lin)
     if ind1 != None and ind2 != None:
         return abs(ind1 - ind2)
-    
+
+
 def risingAndFly_cost(secondLStop ,LStop, dest): # arg Like => (int 80, int 90, point(123,123)) -> 13, 23, [12, 454]
     
     Lin = findStopLine(int(secondLStop))
@@ -182,8 +192,7 @@ def risingAndFly_cost(secondLStop ,LStop, dest): # arg Like => (int 80, int 90, 
     return risingCost, flingCost, linePoints[counter]
 
 
-
-def Costing(curLoc, route, destLoc): #args Like => (point(1,1), [12,14,15,18], point(2,2))
+def Costing(curLoc, route, destLoc):    # args Like => (point(1,1), [12,14,15,18], point(2,2))
     Tp1 = route[0]
     Tp2 = route[1]
     if Tp1 < Tp2:
@@ -207,35 +216,36 @@ def Costing(curLoc, route, destLoc): #args Like => (point(1,1), [12,14,15,18], p
     return {'sourcefly' : sourceFlyCst, 'transport':tranportCost, 'destfly':destFlyCost, 'disjointLoc': disjointLoc ,'direction':direction }
     
 
-def beforeStops(stp): #args Like => ('79_1') ---> ['78_1', '78_0', '79_0']
-    res = []
-    Lin = findStopLine(int(stp.split('_')[0]))
-    LinStops = lines[Lin]['stops']
-    baseindex = LinStops.index(int(stp.split('_')[0]))
+def beforeStops(stp:str) -> list[str]:  # args Like => ('77_0', '76_0', '76_1', '77_1')
+    befores = []
+    ref_station: int = int(stp.split('_')[0])
+    line_name: str = findStopLine(ref_station)
+    line_stops: list[int] = lines[line_name]['stops']
+    start_station: int = line_stops[0]
+    end_station: int = line_stops[-1]
+    last_station: int = int(stp.split('_')[0])
+    in_go_path: bool = False
+    addition: str = '_0'
+    inv_addition: str = '_1'
     if int(stp[-1]) == 0:
-        addation = '_0'
-        invaddation = '_1'
-        for i in range(1,BeforeStopCheckCount):
-            nxt = baseindex + i
-            if nxt >= len(LinStops):
-                nxt = len(LinStops) - ((nxt - len(LinStops)) + 1)
-                nxt = str(LinStops[nxt]) + invaddation
-            else:
-                nxt = str(LinStops[nxt]) + addation
-            
-            res.append(nxt)
+        in_go_path = True
 
-    else:
-        addation = '_1'
-        invaddation = '_0'
-        for i in range(1,BeforeStopCheckCount):
-            nxt = baseindex - i
-            if nxt < 0:
-                nxt = str(LinStops[abs(nxt + 1)]) + invaddation
-            else:
-                nxt = str(LinStops[nxt]) + addation
-            res.append(nxt)
-    
-    return res
+    for i in range(BeforeStopCheckCount):
+        if in_go_path:
+            station = last_station - 1
+        else:
+            station = last_station + 1
 
+        if station < start_station:
+            station = start_station
+            in_go_path = False
+        elif station > end_station:
+            station = end_station
+            in_go_path = True
+
+        res = addition if in_go_path else inv_addition
+        befores.append(str(station) + res)
+        last_station = station
+
+    return befores
 
